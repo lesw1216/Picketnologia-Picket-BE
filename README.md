@@ -60,11 +60,13 @@ Picket에서는 실시간 좌석 기능 제공으로 원활한 좌석 예매 경
 
 ## 주요 기능
 
-### 회원가입
+### 회원가입 / 로그인
 
-### 로그인
+![register and login.gif](docs/%EA%B8%B0%EB%8A%A5%20%EB%8F%99%EC%9E%91/register%20and%20login.gif)
 
 ### 비밀번호 찾기
+
+![findPassword.gif](docs/%EA%B8%B0%EB%8A%A5%20%EB%8F%99%EC%9E%91/findPassword.gif)
 
 ### 실시간 좌석 예매 동시성 제어
 
