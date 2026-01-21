@@ -58,7 +58,7 @@ Picket에서는 실시간 좌석 기능 제공으로 원활한 좌석 예매 경
 
 ![CI-CD 아키텍처.png](docs/CI-CD%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png)
 
-## 담당 업무
+## 주요 기능
 
 ### 회원가입
 
@@ -68,9 +68,13 @@ Picket에서는 실시간 좌석 기능 제공으로 원활한 좌석 예매 경
 
 ### 실시간 좌석 예매 동시성 제어
 
+공연 예매 시 다수의 사용자가 동시에 좌석 예매 화면에서 실시간으로 확인 할 수 있습니다.
+
 ![ Concurrency Control2.gif](docs/%EA%B8%B0%EB%8A%A5%20%EB%8F%99%EC%9E%91/%20Concurrency%20Control2.gif)
 
 ### 결제
+
+좌석을 선택하고 다음 단계를 진행하면 결제를 진행 할 수 있습니다.
 
 ![buyTicket.gif](docs/%EA%B8%B0%EB%8A%A5%20%EB%8F%99%EC%9E%91/buyTicket.gif)
 
