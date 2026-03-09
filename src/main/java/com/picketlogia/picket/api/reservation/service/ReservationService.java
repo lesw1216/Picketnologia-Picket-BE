@@ -1,7 +1,9 @@
 package com.picketlogia.picket.api.reservation.service;
 
+import com.picketlogia.picket.api.payments.model.PaymentStatusResponse;
 import com.picketlogia.picket.api.product.model.entity.Product;
 import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.reservation.model.PaymentStatus;
 import com.picketlogia.picket.api.reservation.model.ReservationCheck;
 import com.picketlogia.picket.api.reservation.model.ReservationRegister;
 import com.picketlogia.picket.api.reservation.model.UpdateReservationReq;
@@ -120,4 +122,13 @@ public class ReservationService {
                 reservationCheck.getSeatIdxes().stream().map(String::valueOf).toList()
         );
     }
+
+    public PaymentStatusResponse findPaymentStatusOfReservation(String paymentId, Long userIdx) {
+
+        PaymentStatus findPaymentStatus = reservationRepository.findStatusByPaymentIdxAndUserId(paymentId, userIdx)
+                .orElseThrow(() -> BaseException.from(BaseResponseStatus.NOT_FOUND_DATA));
+
+        return PaymentStatusResponse.from(findPaymentStatus);
+    }
+
 }
