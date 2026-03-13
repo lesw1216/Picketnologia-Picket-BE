@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picketlogia.picket.api.token.model.AccessToken;
 import com.picketlogia.picket.api.token.model.RefreshToken;
 import com.picketlogia.picket.api.token.model.TokenCookieNames;
+import com.picketlogia.picket.api.token.model.TokenCookiePaths;
 import com.picketlogia.picket.api.token.service.TokenService;
 import com.picketlogia.picket.api.user.model.dto.UserAuth;
 import com.picketlogia.picket.api.user.model.dto.login.UserLoginResp;
@@ -49,12 +50,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             // Create Cookie of accessToken
             Cookie accessTokenCookie = new Cookie(AccessToken.TOKEN_NAME, accessToken);
             accessTokenCookie.setHttpOnly(true);
-            accessTokenCookie.setPath("/");
+            accessTokenCookie.setPath(TokenCookiePaths.ACCESS);
 
             // Create Cookie of refreshToken
             Cookie refreshTokenCookie = new Cookie(TokenCookieNames.REFRESH, refreshTokenValue);
             refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setPath("/token/reissue");
+            refreshTokenCookie.setPath(TokenCookiePaths.REFRESH);
             refreshTokenCookie.setMaxAge(refreshTokenMaxAge);
 
             response.addCookie(accessTokenCookie);
