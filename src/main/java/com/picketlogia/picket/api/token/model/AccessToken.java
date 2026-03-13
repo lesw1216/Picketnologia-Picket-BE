@@ -1,4 +1,4 @@
-package com.picketlogia.picket.utils;
+package com.picketlogia.picket.api.token.model;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JwtUtil {
+public class AccessToken {
 
     private static final String SECRET = "abcdeffghijklmnopqrstuvwxyz0123456";
     private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
@@ -20,9 +20,9 @@ public class JwtUtil {
     public static final String EMAIL_NAME = "email";
     public static final String ROLE_NAME = "role";
     public static final String USER_TYPE_NAME = "userType";
-    public static final String TOKEN_NAME = "USER_AT";
+    public static final String TOKEN_NAME = TokenCookieNames.ACCESS;
 
-    public static String generateToken(String email, Long idx, String role, String userType) {
+    public static String issue(String email, Long idx, String role, String userType) {
 
         Map<String, String> claims =  new HashMap<>();
         claims.put(IDX_NAME, "" + idx);

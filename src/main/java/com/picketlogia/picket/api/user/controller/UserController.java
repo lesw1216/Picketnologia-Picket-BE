@@ -4,7 +4,7 @@ import com.picketlogia.picket.api.user.model.dto.signup.SignupResp;
 import com.picketlogia.picket.api.user.model.dto.signup.UserRegister;
 import com.picketlogia.picket.api.user.service.SignupService;
 import com.picketlogia.picket.common.model.BaseResponse;
-import com.picketlogia.picket.utils.JwtUtil;
+import com.picketlogia.picket.api.token.model.AccessToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<BaseResponse<Object>> logout() {
 
-        ResponseCookie responseCookie = ResponseCookie.from(JwtUtil.TOKEN_NAME, null)
+        ResponseCookie responseCookie = ResponseCookie.from(AccessToken.TOKEN_NAME, null)
                 .httpOnly(true)
                 .maxAge(0)
                 .path("/")
