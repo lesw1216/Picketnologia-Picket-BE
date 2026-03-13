@@ -21,19 +21,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Optional<User> findUser = userRepository.findByEmail(username);
-        if (findUser.isPresent()) {
-            User user = findUser.get();
+        User user = findUser.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
 
-            return UserAuth.builder()
-                    .idx(user.getIdx())
-                    .email(user.getEmail())
-                    .password(user.getPassword())
-                    .nickname(user.getNickname())
-                    .role(user.getUserRole().getName())
-                    .userType(user.getUserType().name())
-                    .build();
-        }
-
-        return null;
+        return UserAuth.builder()
+                .idx(user.getIdx())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .nickname(user.getNickname())
+                .role(user.getUserRole().getName())
+                .userType(user.getUserType().name())
+                .build();
     }
 }
