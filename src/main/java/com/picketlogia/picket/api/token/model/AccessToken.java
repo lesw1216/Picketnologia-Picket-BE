@@ -49,4 +49,16 @@ public class AccessToken {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public static String reIssue(String previousAccessToken) {
+
+        Claims claims = getClaims(previousAccessToken);
+
+        return Jwts.builder()
+                .setSubject(getValue(claims, EMAIL_NAME))
+                .setClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis() + EXP))
+                .signWith(KEY, SignatureAlgorithm.HS256)
+                .compact();
+    }
 }
