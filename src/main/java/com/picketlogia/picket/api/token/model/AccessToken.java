@@ -24,7 +24,7 @@ public class AccessToken {
 
     public static String issue(String email, Long idx, String role, String userType) {
 
-        Map<String, String> claims =  new HashMap<>();
+        Map<String, Object> claims =  new HashMap<>();
         claims.put(IDX_NAME, "" + idx);
         claims.put(EMAIL_NAME, email);
         claims.put(ROLE_NAME, role);
@@ -43,6 +43,7 @@ public class AccessToken {
     }
 
     public static Claims getClaims(String token) {
+
         return Jwts.parserBuilder()
                 .setSigningKey(KEY)
                 .build()
@@ -52,7 +53,7 @@ public class AccessToken {
 
     public static String reIssue(String previousAccessToken) {
 
-        Claims claims = getClaims(previousAccessToken);
+        Claims claims = JwtManager.parseJWT(previousAccessToken);
 
         return Jwts.builder()
                 .setSubject(getValue(claims, EMAIL_NAME))
