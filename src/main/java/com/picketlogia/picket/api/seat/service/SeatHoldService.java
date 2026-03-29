@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.service;
 
-import com.picketlogia.picket.api.seat.model.dto.RockedSeats;
+import com.picketlogia.picket.api.seat.model.dto.LockedSeats;
 import com.picketlogia.picket.api.seat.repository.SeatStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,12 +29,18 @@ public class SeatHoldService {
 //        seatStatusRepository.expire(key, SEAT_STATUS_TTL_MINUTES, TimeUnit.MINUTES);
     }
 
-    public void deleteRockedSeats(Long roundTimeIdx, RockedSeats rockedSeats) {
+    /**
+     * 임시로 선택된 좌석들을 해제합니다.
+     *
+     * @param roundTimeId 해제할 회차의 id
+     * @param lockedSeats 해제할 좌석 목록
+     */
+    public void releaseHeldSeats(Long roundTimeId, LockedSeats lockedSeats) {
 
-        String key = createKey(roundTimeIdx);
-        seatStatusRepository.deleteAllRockedSeatsByRoundTime(
+        String key = createKey(roundTimeId);
+        seatStatusRepository.deleteHeldSeatsByRoundIdAndSeatIds(
                 key,
-                rockedSeats.getSeatIdxes().stream().map(String::valueOf).toList()
+                lockedSeats.getSeatIds().stream().map(String::valueOf).toList()
         );
 
     }

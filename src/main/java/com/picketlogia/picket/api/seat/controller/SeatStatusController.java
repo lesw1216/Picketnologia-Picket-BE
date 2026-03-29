@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.controller;
 
-import com.picketlogia.picket.api.seat.model.dto.RockedSeats;
+import com.picketlogia.picket.api.seat.model.dto.LockedSeats;
 import com.picketlogia.picket.api.seat.service.SeatHoldService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,6 @@ public class SeatStatusController {
     private final SeatHoldService seatHoldService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    // 특정 회차의 현재 좌석 상태 전체 조회 (추가)
     @Operation(
             summary = "실시간으로 선택된 특정 회차의 좌석 목록을 조회",
             description = "사용자들이 결제전 선택한 좌석을 캐싱한 Redis에 접근하여 해당 회차의 선택된 좌석 목록을 조회합니다."
@@ -32,15 +31,17 @@ public class SeatStatusController {
 
     }
 
-    // 특정 회차의 현재 좌석 상태 전체 조회 (추가)
     @Operation(
-            summary = "실시간 좌석 잠금 해제",
-            description = "특정 사용자가 실시간 좌석 웹소켓에 연결된 상태에서 선택한 좌석을 해제합니다."
+            summary = "임시로 선택한 특정 회차의 모든 좌석을 해제",
+            description = """ 
+                    특정 회차에서 임시로 선택된 좌석들을 해제합니다.
+                    대표적으로 사용자가 좌석을 임시로 선택한 상황에서 이전 버튼을 클릭하는 경우에 사용됩니다.
+                    """
     )
-    @DeleteMapping("/{roundTimeIdx}")
-    public void deleteRockedSeat(@PathVariable Long roundTimeIdx, @RequestBody RockedSeats rockedSeats) {
+    @DeleteMapping("/{roundTimeId}")
+    public void releaseSeats(@PathVariable Long roundTimeId, @RequestBody LockedSeats lockedSeats) {
 
-        seatHoldService.deleteRockedSeats(roundTimeIdx, rockedSeats);
-        messagingTemplate.convertAndSend("/topic/seats/map/" + roundTimeIdx, rockedSeats.getSeatIdxes());
+        seatHoldService.releaseHeldSeats(roundTimeId, lockedSeats);
+        messagingTemplate.convertAndSend("/topic/seats/map/" + roundTimeId, lockedSeats.getSeatIds());
     }
 }

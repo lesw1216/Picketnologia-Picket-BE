@@ -7,6 +7,6 @@ import java.util.List;
 
 @Getter
 @Builder
-public class RockedSeats {
-    private List<Long> seatIdxes;
+public class LockedSeats {
+    private List<Long> seatIds;
 }
