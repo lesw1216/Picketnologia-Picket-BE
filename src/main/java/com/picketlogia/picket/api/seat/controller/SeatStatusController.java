@@ -21,12 +21,11 @@ public class SeatStatusController {
 
     // 특정 회차의 현재 좌석 상태 전체 조회 (추가)
     @Operation(
-            summary = "실시간 좌석 상태 조회",
-            description = "회차 ID에 해당하는 모든 좌석의 실시간 상태(예: available, selecting)를 조회합니다."
+            summary = "실시간 좌석 조회",
+            description = "특정 회차의 현재 좌석 상태를 조회합니다."
     )
     @GetMapping("/{roundTimeIdx}")
-    public ResponseEntity<BaseResponse<Map<Object, Object>>> getSeatStatusV2(
-            @PathVariable Long roundTimeIdx) {
+    public ResponseEntity<BaseResponse<Map<Object, Object>>> getSeatStatusV2(@PathVariable Long roundTimeIdx) {
 
         Map<Object, Object> allSeatStatusV3 = seatStatusService.getAllSeatStatusV2(roundTimeIdx);
         return ResponseEntity.ok(BaseResponse.success(allSeatStatusV3));
@@ -39,9 +38,7 @@ public class SeatStatusController {
             description = "특정 사용자가 실시간 좌석 웹소켓에 연결된 상태에서 선택한 좌석을 해제합니다."
     )
     @DeleteMapping("/{roundTimeIdx}")
-    public void deleteRockedSeat(
-            @PathVariable Long roundTimeIdx,
-            @RequestBody RockedSeats rockedSeats) {
+    public void deleteRockedSeat(@PathVariable Long roundTimeIdx, @RequestBody RockedSeats rockedSeats) {
 
         seatStatusService.deleteRockedSeats(roundTimeIdx, rockedSeats);
         messagingTemplate.convertAndSend("/topic/seats/map/" + roundTimeIdx, rockedSeats.getSeatIdxes());
