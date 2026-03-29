@@ -11,7 +11,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class SeatHoldService {
-
+    
     private final SeatStatusRepository seatStatusRepository;
     private static final long SEAT_STATUS_TTL_MILLISECONDS = 1000 * 60 * 10;
 
@@ -40,9 +40,16 @@ public class SeatHoldService {
     }
 
     // 특정 회차의 전체 좌석 상태 조회
-    public Map<Object, Object> getAllSeatStatusV2(Long roundTimeIdx) {
-        String key = createKey(roundTimeIdx);
 
+    /**
+     * 결제 전 임시 선택된 좌석 정보를 Redis에서 조회합니다.
+     *
+     * @param roundId 조회할 회차의 id
+     * @return 조회된 좌석 정보
+     */
+    public Map<Object, Object> getRockedSeats(Long roundId) {
+
+        String key = createKey(roundId);
         return seatStatusRepository.getAllSeatStatus(key);
     }
 
