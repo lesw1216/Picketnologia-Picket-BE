@@ -21,11 +21,11 @@ public class SeatStatusController {
 
     // 특정 회차의 현재 좌석 상태 전체 조회 (추가)
     @Operation(
-            summary = "실시간 좌석 조회",
-            description = "특정 회차의 현재 좌석 상태를 조회합니다."
+            summary = "실시간으로 선택된 특정 회차의 좌석 목록을 조회",
+            description = "사용자들이 결제전 선택한 좌석을 캐싱한 Redis에 접근하여 해당 회차의 선택된 좌석 목록을 조회합니다."
     )
     @GetMapping("/{roundTimeIdx}")
-    public ResponseEntity<BaseResponse<Map<Object, Object>>> getSeatStatusV2(@PathVariable Long roundTimeIdx) {
+    public ResponseEntity<BaseResponse<Map<Object, Object>>> getRockedSeat(@PathVariable Long roundTimeIdx) {
 
         Map<Object, Object> allSeatStatusV3 = seatStatusService.getAllSeatStatusV2(roundTimeIdx);
         return ResponseEntity.ok(BaseResponse.success(allSeatStatusV3));
