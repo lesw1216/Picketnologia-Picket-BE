@@ -27,8 +27,8 @@ public class SeatStatusController {
     @GetMapping("/{roundTimeIdx}")
     public ResponseEntity<BaseResponse<Map<Object, Object>>> getRockedSeat(@PathVariable Long roundTimeIdx) {
 
-        Map<Object, Object> allSeatStatusV3 = seatHoldService.getRockedSeats(roundTimeIdx);
-        return ResponseEntity.ok(BaseResponse.success(allSeatStatusV3));
+        Map<Object, Object> rockedSeats = seatHoldService.getRockedSeats(roundTimeIdx);
+        return ResponseEntity.ok(BaseResponse.success(rockedSeats));
 
     }
 
