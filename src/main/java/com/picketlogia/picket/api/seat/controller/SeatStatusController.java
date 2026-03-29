@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/seat-status")
+@RequestMapping("/rounds/{roundTimeId}/seats")
 public class SeatStatusController {
 
     private final SeatHoldService seatHoldService;
@@ -23,10 +23,10 @@ public class SeatStatusController {
             summary = "실시간으로 선택된 특정 회차의 좌석 목록을 조회",
             description = "사용자들이 결제전 선택한 좌석을 캐싱한 Redis에 접근하여 해당 회차의 선택된 좌석 목록을 조회합니다."
     )
-    @GetMapping("/{roundTimeIdx}")
-    public ResponseEntity<BaseResponse<Map<Object, Object>>> getRockedSeat(@PathVariable Long roundTimeIdx) {
+    @GetMapping
+    public ResponseEntity<BaseResponse<Map<Object, Object>>> getRockedSeat(@PathVariable Long roundTimeId) {
 
-        Map<Object, Object> rockedSeats = seatHoldService.getRockedSeats(roundTimeIdx);
+        Map<Object, Object> rockedSeats = seatHoldService.getRockedSeats(roundTimeId);
         return ResponseEntity.ok(BaseResponse.success(rockedSeats));
 
     }
@@ -38,7 +38,7 @@ public class SeatStatusController {
                     대표적으로 사용자가 좌석을 임시로 선택한 상황에서 이전 버튼을 클릭하는 경우에 사용됩니다.
                     """
     )
-    @DeleteMapping("/{roundTimeId}")
+    @DeleteMapping
     public void releaseSeats(@PathVariable Long roundTimeId, @RequestBody LockedSeats lockedSeats) {
 
         seatHoldService.releaseHeldSeats(roundTimeId, lockedSeats);
