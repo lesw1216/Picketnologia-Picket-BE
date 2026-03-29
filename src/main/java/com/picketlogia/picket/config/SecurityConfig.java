@@ -1,12 +1,15 @@
 package com.picketlogia.picket.config;
 
 import com.picketlogia.picket.api.user.model.enums.UserType;
-import com.picketlogia.picket.config.filter.JwtAuthFilter;
+import com.picketlogia.picket.config.filter.AccessTokenFilter;
 import com.picketlogia.picket.config.filter.LoginFilter;
+import com.picketlogia.picket.config.handler.LoginFailureHandler;
+import com.picketlogia.picket.config.handler.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,7 +28,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
     private final AuthenticationConfiguration configuration;
+    private final LoginFailureHandler loginFailureHandler;
+    private final LoginSuccessHandler loginSuccessHandler;
 
 
     @Bean
@@ -61,10 +67,20 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.logout(AbstractHttpConfigurer::disable);
 
-        http.addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAt(new LoginFilter(configuration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AccessTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(loginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public LoginFilter loginFilter(AuthenticationManager authenticationManager) {
+        return new LoginFilter(authenticationManager, loginSuccessHandler, loginFailureHandler);
     }
 
     @Bean

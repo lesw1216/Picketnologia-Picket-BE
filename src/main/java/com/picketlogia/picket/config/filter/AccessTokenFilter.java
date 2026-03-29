@@ -2,10 +2,9 @@ package com.picketlogia.picket.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picketlogia.picket.api.user.model.dto.UserAuth;
-import com.picketlogia.picket.api.user.model.dto.login.UserLoginResp;
 import com.picketlogia.picket.common.model.BaseResponse;
 import com.picketlogia.picket.common.model.BaseResponseStatus;
-import com.picketlogia.picket.utils.JwtUtil;
+import com.picketlogia.picket.api.token.model.AccessToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -14,8 +13,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,39 +23,39 @@ import java.io.IOException;
 import java.util.List;
 
 @Slf4j
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class AccessTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String jwt = null;
+        String accessToken = null;
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : request.getCookies()) {
 
                 // Cookie 리스트에 JWT 토큰이 있는지 확인
-                if (cookie.getName().equals(JwtUtil.TOKEN_NAME)) {
-                    jwt = cookie.getValue();
+                if (cookie.getName().equals(AccessToken.TOKEN_NAME)) {
+                    accessToken = cookie.getValue();
                     break;
                 }
             }
         }
 
-        if (jwt != null) {
+        if (accessToken != null) {
 
             // JWT 토큰에 저장된 Claims 얻기
             Claims claims;
 
             try {
 
-                claims = JwtUtil.getClaims(jwt);
+                claims = AccessToken.getClaims(accessToken);
 
                 if (claims != null) {
 
-                    String email = JwtUtil.getValue(claims, JwtUtil.EMAIL_NAME);
-                    Long id = Long.parseLong(JwtUtil.getValue(claims, JwtUtil.IDX_NAME));
-                    String role = JwtUtil.getValue(claims, JwtUtil.ROLE_NAME);
-                    String userType = JwtUtil.getValue(claims, JwtUtil.USER_TYPE_NAME);
+                    String email = AccessToken.getValue(claims, AccessToken.EMAIL_NAME);
+                    Long id = Long.parseLong(AccessToken.getValue(claims, AccessToken.IDX_NAME));
+                    String role = AccessToken.getValue(claims, AccessToken.ROLE_NAME);
+                    String userType = AccessToken.getValue(claims, AccessToken.USER_TYPE_NAME);
 
                     UserAuth authUser = UserAuth.builder()
                             .idx(id)
@@ -77,7 +74,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
 
             } catch (ExpiredJwtException e) {
-                Cookie cookie = new Cookie(JwtUtil.TOKEN_NAME, null);
+                Cookie cookie = new Cookie(AccessToken.TOKEN_NAME, null);
                 cookie.setHttpOnly(true);
                 cookie.setPath("/");
                 cookie.setMaxAge(0);

@@ -1,19 +1,19 @@
 package com.picketlogia.picket.api.user.controller;
 
+import com.picketlogia.picket.api.token.model.AccessToken;
+import com.picketlogia.picket.api.token.model.TokenCookieNames;
+import com.picketlogia.picket.api.token.model.TokenCookiePaths;
 import com.picketlogia.picket.api.user.model.dto.signup.SignupResp;
 import com.picketlogia.picket.api.user.model.dto.signup.UserRegister;
+import com.picketlogia.picket.api.user.service.LogoutService;
 import com.picketlogia.picket.api.user.service.SignupService;
 import com.picketlogia.picket.common.model.BaseResponse;
-import com.picketlogia.picket.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final SignupService signupService;
+    private final LogoutService logoutService;
 
     @Operation(
             summary = "회원가입 한다",
@@ -47,16 +48,23 @@ public class UserController {
             description = "쿠키 유효시간 정보 덮어씌워 쿠키를 삭제한다."
     )
     @PostMapping("/logout")
-    public ResponseEntity<BaseResponse<Object>> logout() {
+    public ResponseEntity<BaseResponse<Object>> logout(@CookieValue(value = TokenCookieNames.REFRESH) String refreshToken,
+                                                       @CookieValue(value = TokenCookieNames.ACCESS) String accessToken) {
 
-        ResponseCookie responseCookie = ResponseCookie.from(JwtUtil.TOKEN_NAME, null)
-                .httpOnly(true)
+        logoutService.logout(refreshToken, accessToken);
+
+        ResponseCookie deleteAccessTokenCookie = ResponseCookie.from(TokenCookieNames.ACCESS)
                 .maxAge(0)
-                .path("/")
+                .path(TokenCookiePaths.ACCESS)
+                .build();
+
+        ResponseCookie deleteRefreshTokenCookie = ResponseCookie.from(TokenCookieNames.REFRESH)
+                .maxAge(0)
+                .path(TokenCookiePaths.REFRESH)
                 .build();
 
         return ResponseEntity.ok()
-                .header("Set-Cookie", responseCookie.toString())
+                .header("Set-Cookie", deleteAccessTokenCookie.toString(), deleteRefreshTokenCookie.toString())
                 .body(BaseResponse.success(null));
     }
 }
