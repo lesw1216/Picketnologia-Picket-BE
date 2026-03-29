@@ -34,7 +34,7 @@ public class SeatStatusRepository {
      * @param key 회차 ID로 구성된 Hash의 key
      * @return 조회된 좌석 정보
      */
-    public Map<Object, Object> findRockedSeatsByRoundTime(String key) {
+    public Map<Object, Object> findHeldSeatsByRoundTime(String key) {
         return redisTemplate.opsForHash().entries(key);
     }
 

@@ -14,7 +14,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/rounds/{roundTimeId}/seats")
-public class SeatStatusController {
+public class SeatHoldController {
 
     private final SeatHoldService seatHoldService;
     private final SimpMessagingTemplate messagingTemplate;
@@ -24,10 +24,10 @@ public class SeatStatusController {
             description = "사용자들이 결제전 선택한 좌석을 캐싱한 Redis에 접근하여 해당 회차의 선택된 좌석 목록을 조회합니다."
     )
     @GetMapping
-    public ResponseEntity<BaseResponse<Map<Object, Object>>> getRockedSeat(@PathVariable Long roundTimeId) {
+    public ResponseEntity<BaseResponse<Map<Object, Object>>> getHeldSeats(@PathVariable Long roundTimeId) {
 
-        Map<Object, Object> rockedSeats = seatHoldService.getRockedSeats(roundTimeId);
-        return ResponseEntity.ok(BaseResponse.success(rockedSeats));
+        Map<Object, Object> heldSeats = seatHoldService.getHeldSeats(roundTimeId);
+        return ResponseEntity.ok(BaseResponse.success(heldSeats));
 
     }
 

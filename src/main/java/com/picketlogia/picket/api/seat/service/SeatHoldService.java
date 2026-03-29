@@ -45,18 +45,16 @@ public class SeatHoldService {
 
     }
 
-    // 특정 회차의 전체 좌석 상태 조회
-
     /**
      * 결제 전 임시 선택된 좌석 정보를 Redis에서 조회합니다.
      *
      * @param roundId 조회할 회차의 id
      * @return 조회된 좌석 정보
      */
-    public Map<Object, Object> getRockedSeats(Long roundId) {
+    public Map<Object, Object> getHeldSeats(Long roundId) {
 
         String key = createKey(roundId);
-        return seatStatusRepository.findRockedSeatsByRoundTime(key);
+        return seatStatusRepository.findHeldSeatsByRoundTime(key);
     }
 
     public void deleteSeatStatus(Long roundTimeIdx, String seatIdx) {
