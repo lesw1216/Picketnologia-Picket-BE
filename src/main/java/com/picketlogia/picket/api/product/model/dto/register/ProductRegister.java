@@ -2,8 +2,8 @@ package com.picketlogia.picket.api.product.model.dto.register;
 
 import com.picketlogia.picket.api.genre.model.Genre;
 import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.seat.model.dto.register.SeatGradeRegister;
-import com.picketlogia.picket.api.seat.model.dto.register.SeatRegister;
+import com.picketlogia.picket.api.seat.dto.register.SeatGradeRegister;
+import com.picketlogia.picket.api.seat.dto.register.SeatRegister;
 import com.picketlogia.picket.api.user.model.entity.User;
 import lombok.*;
 

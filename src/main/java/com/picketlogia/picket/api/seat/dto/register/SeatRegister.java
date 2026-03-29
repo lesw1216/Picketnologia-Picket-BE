@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.seat.model.dto.register;
+package com.picketlogia.picket.api.seat.dto.register;
 
 import com.picketlogia.picket.api.product.model.entity.Product;
 import com.picketlogia.picket.api.seat.model.Seat;

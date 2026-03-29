@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.service;
 
-import com.picketlogia.picket.api.seat.model.dto.LockedSeats;
+import com.picketlogia.picket.api.seat.dto.LockedSeats;
 import com.picketlogia.picket.api.seat.repository.SeatStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

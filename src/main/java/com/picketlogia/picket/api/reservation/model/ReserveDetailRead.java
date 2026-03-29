@@ -2,7 +2,7 @@ package com.picketlogia.picket.api.reservation.model;
 
 import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
-import com.picketlogia.picket.api.seat.model.dto.read.MoneyFormat;
+import com.picketlogia.picket.api.seat.dto.read.MoneyFormat;
 import lombok.Builder;
 import lombok.Getter;
 

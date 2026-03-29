@@ -1,11 +1,11 @@
 package com.picketlogia.picket.api.seat.service;
 
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
-import com.picketlogia.picket.api.seat.model.dto.read.SeatGradeRead;
-import com.picketlogia.picket.api.seat.model.dto.read.SeatInfo;
-import com.picketlogia.picket.api.seat.model.dto.read.SeatRead;
-import com.picketlogia.picket.api.seat.model.dto.register.SeatGradeRegister;
-import com.picketlogia.picket.api.seat.model.dto.register.SeatRegister;
+import com.picketlogia.picket.api.seat.dto.read.SeatGradeRead;
+import com.picketlogia.picket.api.seat.dto.read.SeatInfo;
+import com.picketlogia.picket.api.seat.dto.read.SeatRead;
+import com.picketlogia.picket.api.seat.dto.register.SeatGradeRegister;
+import com.picketlogia.picket.api.seat.dto.register.SeatRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

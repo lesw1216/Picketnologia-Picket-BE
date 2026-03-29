@@ -2,7 +2,7 @@ package com.picketlogia.picket.api.product.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.seat.model.dto.read.SeatGradeRead;
+import com.picketlogia.picket.api.seat.dto.read.SeatGradeRead;
 import com.picketlogia.picket.utils.LocalDateTimeSerializer;
 import lombok.Builder;
 import lombok.Getter;

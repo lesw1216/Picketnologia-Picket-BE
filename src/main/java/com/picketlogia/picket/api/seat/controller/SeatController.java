@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.controller;
 
-import com.picketlogia.picket.api.seat.model.dto.read.SeatInfo;
+import com.picketlogia.picket.api.seat.dto.read.SeatInfo;
 import com.picketlogia.picket.api.seat.service.SeatInfoService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
