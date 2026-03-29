@@ -10,7 +10,8 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class SeatStatusService {
+public class SeatHoldService {
+
     private final SeatStatusRepository seatStatusRepository;
     private static final long SEAT_STATUS_TTL_MILLISECONDS = 1000 * 60 * 10;
 

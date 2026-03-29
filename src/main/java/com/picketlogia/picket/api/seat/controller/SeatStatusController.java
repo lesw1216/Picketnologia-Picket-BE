@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.seat.controller;
 
 import com.picketlogia.picket.api.seat.model.dto.RockedSeats;
-import com.picketlogia.picket.api.seat.service.SeatStatusService;
+import com.picketlogia.picket.api.seat.service.SeatHoldService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.Map;
 @RequestMapping("/seat-status")
 public class SeatStatusController {
 
-    private final SeatStatusService seatStatusService;
+    private final SeatHoldService seatHoldService;
     private final SimpMessagingTemplate messagingTemplate;
 
     // 특정 회차의 현재 좌석 상태 전체 조회 (추가)
@@ -27,7 +27,7 @@ public class SeatStatusController {
     @GetMapping("/{roundTimeIdx}")
     public ResponseEntity<BaseResponse<Map<Object, Object>>> getRockedSeat(@PathVariable Long roundTimeIdx) {
 
-        Map<Object, Object> allSeatStatusV3 = seatStatusService.getAllSeatStatusV2(roundTimeIdx);
+        Map<Object, Object> allSeatStatusV3 = seatHoldService.getAllSeatStatusV2(roundTimeIdx);
         return ResponseEntity.ok(BaseResponse.success(allSeatStatusV3));
 
     }
@@ -40,7 +40,7 @@ public class SeatStatusController {
     @DeleteMapping("/{roundTimeIdx}")
     public void deleteRockedSeat(@PathVariable Long roundTimeIdx, @RequestBody RockedSeats rockedSeats) {
 
-        seatStatusService.deleteRockedSeats(roundTimeIdx, rockedSeats);
+        seatHoldService.deleteRockedSeats(roundTimeIdx, rockedSeats);
         messagingTemplate.convertAndSend("/topic/seats/map/" + roundTimeIdx, rockedSeats.getSeatIdxes());
     }
 }
