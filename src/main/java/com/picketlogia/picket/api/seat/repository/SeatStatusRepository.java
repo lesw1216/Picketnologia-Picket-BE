@@ -28,7 +28,13 @@ public class SeatStatusRepository {
         redisTemplate.expire(key, timeout, unit);
     }
 
-    public Map<Object, Object> getAllSeatStatus(String key) {
+    /**
+     * Redis에 저장된 임시 좌석 정보를 조회합니다.
+     *
+     * @param key 회차 ID로 구성된 Hash의 key
+     * @return 조회된 좌석 정보
+     */
+    public Map<Object, Object> findRockedSeatsByRoundTime(String key) {
         return redisTemplate.opsForHash().entries(key);
     }
 

@@ -50,7 +50,7 @@ public class SeatHoldService {
     public Map<Object, Object> getRockedSeats(Long roundId) {
 
         String key = createKey(roundId);
-        return seatStatusRepository.getAllSeatStatus(key);
+        return seatStatusRepository.findRockedSeatsByRoundTime(key);
     }
 
     public void deleteSeatStatus(Long roundTimeIdx, String seatIdx) {
