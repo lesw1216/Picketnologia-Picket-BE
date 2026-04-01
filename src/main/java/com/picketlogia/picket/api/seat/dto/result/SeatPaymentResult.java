@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.seat.dto.read;
+package com.picketlogia.picket.api.seat.dto.result;
 
 import com.picketlogia.picket.api.seat.model.Seat;
 import lombok.Builder;
@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class SeatReadForPayment {
+public class SeatPaymentResult {
     private Long price;
 
-    public static SeatReadForPayment from(Seat entity) {
-        return SeatReadForPayment.builder()
+    public static SeatPaymentResult from(Seat entity) {
+        return SeatPaymentResult.builder()
                 .price(entity.getSeatGrade().getPrice())
                 .build();
     }

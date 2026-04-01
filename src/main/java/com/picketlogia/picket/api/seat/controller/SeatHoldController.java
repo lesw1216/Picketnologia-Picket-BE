@@ -1,6 +1,7 @@
 package com.picketlogia.picket.api.seat.controller;
 
-import com.picketlogia.picket.api.seat.dto.LockedSeats;
+import com.picketlogia.picket.api.seat.dto.command.ReleaseHeldSeatsCommand;
+import com.picketlogia.picket.api.seat.dto.request.LockedSeatsRequest;
 import com.picketlogia.picket.api.seat.service.SeatHoldService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,9 +40,14 @@ public class SeatHoldController {
                     """
     )
     @DeleteMapping
-    public void releaseSeats(@PathVariable Long roundTimeId, @RequestBody LockedSeats lockedSeats) {
+    public void releaseSeats(@PathVariable Long roundTimeId, @RequestBody LockedSeatsRequest lockedSeatsRequest) {
 
-        seatHoldService.releaseHeldSeats(roundTimeId, lockedSeats);
-        messagingTemplate.convertAndSend("/topic/seats/map/" + roundTimeId, lockedSeats.getSeatIds());
+        seatHoldService.releaseHeldSeats(
+                ReleaseHeldSeatsCommand.builder()
+                        .roundTimeId(roundTimeId)
+                        .seatIds(lockedSeatsRequest.getSeatIds())
+                        .build()
+        );
+        messagingTemplate.convertAndSend("/topic/seats/map/" + roundTimeId, lockedSeatsRequest.getSeatIds());
     }
 }

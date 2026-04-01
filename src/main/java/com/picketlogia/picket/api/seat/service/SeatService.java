@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.service;
 
-import com.picketlogia.picket.api.seat.dto.register.SeatRegister;
+import com.picketlogia.picket.api.seat.dto.command.SeatSaveCommand;
 import com.picketlogia.picket.api.seat.model.Seat;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
 import com.picketlogia.picket.api.seat.repository.SeatRepository;
@@ -18,12 +18,12 @@ public class SeatService {
     private final SeatRepository seatRepository;
 
     // 저장
-    public void saveAll(Long productIdx, List<List<SeatRegister>> seatRegisters, Map<SeatGradeStatus, Long> seatGradeMap) {
-        List<Seat> seats = seatRegisters.stream()
+    public void saveAll(Long productIdx, List<List<SeatSaveCommand>> seatCommands, Map<SeatGradeStatus, Long> seatGradeMap) {
+        List<Seat> seats = seatCommands.stream()
                 .flatMap(Collection::stream)
-                .map(seat -> {
-                    Long gradeIdx = seatGradeMap.get(seat.getGrade());
-                    return seat.toEntity(gradeIdx, productIdx);
+                .map(command -> {
+                    Long gradeIdx = seatGradeMap.get(command.getGrade());
+                    return command.toEntity(gradeIdx, productIdx);
                 }).toList();
 
         seatRepository.saveAll(seats);

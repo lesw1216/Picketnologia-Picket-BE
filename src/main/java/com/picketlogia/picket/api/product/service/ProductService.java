@@ -9,10 +9,11 @@ import com.picketlogia.picket.api.product.model.entity.Product;
 import com.picketlogia.picket.api.product.repository.ProductQueryRepository;
 import com.picketlogia.picket.api.product.repository.ProductRepository;
 import com.picketlogia.picket.api.product.service.validator.BaseProductValidator;
+import com.picketlogia.picket.api.seat.dto.command.SeatGradeSaveCommand;
+import com.picketlogia.picket.api.seat.dto.command.SeatSaveCommand;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
 import com.picketlogia.picket.api.seat.service.SeatGradeService;
 import com.picketlogia.picket.api.seat.service.SeatService;
-import com.picketlogia.picket.api.sortoption.model.SortOption;
 import com.picketlogia.picket.common.exception.BaseException;
 import com.picketlogia.picket.common.model.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -61,8 +62,11 @@ public class ProductService {
             performanceRoundService.register(dto.getRoundOption(), product);
 
             // 좌석 정보 등록
-            Map<SeatGradeStatus, Long> seatGradeMap = seatGradeService.saveAll(product.getIdx(), dto.getSeatGrade());
-            seatService.saveAll(product.getIdx(), dto.getSeatMap(), seatGradeMap);
+            Map<SeatGradeStatus, Long> seatGradeMap = seatGradeService.saveAll(
+                    product.getIdx(),
+                    SeatGradeSaveCommand.fromList(dto.getSeatGrade())
+            );
+            seatService.saveAll(product.getIdx(), SeatSaveCommand.fromSeatMap(dto.getSeatMap()), seatGradeMap);
 
             // 이미지 업로드
             productImageService.upload(product, files);

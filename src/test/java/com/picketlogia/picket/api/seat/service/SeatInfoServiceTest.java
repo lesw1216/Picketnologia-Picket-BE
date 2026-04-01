@@ -2,9 +2,9 @@ package com.picketlogia.picket.api.seat.service;
 
 import com.picketlogia.picket.api.product.model.entity.Product;
 import com.picketlogia.picket.api.reservation.repository.ReserveDetailRepository;
-import com.picketlogia.picket.api.seat.dto.read.SeatGradeRead;
-import com.picketlogia.picket.api.seat.dto.read.SeatInfo;
-import com.picketlogia.picket.api.seat.dto.read.SeatRead;
+import com.picketlogia.picket.api.seat.dto.result.SeatGradeResult;
+import com.picketlogia.picket.api.seat.dto.result.SeatInfoResult;
+import com.picketlogia.picket.api.seat.dto.result.SeatResult;
 import com.picketlogia.picket.api.seat.model.Seat;
 import com.picketlogia.picket.api.seat.model.SeatGrade;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
@@ -47,9 +47,9 @@ class SeatInfoServiceTest {
         SeatGrade vipGrade = SeatGrade.builder().idx(10L).grade(SeatGradeStatus.VIP).price(150000L).product(product).build();
         SeatGrade rGrade = SeatGrade.builder().idx(11L).grade(SeatGradeStatus.R).price(120000L).product(product).build();
 
-        List<SeatGradeRead> seatGrades = List.of(
-                SeatGradeRead.from(vipGrade),
-                SeatGradeRead.from(rGrade)
+        List<SeatGradeResult> seatGrades = List.of(
+                SeatGradeResult.from(vipGrade),
+                SeatGradeResult.from(rGrade)
         );
 
         List<Seat> seats = List.of(
@@ -62,20 +62,20 @@ class SeatInfoServiceTest {
         given(seatRepository.findAllByProductWithSeatGrade(any(Product.class))).willReturn(seats);
         given(reserveDetailRepository.findReservedSeatIdxesByRoundTimeIdx(roundTimeIdx)).willReturn(Set.of(101L));
 
-        SeatInfo result = seatInfoService.findSeatInfo(productIdx, roundTimeIdx);
+        SeatInfoResult result = seatInfoService.findSeatInfo(productIdx, roundTimeIdx);
 
         assertThat(result.getSeatGrades()).hasSize(2);
         assertThat(result.getSeatMap()).hasSize(2);
 
         assertThat(result.getSeatMap().get(0))
-                .extracting(SeatRead::getName)
+                .extracting(SeatResult::getName)
                 .containsExactly("A1", "A2");
         assertThat(result.getSeatMap().get(0))
-                .extracting(SeatRead::getIsReserved)
+                .extracting(SeatResult::getIsReserved)
                 .containsExactly(false, true);
 
         assertThat(result.getSeatMap().get(1))
-                .extracting(SeatRead::getName)
+                .extracting(SeatResult::getName)
                 .containsExactly("B1");
         assertThat(result.getSeatMap().get(1).get(0).getIsReserved()).isFalse();
         assertThat(result.getSeatMap().get(0).get(0).getPriceInfo().getPriceFormat()).isEqualTo("150,000원");

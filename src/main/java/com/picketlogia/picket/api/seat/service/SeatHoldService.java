@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.service;
 
-import com.picketlogia.picket.api.seat.dto.LockedSeats;
+import com.picketlogia.picket.api.seat.dto.command.ReleaseHeldSeatsCommand;
 import com.picketlogia.picket.api.seat.repository.SeatStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,15 +32,14 @@ public class SeatHoldService {
     /**
      * 임시로 선택된 좌석들을 해제합니다.
      *
-     * @param roundTimeId 해제할 회차의 id
-     * @param lockedSeats 해제할 좌석 목록
+     * @param command 해제할 회차와 좌석 목록
      */
-    public void releaseHeldSeats(Long roundTimeId, LockedSeats lockedSeats) {
+    public void releaseHeldSeats(ReleaseHeldSeatsCommand command) {
 
-        String key = createKey(roundTimeId);
+        String key = createKey(command.getRoundTimeId());
         seatStatusRepository.deleteHeldSeatsByRoundIdAndSeatIds(
                 key,
-                lockedSeats.getSeatIds().stream().map(String::valueOf).toList()
+                command.getSeatIds().stream().map(String::valueOf).toList()
         );
 
     }

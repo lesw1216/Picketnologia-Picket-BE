@@ -2,11 +2,11 @@ package com.picketlogia.picket.api.seat.service;
 
 import com.picketlogia.picket.api.product.model.entity.Product;
 import com.picketlogia.picket.api.reservation.repository.ReserveDetailRepository;
-import com.picketlogia.picket.api.seat.dto.read.SeatGradeRead;
-import com.picketlogia.picket.api.seat.dto.read.SeatInfo;
-import com.picketlogia.picket.api.seat.dto.read.SeatRead;
 import com.picketlogia.picket.api.seat.model.Seat;
 import com.picketlogia.picket.api.seat.repository.SeatRepository;
+import com.picketlogia.picket.api.seat.dto.result.SeatGradeResult;
+import com.picketlogia.picket.api.seat.dto.result.SeatInfoResult;
+import com.picketlogia.picket.api.seat.dto.result.SeatResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,15 +30,15 @@ public class SeatInfoService {
      * @param roundTimeIdx 조회할 회차 IDX
      * @return 좌석 등급과 좌석 맵이 포함된 좌석 정보
      */
-    public SeatInfo findSeatInfo(Long productIdx, Long roundTimeIdx) {
+    public SeatInfoResult findSeatInfo(Long productIdx, Long roundTimeIdx) {
 
-        List<SeatGradeRead> seatGrades = seatGradeService.findAllByProduct(productIdx);
+        List<SeatGradeResult> seatGrades = seatGradeService.findAllByProduct(productIdx);
         List<Seat> seats = seatRepository.findAllByProductWithSeatGrade(Product.builder().idx(productIdx).build());
         Set<Long> reservedSeatIds = reserveDetailRepository.findReservedSeatIdxesByRoundTimeIdx(roundTimeIdx);
 
-        List<List<SeatRead>> seatMap = buildSeatMap(seats, reservedSeatIds);
+        List<List<SeatResult>> seatMap = buildSeatMap(seats, reservedSeatIds);
 
-        return SeatInfo.from(seatGrades, seatMap);
+        return SeatInfoResult.from(seatGrades, seatMap);
     }
 
     /**
@@ -48,12 +48,12 @@ public class SeatInfoService {
      * @param reservedSeatIds 예약된 좌석 IDX 집합
      * @return 행 단위로 그룹핑된 좌석 맵
      */
-    private List<List<SeatRead>> buildSeatMap(List<Seat> seats, Set<Long> reservedSeatIds) {
+    private List<List<SeatResult>> buildSeatMap(List<Seat> seats, Set<Long> reservedSeatIds) {
 
-        LinkedHashMap<Character, List<SeatRead>> seatMapByRow = seats.stream()
-                .map(seat -> SeatRead.from(seat, reservedSeatIds.contains(seat.getIdx())))
+        LinkedHashMap<Character, List<SeatResult>> seatMapByRow = seats.stream()
+                .map(seat -> SeatResult.from(seat, reservedSeatIds.contains(seat.getIdx())))
                 .collect(Collectors.groupingBy(
-                        seatRead -> seatRead.getName().charAt(0),
+                        seatResult -> seatResult.getName().charAt(0),
                         LinkedHashMap::new,
                         Collectors.toList()
                 ));

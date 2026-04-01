@@ -1,8 +1,8 @@
 package com.picketlogia.picket.api.reservation.model;
 
 import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
+import com.picketlogia.picket.api.seat.dto.response.PriceResponse;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
-import com.picketlogia.picket.api.seat.dto.read.MoneyFormat;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ public class ReserveDetailRead {
     private Long idx;
     private SeatGradeStatus grade;
     private String seatName;
-    private MoneyFormat price;
+    private PriceResponse price;
     private LocalTime roundTime;
     private LocalDate roundDate;
 
@@ -24,7 +24,7 @@ public class ReserveDetailRead {
                 .idx(entity.getIdx())
                 .grade(entity.getSeat().getSeatGrade().getGrade())
                 .price(
-                        MoneyFormat.from(entity.getSeat().getSeatGrade().getPrice())
+                        PriceResponse.from(entity.getSeat().getSeatGrade().getPrice())
                 )
                 .seatName(entity.getSeat().getName())
                 .roundDate(entity.getRoundTime().getRoundDate().getDate())

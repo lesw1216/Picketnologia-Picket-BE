@@ -2,7 +2,8 @@ package com.picketlogia.picket.api.product.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.seat.dto.read.SeatGradeRead;
+import com.picketlogia.picket.api.seat.dto.response.SeatGradeResponse;
+import com.picketlogia.picket.api.seat.dto.result.SeatGradeResult;
 import com.picketlogia.picket.utils.LocalDateTimeSerializer;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class ProductReadForDetail {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime openDateFormat;
     private LocalDateTime openDate;
-    private List<SeatGradeRead> seatGrades;
+    private List<SeatGradeResponse> seatGrades;
 
     public static ProductReadForDetail from(Product product) {
         return ProductReadForDetail.builder()
@@ -50,7 +51,7 @@ public class ProductReadForDetail {
                 .posterUrl(product.getProductImage().getFileName())
                 .seatGrades(
                         product.getSeatGrades().stream().map(
-                                SeatGradeRead::from
+                                seatGrade -> SeatGradeResponse.from(SeatGradeResult.from(seatGrade))
                         ).toList()
                 )
                 .build();

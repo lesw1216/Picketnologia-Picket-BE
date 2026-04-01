@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.seat.dto;
+package com.picketlogia.picket.api.seat.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +7,6 @@ import java.util.List;
 
 @Getter
 @Builder
-public class LockedSeats {
+public class LockedSeatsRequest {
     private List<Long> seatIds;
 }
