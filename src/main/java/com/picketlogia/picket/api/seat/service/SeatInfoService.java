@@ -5,17 +5,13 @@ import com.picketlogia.picket.api.reservation.repository.ReserveDetailRepository
 import com.picketlogia.picket.api.seat.dto.read.SeatGradeRead;
 import com.picketlogia.picket.api.seat.dto.read.SeatInfo;
 import com.picketlogia.picket.api.seat.dto.read.SeatRead;
-import com.picketlogia.picket.api.seat.dto.register.SeatGradeRegister;
-import com.picketlogia.picket.api.seat.dto.register.SeatRegister;
 import com.picketlogia.picket.api.seat.model.Seat;
-import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
 import com.picketlogia.picket.api.seat.repository.SeatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,15 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SeatInfoService {
 
-    private final SeatService seatService;
     private final SeatRepository seatRepository;
     private final SeatGradeService seatGradeService;
     private final ReserveDetailRepository reserveDetailRepository;
-
-    public void save(Long productIdx, List<SeatGradeRegister> seatGradeRegisters, List<List<SeatRegister>> seatRegisters) {
-        Map<SeatGradeStatus, Long> seatGradeMap = seatGradeService.saveAll(productIdx, seatGradeRegisters);
-        seatService.saveAll(productIdx, seatRegisters, seatGradeMap);
-    }
 
     /**
      * 상품과 회차 기준으로 좌석 등급, 좌석 목록, 예약 좌석 정보를 조합해 좌석 정보를 조회합니다.
