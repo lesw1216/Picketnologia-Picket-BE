@@ -2,7 +2,7 @@ package com.picketlogia.picket.api.reservation.model;
 
 import com.picketlogia.picket.api.reservation.model.entity.Reservation;
 import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
-import com.picketlogia.picket.api.seat.model.dto.read.MoneyFormat;
+import com.picketlogia.picket.api.seat.dto.response.PriceResponse;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class ReservationReadForDetail {
 
     private Long idx;
-    private MoneyFormat totalPrice;
+    private PriceResponse totalPrice;
     private String paymentIdx;
     private String productName;
     private LocalDateTime paidAt;
@@ -24,7 +24,7 @@ public class ReservationReadForDetail {
         return ReservationReadForDetail.builder()
                 .idx(entity.getIdx())
                 .totalPrice(
-                        MoneyFormat.from(entity.getPrice())
+                        PriceResponse.from(entity.getPrice())
                 )
                 .paymentIdx(entity.getPaymentIdx())
                 .paidAt(entity.getPaidAt())

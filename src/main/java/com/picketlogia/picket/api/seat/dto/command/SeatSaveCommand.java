@@ -1,15 +1,18 @@
-package com.picketlogia.picket.api.seat.model.dto.register;
+package com.picketlogia.picket.api.seat.dto.command;
 
 import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.seat.dto.request.SeatRequest;
 import com.picketlogia.picket.api.seat.model.Seat;
 import com.picketlogia.picket.api.seat.model.SeatGrade;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
-public class SeatRegister {
+public class SeatSaveCommand {
 
     private String name;
     private SeatGradeStatus grade;
@@ -28,5 +31,16 @@ public class SeatRegister {
                                 .build()
                 )
                 .build();
+    }
+
+    public static List<List<SeatSaveCommand>> fromSeatMap(List<List<SeatRequest>> seatRequests) {
+        return seatRequests.stream()
+                .map(row -> row.stream()
+                        .map(request -> SeatSaveCommand.builder()
+                                .name(request.getName())
+                                .grade(request.getGrade())
+                                .build())
+                        .toList())
+                .toList();
     }
 }

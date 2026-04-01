@@ -9,8 +9,11 @@ import com.picketlogia.picket.api.product.model.entity.Product;
 import com.picketlogia.picket.api.product.repository.ProductQueryRepository;
 import com.picketlogia.picket.api.product.repository.ProductRepository;
 import com.picketlogia.picket.api.product.service.validator.BaseProductValidator;
-import com.picketlogia.picket.api.seat.service.SeatInfoService;
-import com.picketlogia.picket.api.sortoption.model.SortOption;
+import com.picketlogia.picket.api.seat.dto.command.SeatGradeSaveCommand;
+import com.picketlogia.picket.api.seat.dto.command.SeatSaveCommand;
+import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
+import com.picketlogia.picket.api.seat.service.SeatGradeService;
+import com.picketlogia.picket.api.seat.service.SeatService;
 import com.picketlogia.picket.common.exception.BaseException;
 import com.picketlogia.picket.common.model.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -35,7 +39,8 @@ public class ProductService {
     private final ProductImageService productImageService;
     private final GenreService genreService;
     private final PerformanceRoundService performanceRoundService;
-    private final SeatInfoService seatInfoService;
+    private final SeatGradeService seatGradeService;
+    private final SeatService seatService;
     private final ProductQueryRepository productQueryRepository;
     private final List<BaseProductValidator> productValidators;
 
@@ -57,7 +62,11 @@ public class ProductService {
             performanceRoundService.register(dto.getRoundOption(), product);
 
             // 좌석 정보 등록
-            seatInfoService.save(product.getIdx(), dto.getSeatGrade(), dto.getSeatMap());
+            Map<SeatGradeStatus, Long> seatGradeMap = seatGradeService.saveAll(
+                    product.getIdx(),
+                    SeatGradeSaveCommand.fromList(dto.getSeatGrade())
+            );
+            seatService.saveAll(product.getIdx(), SeatSaveCommand.fromSeatMap(dto.getSeatMap()), seatGradeMap);
 
             // 이미지 업로드
             productImageService.upload(product, files);

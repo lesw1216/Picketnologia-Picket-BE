@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.service;
 
-import com.picketlogia.picket.api.seat.model.dto.RockedSeats;
+import com.picketlogia.picket.api.seat.dto.command.ReleaseHeldSeatsCommand;
 import com.picketlogia.picket.api.seat.repository.SeatStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,8 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class SeatStatusService {
+public class SeatHoldService {
+    
     private final SeatStatusRepository seatStatusRepository;
     private static final long SEAT_STATUS_TTL_MILLISECONDS = 1000 * 60 * 10;
 
@@ -28,21 +29,31 @@ public class SeatStatusService {
 //        seatStatusRepository.expire(key, SEAT_STATUS_TTL_MINUTES, TimeUnit.MINUTES);
     }
 
-    public void deleteRockedSeats(Long roundTimeIdx, RockedSeats rockedSeats) {
+    /**
+     * 임시로 선택된 좌석들을 해제합니다.
+     *
+     * @param command 해제할 회차와 좌석 목록
+     */
+    public void releaseHeldSeats(ReleaseHeldSeatsCommand command) {
 
-        String key = createKey(roundTimeIdx);
-        seatStatusRepository.deleteAllRockedSeatsByRoundTime(
+        String key = createKey(command.getRoundTimeId());
+        seatStatusRepository.deleteHeldSeatsByRoundIdAndSeatIds(
                 key,
-                rockedSeats.getSeatIdxes().stream().map(String::valueOf).toList()
+                command.getSeatIds().stream().map(String::valueOf).toList()
         );
 
     }
 
-    // 특정 회차의 전체 좌석 상태 조회
-    public Map<Object, Object> getAllSeatStatusV2(Long roundTimeIdx) {
-        String key = createKey(roundTimeIdx);
+    /**
+     * 결제 전 임시 선택된 좌석 정보를 Redis에서 조회합니다.
+     *
+     * @param roundId 조회할 회차의 id
+     * @return 조회된 좌석 정보
+     */
+    public Map<Object, Object> getHeldSeats(Long roundId) {
 
-        return seatStatusRepository.getAllSeatStatus(key);
+        String key = createKey(roundId);
+        return seatStatusRepository.findHeldSeatsByRoundTime(key);
     }
 
     public void deleteSeatStatus(Long roundTimeIdx, String seatIdx) {

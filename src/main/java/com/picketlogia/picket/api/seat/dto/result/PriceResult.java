@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.seat.model.dto.read;
+package com.picketlogia.picket.api.seat.dto.result;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,13 +7,13 @@ import java.text.DecimalFormat;
 
 @Getter
 @Builder
-public class MoneyFormat {
+public class PriceResult {
 
     private Long price;
     private String priceFormat;
 
-    public static MoneyFormat from(Long price) {
-        return MoneyFormat.builder()
+    public static PriceResult from(Long price) {
+        return PriceResult.builder()
                 .price(price)
                 .priceFormat(formatToMoney(price))
                 .build();

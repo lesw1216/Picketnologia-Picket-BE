@@ -28,7 +28,13 @@ public class SeatStatusRepository {
         redisTemplate.expire(key, timeout, unit);
     }
 
-    public Map<Object, Object> getAllSeatStatus(String key) {
+    /**
+     * Redis에 저장된 임시 좌석 정보를 조회합니다.
+     *
+     * @param key 회차 ID로 구성된 Hash의 key
+     * @return 조회된 좌석 정보
+     */
+    public Map<Object, Object> findHeldSeatsByRoundTime(String key) {
         return redisTemplate.opsForHash().entries(key);
     }
 
@@ -54,12 +60,12 @@ public class SeatStatusRepository {
     }
 
     /**
-     * 특정 회차의 특정 유저가 웹소켓이 연결한 상태로 잠근 좌석을 삭제
+     * Redis의 hash에 저장된 회차의 좌석 정보들을 삭제합니다.
      *
-     * @param key       해시맵으로 구성된 value을 가지는 키
-     * @param seatIdxes 삭제할 좌석 idx
+     * @param key     삭제할 회차로 구성된 hash의 key
+     * @param seatIds 삭제할 좌석 ID 목록
      */
-    public void deleteAllRockedSeatsByRoundTime(String key, List<String> seatIdxes) {
-        redisTemplate.opsForHash().delete(key, seatIdxes.toArray());
+    public void deleteHeldSeatsByRoundIdAndSeatIds(String key, List<String> seatIds) {
+        redisTemplate.opsForHash().delete(key, seatIds.toArray());
     }
 }

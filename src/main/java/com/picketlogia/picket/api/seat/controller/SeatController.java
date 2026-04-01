@@ -1,6 +1,7 @@
 package com.picketlogia.picket.api.seat.controller;
 
-import com.picketlogia.picket.api.seat.model.dto.read.SeatInfo;
+import com.picketlogia.picket.api.seat.dto.response.SeatInfoResponse;
+import com.picketlogia.picket.api.seat.dto.result.SeatInfoResult;
 import com.picketlogia.picket.api.seat.service.SeatInfoService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,12 +26,12 @@ public class SeatController {
             description = "조건에 맞는 공연의 좌석 정보를 조회한다."
     )
     @GetMapping
-    public ResponseEntity<BaseResponse<SeatInfo>> getSeatInfo(@RequestParam("product") Long productIdx,
-                                                              @RequestParam("roundTime") Long roundTimeIdx) {
+    public ResponseEntity<BaseResponse<SeatInfoResponse>> getSeatInfo(@RequestParam("product") Long productIdx,
+                                                                      @RequestParam("roundTime") Long roundTimeIdx) {
 
-        SeatInfo findSeatInfo = seatInfoService.findSeatInfo(productIdx, roundTimeIdx);
+        SeatInfoResult seatInfoResult = seatInfoService.findSeatInfo(productIdx, roundTimeIdx);
 
-        return ResponseEntity.ok(BaseResponse.success(findSeatInfo));
+        return ResponseEntity.ok(BaseResponse.success(SeatInfoResponse.from(seatInfoResult)));
 
     }
 }
