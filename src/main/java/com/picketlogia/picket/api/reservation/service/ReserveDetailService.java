@@ -1,6 +1,5 @@
 package com.picketlogia.picket.api.reservation.service;
 
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
 import com.picketlogia.picket.api.reservation.model.ReserveDetailRegister;
 import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
 import com.picketlogia.picket.api.reservation.repository.ReserveDetailRepository;
@@ -23,18 +22,5 @@ public class ReserveDetailService {
     public List<Long> register(ReserveDetailRegister reserveDetailRegister) {
         List<ReserveDetail> reserveDetails = reserveDetailRepository.saveAll(reserveDetailRegister.toEntities());
         return reserveDetails.stream().map(ReserveDetail::getIdx).toList();
-    }
-
-    /**
-     * 해당 회차에 예매된 좌석의 idx 목록을 불러온다.
-     *
-     * @param roundTimeIdx
-     * @return
-     */
-    public List<Long> findReservedSeats(Long roundTimeIdx) {
-        List<ReserveDetail> reservedDetails =
-                reserveDetailRepository.findAllByRoundTime(RoundTime.builder().idx(roundTimeIdx).build());
-
-        return reservedDetails.stream().map(reserveDetail -> reserveDetail.getSeat().getIdx()).toList();
     }
 }

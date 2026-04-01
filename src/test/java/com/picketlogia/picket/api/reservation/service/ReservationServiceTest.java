@@ -83,7 +83,7 @@ class ReservationServiceTest {
                                         ).build()
                         )
                         .roundTime(
-                                RoundTime.builder().idx(1L).times(roundTime)
+                                RoundTime.builder().idx(1L).time(roundTime)
                                         .roundDate(
                                                 RoundDate.builder().idx(1L).date(roundDate).build()
                                         ).build()
