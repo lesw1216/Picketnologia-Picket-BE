@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.genre.controller;
 
-import com.picketlogia.picket.api.genre.model.GenreList;
+import com.picketlogia.picket.api.genre.dto.result.GenreListResponse;
 import com.picketlogia.picket.api.genre.service.GenreService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +26,7 @@ public class GenreController {
     )
     @GetMapping()
     public ResponseEntity<BaseResponse<Object>> getList() {
-        GenreList genres = genreService.findAll();
+        GenreListResponse genres = genreService.findAll();
 
         return ResponseEntity.ok(BaseResponse.success(genres));
     }
