@@ -1,10 +1,10 @@
 package com.picketlogia.picket.api.product.service;
 
-import com.picketlogia.picket.api.product.model.dto.register.PerformanceRoundRegister;
-import com.picketlogia.picket.api.product.model.dto.register.PerformanceRoundRegister.SelectedDay;
-import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.product.model.entity.RoundDate;
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.product.dto.request.PerformanceRoundRequest;
+import com.picketlogia.picket.api.product.dto.request.PerformanceRoundRequest.SelectedDay;
+import com.picketlogia.picket.api.product.model.Product;
+import com.picketlogia.picket.api.product.model.RoundDate;
+import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.product.repository.RoundDateRepository;
 import com.picketlogia.picket.api.product.repository.RoundTimeRepository;
 import com.picketlogia.picket.common.exception.BaseException;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static com.picketlogia.picket.api.product.model.dto.register.PerformanceRoundRegister.ManualRound;
+import static com.picketlogia.picket.api.product.dto.request.PerformanceRoundRequest.ManualRound;
 
 @Slf4j
 @Service
@@ -53,7 +53,7 @@ public class PerformanceRoundService {
      * @param roundOption 회차 등록 옵션
      * @param product     회차에 맞는 상품
      */
-    public void register(PerformanceRoundRegister roundOption, Product product) {
+    public void register(PerformanceRoundRequest roundOption, Product product) {
 
         LocalDate date = roundOption.getStartDate();
 
@@ -78,7 +78,7 @@ public class PerformanceRoundService {
      * @param date        특정 기간 내의 날짜
      * @param product     회차에 맞는 상품
      */
-    private void registerRoundsForPeriod(PerformanceRoundRegister roundOption, LocalDate date, Product product) {
+    private void registerRoundsForPeriod(PerformanceRoundRequest roundOption, LocalDate date, Product product) {
         DayOfWeek currentDay = date.getDayOfWeek();
 
         // 등록 요일이 담긴 객체 배열에서 현재 날짜의 요일이 있는지 체크
@@ -106,7 +106,7 @@ public class PerformanceRoundService {
      * @param currentDay  현재 날짜의 요일
      * @return <code>List<<code>LocalTime</code>></code> 회차 시간 리스트
      */
-    private List<LocalTime> getRoundTimes(PerformanceRoundRegister roundOption, DayOfWeek currentDay) {
+    private List<LocalTime> getRoundTimes(PerformanceRoundRequest roundOption, DayOfWeek currentDay) {
 
         // 요일별로 시간이 다르면
         boolean isNotSameTime = roundOption.getSameTimes().isEmpty();

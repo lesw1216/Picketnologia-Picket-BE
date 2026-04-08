@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.product.controller;
 
-import com.picketlogia.picket.api.product.model.ProductReadForList;
-import com.picketlogia.picket.api.product.model.ProductReadForUpcoming;
+import com.picketlogia.picket.api.product.dto.result.SalesProductResult;
+import com.picketlogia.picket.api.product.dto.result.UpcomingProductResult;
 import com.picketlogia.picket.api.product.service.ProductService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,11 +28,10 @@ public class ProductFilterForHomeController {
             description = "장르별 5위권 랭킹 공연 목록을 조회합니다. 랭킹의 기준은 판매순입니다."
     )
     @GetMapping("/best-sellers")
-    public ResponseEntity<BaseResponse<List<ProductReadForList>>> getBestSellers(@RequestParam String genre) {
+    public ResponseEntity<BaseResponse<List<SalesProductResult>>> getBestSellers(@RequestParam String genre) {
 
-        List<ProductReadForList> top10Products = productService.findTop5ByGenreOrderBySalesCount(genre);
+        List<SalesProductResult> top10Products = productService.findTop5ByGenreOrderBySalesCount(genre);
         return ResponseEntity.ok(BaseResponse.success(top10Products));
-
     }
 
     @Operation(
@@ -40,10 +39,9 @@ public class ProductFilterForHomeController {
             description = "장르 구분 없이 오픈 예정일이 빠른 순으로 5개의 공연을 조회합니다."
     )
     @GetMapping("/upcoming")
-    public ResponseEntity<BaseResponse<List<ProductReadForUpcoming>>> getOpenProductsTop5() {
+    public ResponseEntity<BaseResponse<List<UpcomingProductResult>>> getOpenProductsTop5() {
 
-        List<ProductReadForUpcoming> upcomingProducts = productService.findUpcomingProducts();
+        List<UpcomingProductResult> upcomingProducts = productService.findUpcomingProducts();
         return ResponseEntity.ok(BaseResponse.success(upcomingProducts));
-
     }
 }

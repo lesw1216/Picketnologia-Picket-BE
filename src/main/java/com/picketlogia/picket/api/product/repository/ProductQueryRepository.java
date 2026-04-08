@@ -1,8 +1,8 @@
 package com.picketlogia.picket.api.product.repository;
 
-import com.picketlogia.picket.api.product.model.ProductSearchDto;
-import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.product.model.entity.QProduct;
+import com.picketlogia.picket.api.product.dto.request.ProductSearchRequest;
+import com.picketlogia.picket.api.product.model.Product;
+import com.picketlogia.picket.api.product.model.QProduct;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public class ProductQueryRepository {
+
     private final JPAQueryFactory queryFactory;
     private final QProduct product;
 
@@ -21,7 +22,7 @@ public class ProductQueryRepository {
         this.product = QProduct.product;
     }
 
-    public List<Product> searchAndSort(ProductSearchDto dto, String sort) {
+    public List<Product> searchAndSort(ProductSearchRequest dto, String sort) {
         JPAQuery<Product> query = queryFactory
                 .selectFrom(product)
                 .leftJoin(product.productImage).fetchJoin() // 검색할때 이미지 조회 N+1문제 발생해 fetchjoin 추가

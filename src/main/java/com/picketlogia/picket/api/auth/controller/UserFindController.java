@@ -1,8 +1,8 @@
 package com.picketlogia.picket.api.auth.controller;
 
-import com.picketlogia.picket.api.auth.model.FindEmailDto;
-import com.picketlogia.picket.api.auth.model.FindEmailResp;
-import com.picketlogia.picket.api.auth.model.ResetPasswordDto;
+import com.picketlogia.picket.api.auth.dto.request.FindEmailRequest;
+import com.picketlogia.picket.api.auth.dto.response.FindEmailResponse;
+import com.picketlogia.picket.api.auth.dto.request.ResetPasswordRequest;
 import com.picketlogia.picket.api.auth.service.UserFindService;
 import com.picketlogia.picket.api.auth.service.mail.PasswordResetMailService;
 import com.picketlogia.picket.common.model.BaseResponse;
@@ -33,9 +33,9 @@ public class UserFindController {
             description = "전화번호와 이름을 입력하면 아이디를 찾아줍니다."
     )
     @PostMapping("/find-email")
-    public ResponseEntity<BaseResponse<Object>> findEmail(@RequestBody FindEmailDto dto) {
+    public ResponseEntity<BaseResponse<Object>> findEmail(@RequestBody FindEmailRequest dto) {
 
-        FindEmailResp findUser = userFindService.findEmailByNameAndPhoneNumber(dto);
+        FindEmailResponse findUser = userFindService.findEmailByNameAndPhoneNumber(dto);
 
         return ResponseEntity.ok(BaseResponse.success(findUser));
     }
@@ -49,7 +49,7 @@ public class UserFindController {
             description = "이메일 주소 입력시 비밀번호 재설정 링크 발송"
     )
     @PostMapping("/find-password/link")
-    public ResponseEntity<BaseResponse<Object>> sendAuthCodeForResetPassword(@RequestBody ResetPasswordDto emailForPwdRest) {
+    public ResponseEntity<BaseResponse<Object>> sendAuthCodeForResetPassword(@RequestBody ResetPasswordRequest emailForPwdRest) {
         String email = emailForPwdRest.getEmail();
         passwordResetMailService.sendToEmail(email);
 
@@ -65,7 +65,7 @@ public class UserFindController {
             description = "이메일로 온 비밀번호 재성정 요청 수행"
     )
     @PostMapping("/reset-password")
-    public ResponseEntity<BaseResponse<Object>> resetPassword(@RequestBody ResetPasswordDto dto) {
+    public ResponseEntity<BaseResponse<Object>> resetPassword(@RequestBody ResetPasswordRequest dto) {
         userFindService.resetPassword(dto);
 
         return ResponseEntity.ok(BaseResponse.success("재설정 성공"));

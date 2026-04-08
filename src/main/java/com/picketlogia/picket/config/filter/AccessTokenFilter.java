@@ -1,7 +1,7 @@
 package com.picketlogia.picket.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picketlogia.picket.api.user.model.dto.UserAuth;
+import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
 import com.picketlogia.picket.common.model.BaseResponse;
 import com.picketlogia.picket.common.model.BaseResponseStatus;
 import com.picketlogia.picket.api.token.model.AccessToken;
@@ -57,7 +57,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
                     String role = AccessToken.getValue(claims, AccessToken.ROLE_NAME);
                     String userType = AccessToken.getValue(claims, AccessToken.USER_TYPE_NAME);
 
-                    UserAuth authUser = UserAuth.builder()
+                    UserAuthRequest authUser = UserAuthRequest.builder()
                             .idx(id)
                             .email(email)
                             .build();

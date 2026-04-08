@@ -1,8 +1,8 @@
 package com.picketlogia.picket.api.auth.service;
 
-import com.picketlogia.picket.api.auth.model.FindEmailDto;
-import com.picketlogia.picket.api.auth.model.FindEmailResp;
-import com.picketlogia.picket.api.auth.model.ResetPasswordDto;
+import com.picketlogia.picket.api.auth.dto.request.FindEmailRequest;
+import com.picketlogia.picket.api.auth.dto.response.FindEmailResponse;
+import com.picketlogia.picket.api.auth.dto.request.ResetPasswordRequest;
 import com.picketlogia.picket.api.user.model.entity.User;
 import com.picketlogia.picket.api.user.repository.UserRepository;
 import com.picketlogia.picket.api.user.service.PasswordService;
@@ -20,24 +20,26 @@ public class UserFindService {
     private final AuthService authService;
     private final PasswordService passwordService;
 
-    public FindEmailResp findEmailByNameAndPhoneNumber(FindEmailDto dto) {
-        Optional<User> result = userRepository.findByNameAndPhoneNumber(dto.getName(), dto.getPhoneNumber());
+    public FindEmailResponse findEmailByNameAndPhoneNumber(FindEmailRequest findEmail) {
+
+        Optional<User> result = userRepository.findByNameAndPhoneNumber(findEmail.getName(), findEmail.getPhoneNumber());
 
         if (result.isPresent()) {
             User findUser = result.get();
-            return FindEmailResp.from(findUser);
+            return FindEmailResponse.from(findUser);
         }
 
         return null;
     }
 
     @Transactional
-    public void resetPassword(ResetPasswordDto dto) {
-        String newPassword = dto.getPassword();
+    public void resetPassword(ResetPasswordRequest resetPassword) {
 
-        String token = dto.getToken();
+        String newPassword = resetPassword.getPassword();
 
-        ResetPasswordDto findEmailDto = authService.verifyUserPasswordReset(token);
+        String token = resetPassword.getToken();
+
+        ResetPasswordRequest findEmailDto = authService.verifyUserPasswordReset(token);
 
         Optional<User> result = userRepository.findByEmail(findEmailDto.getEmail());
 

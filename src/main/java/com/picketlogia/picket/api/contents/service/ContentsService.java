@@ -1,10 +1,8 @@
 package com.picketlogia.picket.api.contents.service;
 
-import com.picketlogia.picket.api.contents.model.ContentsResp;
-import com.picketlogia.picket.api.genre.model.GenreRead;
-import com.picketlogia.picket.api.genre.service.GenreService;
-import com.picketlogia.picket.api.product.model.ProductReadForUpcoming;
-import com.picketlogia.picket.api.product.model.ProductListByPage;
+import com.picketlogia.picket.api.contents.dto.ContentsResponse;
+import com.picketlogia.picket.api.product.dto.result.UpcomingProductResult;
+import com.picketlogia.picket.api.product.dto.result.ProductsResult;
 import com.picketlogia.picket.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,14 +15,14 @@ public class ContentsService {
 
     private final ProductService productService;
 
-    public ContentsResp findContents(String genre) {
+    public ContentsResponse findContents(String genre) {
 
-        ProductListByPage findProducts = productService.findAllByGenre(genre);
+        ProductsResult findProducts = productService.findAllByGenre(genre);
 
-        List<ProductReadForUpcoming> upcomingProducts =
+        List<UpcomingProductResult> upcomingProducts =
                 productService.findUpcomingProductsByGenreCode(genre);
 
-        return ContentsResp.from(
+        return ContentsResponse.from(
                 findProducts.getProducts(),
                 findProducts.getCurrentPage(),
                 findProducts.getTotalPage(),

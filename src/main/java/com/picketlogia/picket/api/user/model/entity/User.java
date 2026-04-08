@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.user.model.entity;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.user.model.enums.Gender;
 import com.picketlogia.picket.api.user.model.enums.UserType;
 import com.picketlogia.picket.common.model.BaseEntity;

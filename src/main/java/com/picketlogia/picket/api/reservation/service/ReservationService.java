@@ -1,15 +1,15 @@
 package com.picketlogia.picket.api.reservation.service;
 
-import com.picketlogia.picket.api.payments.model.PaymentStatusResponse;
-import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.payments.dto.result.PaymentStatusResult;
+import com.picketlogia.picket.api.product.model.Product;
+import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
-import com.picketlogia.picket.api.reservation.model.ReservationCheck;
-import com.picketlogia.picket.api.reservation.model.ReservationRegister;
-import com.picketlogia.picket.api.reservation.model.UpdateReservationReq;
-import com.picketlogia.picket.api.reservation.model.dto.ReservationListDto;
-import com.picketlogia.picket.api.reservation.model.entity.Reservation;
-import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
+import com.picketlogia.picket.api.reservation.dto.request.ReservationCheckRequest;
+import com.picketlogia.picket.api.reservation.dto.command.ReservationRegisterCommand;
+import com.picketlogia.picket.api.reservation.dto.request.UpdateReservationRequest;
+import com.picketlogia.picket.api.reservation.dto.result.ReservationResult;
+import com.picketlogia.picket.api.reservation.model.Reservation;
+import com.picketlogia.picket.api.reservation.model.ReserveDetail;
 import com.picketlogia.picket.api.reservation.repository.ReservationRepository;
 import com.picketlogia.picket.api.reservation.repository.ReserveDetailRepository;
 import com.picketlogia.picket.api.seat.service.SeatHoldService;
@@ -39,7 +39,7 @@ public class ReservationService {
      * 예매 정보를 저장한다.
      * @param reservationRegister 예매 정보
      */
-    public Long register(ReservationRegister reservationRegister) {
+    public Long register(ReservationRegisterCommand reservationRegister) {
 
         // 예매 저장
         Reservation savedReservation = reservationRepository.save(reservationRegister.toEntity());
@@ -48,7 +48,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public Long updateReservation(UpdateReservationReq update, String paymentIdx) {
+    public Long updateReservation(UpdateReservationRequest update, String paymentIdx) {
         Optional<Reservation> result = reservationRepository.findByPaymentIdx(paymentIdx);
 
 
@@ -79,7 +79,7 @@ public class ReservationService {
      * @param reservationCheck 예약 요청 정보
      * @throws BaseException 이미 구매된 좌석이 포함되었다면 예외 발생
      */
-    public void checkReservedSeat(ReservationCheck reservationCheck) {
+    public void checkReservedSeat(ReservationCheckRequest reservationCheck) {
         /*
         * 이전에 구매한 예약 좌석 검증은 다음과 같은 idx가 필요하다.
         * 1. roundTimeIdx - 회차
@@ -106,29 +106,31 @@ public class ReservationService {
         }
     }
 
-    public List<ReservationListDto> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
+    public List<ReservationResult> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime startDateTime = LocalDate.parse(startDateStr, formatter).atStartOfDay();
         LocalDateTime endDateTime = LocalDate.parse(endDateStr, formatter).atTime(LocalTime.MAX);
 
-        List<Reservation> result = reservationRepository.findByUserIdxAndCreatedAtBetween(userIdx, startDateTime, endDateTime);
+        List<Reservation> reservations = reservationRepository.findByUserIdxAndCreatedAtBetween(userIdx, startDateTime, endDateTime);
 
-        return result.stream().map(ReservationListDto::from).toList();
+        return reservations.stream().map(ReservationResult::from).toList();
     }
 
-    public void checkRockSeats(ReservationCheck reservationCheck) {
+    public void checkRockSeats(ReservationCheckRequest reservationCheck) {
+
         seatHoldService.validateRockSeats(
                 reservationCheck.getRoundTimeIdx(),
                 reservationCheck.getSeatIdxes().stream().map(String::valueOf).toList()
         );
     }
 
-    public PaymentStatusResponse findPaymentStatusOfReservation(String paymentId, Long userIdx) {
+    public PaymentStatusResult findPaymentStatusOfReservation(String paymentId, Long userIdx) {
 
         PaymentStatus findPaymentStatus = reservationRepository.findStatusByPaymentIdxAndUserId(paymentId, userIdx)
                 .orElseThrow(() -> BaseException.from(BaseResponseStatus.NOT_FOUND_DATA));
 
-        return PaymentStatusResponse.from(findPaymentStatus);
+        return PaymentStatusResult.from(findPaymentStatus);
     }
 
 }

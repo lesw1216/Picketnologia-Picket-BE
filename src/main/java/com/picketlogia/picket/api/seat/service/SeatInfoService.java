@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.service;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.reservation.repository.ReserveDetailRepository;
 import com.picketlogia.picket.api.seat.model.Seat;
 import com.picketlogia.picket.api.seat.repository.SeatRepository;

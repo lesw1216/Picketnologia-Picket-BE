@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.qna.model;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.user.model.entity.User;
 import com.picketlogia.picket.common.model.BaseEntity;
 import jakarta.persistence.*;

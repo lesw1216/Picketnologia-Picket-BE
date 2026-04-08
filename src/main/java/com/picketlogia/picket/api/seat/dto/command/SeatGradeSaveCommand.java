@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.dto.command;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.seat.dto.request.SeatGradeRequest;
 import com.picketlogia.picket.api.seat.model.SeatGrade;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;

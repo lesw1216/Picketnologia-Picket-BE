@@ -1,13 +1,13 @@
 package com.picketlogia.picket.api.product.controller;
 
-import com.picketlogia.picket.api.product.model.ProductListByPage;
-import com.picketlogia.picket.api.product.model.ProductReadForDetail;
-import com.picketlogia.picket.api.product.model.ProductReadForList;
-import com.picketlogia.picket.api.product.model.ProductSearchDto;
-import com.picketlogia.picket.api.product.model.dto.ProductQuery;
-import com.picketlogia.picket.api.product.model.dto.register.ProductRegister;
+import com.picketlogia.picket.api.product.dto.result.ProductsResult;
+import com.picketlogia.picket.api.product.dto.result.ProductDetailResult;
+import com.picketlogia.picket.api.product.dto.result.SalesProductResult;
+import com.picketlogia.picket.api.product.dto.request.ProductSearchRequest;
+import com.picketlogia.picket.api.product.dto.request.ProductQueryRequest;
+import com.picketlogia.picket.api.product.dto.request.ProductRegisterRequest;
 import com.picketlogia.picket.api.product.service.ProductService;
-import com.picketlogia.picket.api.user.model.dto.UserAuth;
+import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,12 +31,11 @@ public class ProductController {
             description = "등록한 상품의 정보를 저장한다."
     )
     @PostMapping
-    public ResponseEntity<BaseResponse<String>> register(
-            @AuthenticationPrincipal UserAuth userAuth,
-            @RequestPart ProductRegister product,
-            @RequestPart List<MultipartFile> files) {
+    public ResponseEntity<BaseResponse<String>> register(@AuthenticationPrincipal UserAuthRequest userAuth,
+                                                         @RequestPart ProductRegisterRequest product,
+                                                         @RequestPart List<MultipartFile> files) {
 
-        ProductRegister result = productService.register(userAuth.getIdx(), product, files);
+        productService.register(userAuth.getIdx(), product, files);
         return ResponseEntity.ok(BaseResponse.success("등록 완료"));
     }
 
@@ -45,9 +44,9 @@ public class ProductController {
             description = "쿼리를 사용한 상품 목록 조회하는 기능."
     )
     @GetMapping
-    public ResponseEntity<BaseResponse<ProductListByPage>> getProducts(ProductQuery productQuery) {
-        ProductListByPage allByQuery = productService.findAllByQueryPaging(productQuery);
+    public ResponseEntity<BaseResponse<ProductsResult>> getProducts(ProductQueryRequest productQueryRequest) {
 
+        ProductsResult allByQuery = productService.findAllByQueryPaging(productQueryRequest);
         return ResponseEntity.ok(BaseResponse.success(allByQuery));
     }
 
@@ -57,9 +56,9 @@ public class ProductController {
             description = "요청받은 productId에 해당하는 상품을 조회한다."
     )
     @GetMapping("/{productId}")
-    public ResponseEntity<BaseResponse<ProductReadForDetail>> getProduct(@PathVariable Long productId) {
-        ProductReadForDetail findProduct = productService.findProductDetailById(productId);
+    public ResponseEntity<BaseResponse<ProductDetailResult>> getProduct(@PathVariable Long productId) {
 
+        ProductDetailResult findProduct = productService.findProductDetailById(productId);
         return ResponseEntity.ok(BaseResponse.success(findProduct));
     }
 
@@ -68,12 +67,10 @@ public class ProductController {
             description = "RequestParam 조건에 맞게 이름 포함 검색 ,리뷰 평균 정렬 , 리뷰 갯수정렬 "
     )
     @GetMapping("/searchAndSort")
-    public ResponseEntity<BaseResponse<List<ProductReadForList>>> searchAndSort(
-            ProductSearchDto dto,
-            @RequestParam(required = false) String sort
-    ) {
-        List<ProductReadForList> response = productService.searchAndSort(dto, sort);
+    public ResponseEntity<BaseResponse<List<SalesProductResult>>> searchAndSort(ProductSearchRequest searchQuery,
+                                                                                @RequestParam(required = false) String sort) {
 
+        List<SalesProductResult> response = productService.searchAndSort(searchQuery, sort);
         return ResponseEntity.ok(BaseResponse.success(response));
     }
 }

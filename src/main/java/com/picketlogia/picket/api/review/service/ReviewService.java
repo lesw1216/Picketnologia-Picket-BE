@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.review.service;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.product.repository.ProductRepository;
 import com.picketlogia.picket.api.reservation.service.ReservationService;
 import com.picketlogia.picket.api.review.model.dto.ReviewDtoList;

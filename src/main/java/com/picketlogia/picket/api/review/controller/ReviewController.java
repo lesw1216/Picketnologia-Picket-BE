@@ -4,7 +4,7 @@ import com.picketlogia.picket.api.review.model.dto.ReviewDtoList;
 import com.picketlogia.picket.api.review.model.dto.ReviewDtoRegister;
 import com.picketlogia.picket.api.review.model.dto.ReviewList;
 import com.picketlogia.picket.api.review.service.ReviewService;
-import com.picketlogia.picket.api.user.model.dto.UserAuth;
+import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,7 +33,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody ReviewDtoRegister dto, @AuthenticationPrincipal UserAuth userAuth) {
+    public ResponseEntity register(@RequestBody ReviewDtoRegister dto, @AuthenticationPrincipal UserAuthRequest userAuth) {
         reviewService.save(dto, userAuth.getIdx());
 
         return ResponseEntity.status(200).body("리뷰저장성공");
@@ -58,7 +58,7 @@ public class ReviewController {
     )
     @GetMapping("/userReviewList")
     public ResponseEntity<BaseResponse<List<ReviewDtoList>>> getUserReviewsByDate(
-            @AuthenticationPrincipal UserAuth userAuth,
+            @AuthenticationPrincipal UserAuthRequest userAuth,
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ) {

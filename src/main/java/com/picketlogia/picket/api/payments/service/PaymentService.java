@@ -2,11 +2,11 @@ package com.picketlogia.picket.api.payments.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picketlogia.picket.api.payments.model.PaymentCustomData;
-import com.picketlogia.picket.api.payments.model.PaymentReq;
+import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
+import com.picketlogia.picket.api.payments.dto.command.PaymentCommand;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
-import com.picketlogia.picket.api.reservation.model.ReserveDetailRegister;
-import com.picketlogia.picket.api.reservation.model.UpdateReservationReq;
+import com.picketlogia.picket.api.reservation.dto.command.ReserveDetailRegisterCommand;
+import com.picketlogia.picket.api.reservation.dto.request.UpdateReservationRequest;
 import com.picketlogia.picket.api.reservation.service.ReservationService;
 import com.picketlogia.picket.api.reservation.service.ReserveDetailService;
 import com.picketlogia.picket.api.seat.model.Seat;
@@ -15,7 +15,6 @@ import com.picketlogia.picket.common.exception.BaseException;
 import com.picketlogia.picket.common.model.BaseResponseStatus;
 import io.portone.sdk.server.PortOneClient;
 import io.portone.sdk.server.payment.*;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -78,7 +77,7 @@ public class PaymentService {
         if (payment instanceof PaidPayment paidPayment) {
             if (verifyPayment(paidPayment)) {
                 log.info(paidPayment.getPgResponse());
-                PaymentCustomData customData = parseToPaymentCustomData(paidPayment.getCustomData());
+                PaymentCustomDataCommand customData = parseToPaymentCustomData(paidPayment.getCustomData());
 
 //                결제 정보를 예매 정보로 저장
                 requestReservation(paymentId, paidPayment, customData);
@@ -107,8 +106,8 @@ public class PaymentService {
      * @param paidPayment 결제 정보
      * @param customData 사용자 지정 데이터
      */
-    private void requestReservation(String paymentId, PaidPayment paidPayment, PaymentCustomData customData) {
-        UpdateReservationReq update = UpdateReservationReq.from(
+    private void requestReservation(String paymentId, PaidPayment paidPayment, PaymentCustomDataCommand customData) {
+        UpdateReservationRequest update = UpdateReservationRequest.from(
                 paidPayment.getAmount().getTotal(),
                 getPaidAt(paidPayment),
                 customData.getProductIdx(),
@@ -117,14 +116,14 @@ public class PaymentService {
         Long reservationId = reservationService.updateReservation(update, paymentId);
 
         reserveDetailService.register(
-                ReserveDetailRegister.from(customData, reservationId)
+                ReserveDetailRegisterCommand.from(customData, reservationId)
         );
     }
 
     /**
      * 수동 승인 결제 건 처리하기 (개발 중)
      */
-    private void manualApprove(ReadyPayment readyPayment, PaymentReq paymentReq)
+    private void manualApprove(ReadyPayment readyPayment, PaymentCommand paymentCommand)
             throws ExecutionException, InterruptedException {
 
         Map<String, Object> request = new HashMap<>();
@@ -144,7 +143,7 @@ public class PaymentService {
                 HttpRequest.newBuilder()
                         .header("Authorization", "PortOne 시크릿키")
                         .header("Content-Type", "application/json")
-                        .uri(URI.create("https://api.portone.io/payments/" + paymentReq.getPaymentId() + "/confirm"))
+                        .uri(URI.create("https://api.portone.io/payments/" + paymentCommand.getPaymentId() + "/confirm"))
                         .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                         .build(), HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).get();
 
@@ -171,10 +170,10 @@ public class PaymentService {
 //        if (!paidPayment.getChannel().getType().equals(SelectedChannelType.Live.INSTANCE))
 //            return false;
 
-        PaymentCustomData paymentCustomData = parseToPaymentCustomData(paidPayment.getCustomData());
+        PaymentCustomDataCommand paymentCustomDataCommand = parseToPaymentCustomData(paidPayment.getCustomData());
 
-        if (paymentCustomData != null) {
-            return verifyPaymentAmount(paymentCustomData, paidPayment.getAmount());
+        if (paymentCustomDataCommand != null) {
+            return verifyPaymentAmount(paymentCustomDataCommand, paidPayment.getAmount());
         }
 
         return false;
@@ -186,22 +185,22 @@ public class PaymentService {
      * @param customData 사용자 지정 정보
      * @return 사용자 지정 데이터
      */
-    private PaymentCustomData parseToPaymentCustomData(String customData) {
-        return PaymentCustomData.from(customData);
+    private PaymentCustomDataCommand parseToPaymentCustomData(String customData) {
+        return PaymentCustomDataCommand.from(customData);
     }
 
     /**
      * 결제 금액과 DB에서 조회한 결제 상품들의 총 합을 비교한다.
      *
-     * @param paymentCustomData 결제한 상품 정보
+     * @param paymentCustomDataCommand 결제한 상품 정보
      * @param paymentAmount     결제 금액
      * @return 값이 같다면 <code>true</code>, 다르다면 <code>false</code>
      */
-    private Boolean verifyPaymentAmount(PaymentCustomData paymentCustomData, PaymentAmount paymentAmount) {
+    private Boolean verifyPaymentAmount(PaymentCustomDataCommand paymentCustomDataCommand, PaymentAmount paymentAmount) {
 
         // 구매한 좌석의 실제 총 금액을 알기 위해 좌석 정보를 조회
         List<Seat> getSeats = seatRepository.findByIdInWithSeatGrade(
-                paymentCustomData.getSeatIdxes().stream().map(idx -> Seat.builder().idx(idx).build()).toList()
+                paymentCustomDataCommand.getSeatIdxes().stream().map(idx -> Seat.builder().idx(idx).build()).toList()
         );
 
         // 총 결제 금액과 조회한 좌석의 총 금액이 같은지 비교

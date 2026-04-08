@@ -15,6 +15,7 @@ import java.sql.SQLException;
 @Service
 @RequiredArgsConstructor
 public class S3UploadService implements UploadService {
+
     @Value("${spring.cloud.aws.s3.bucket}")
     private String s3BucketName;
 
@@ -31,6 +32,7 @@ public class S3UploadService implements UploadService {
                 dirPath + file.getOriginalFilename(),
                 file.getInputStream()
         );
+
         return s3Resource.getURL().toString();
     }
 }

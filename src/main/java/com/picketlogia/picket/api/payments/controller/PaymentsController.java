@@ -1,9 +1,9 @@
 package com.picketlogia.picket.api.payments.controller;
 
-import com.picketlogia.picket.api.payments.model.PaymentStatusResponse;
+import com.picketlogia.picket.api.payments.dto.result.PaymentStatusResult;
 import com.picketlogia.picket.api.payments.service.WebhookService;
 import com.picketlogia.picket.api.reservation.service.ReservationService;
-import com.picketlogia.picket.api.user.model.dto.UserAuth;
+import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
 import com.picketlogia.picket.common.model.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +31,9 @@ public class PaymentsController {
 
     @GetMapping("/payment/{paymentId}/status")
     public ResponseEntity<BaseResponse<Object>> getPaymentStatus(@PathVariable String paymentId,
-                                                                 @AuthenticationPrincipal UserAuth loginUser) {
+                                                                 @AuthenticationPrincipal UserAuthRequest loginUser) {
 
-        PaymentStatusResponse paymentStatusResponse = reservationService.findPaymentStatusOfReservation(paymentId, loginUser.getIdx());
-        return ResponseEntity.ok(BaseResponse.success(paymentStatusResponse));
+        PaymentStatusResult paymentStatusResult = reservationService.findPaymentStatusOfReservation(paymentId, loginUser.getIdx());
+        return ResponseEntity.ok(BaseResponse.success(paymentStatusResult));
     }
 }

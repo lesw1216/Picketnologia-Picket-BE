@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.contents.controller;
 
-import com.picketlogia.picket.api.contents.model.ContentsResp;
+import com.picketlogia.picket.api.contents.dto.ContentsResponse;
 import com.picketlogia.picket.api.contents.service.ContentsService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,9 +23,9 @@ public class ContentsController {
             description = "다양한 공연 장르 중 RequestParam에 맞는 공연들만 조회"
     )
     @GetMapping("/contents/{genre}")
-    public ResponseEntity<BaseResponse<ContentsResp>> getContents(@PathVariable String genre) {
-        ContentsResp contents = contentsService.findContents(genre);
+    public ResponseEntity<BaseResponse<ContentsResponse>> getContents(@PathVariable String genre) {
 
+        ContentsResponse contents = contentsService.findContents(genre);
         return ResponseEntity.ok(BaseResponse.success(contents));
     }
 }

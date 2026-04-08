@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.product.repository;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
+
     Optional<Product> findByIdx(Long idx);
 
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.productImage " +

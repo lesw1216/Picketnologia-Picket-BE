@@ -1,7 +1,7 @@
 package com.picketlogia.picket.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picketlogia.picket.api.user.model.dto.login.UserLogin;
+import com.picketlogia.picket.api.user.dto.request.UserLoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +34,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         UsernamePasswordAuthenticationToken authToken;
         try {
 
-            UserLogin dto = objectMapper.readValue(request.getInputStream(), UserLogin.class);
+            UserLoginRequest dto = objectMapper.readValue(request.getInputStream(), UserLoginRequest.class);
             authToken = new UsernamePasswordAuthenticationToken(
                     dto.getEmail(), dto.getPassword(), null
             );

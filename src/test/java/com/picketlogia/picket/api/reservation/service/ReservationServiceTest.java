@@ -1,14 +1,13 @@
 package com.picketlogia.picket.api.reservation.service;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.product.model.entity.RoundDate;
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
-import com.picketlogia.picket.api.reservation.model.ReservationCheck;
-import com.picketlogia.picket.api.reservation.model.ReservationReadForDetail;
-import com.picketlogia.picket.api.reservation.model.ReservationRegister;
-import com.picketlogia.picket.api.reservation.model.ReserveDetailRegister;
-import com.picketlogia.picket.api.reservation.model.entity.Reservation;
-import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
+import com.picketlogia.picket.api.product.model.Product;
+import com.picketlogia.picket.api.product.model.RoundDate;
+import com.picketlogia.picket.api.product.model.RoundTime;
+import com.picketlogia.picket.api.reservation.dto.request.ReservationCheckRequest;
+import com.picketlogia.picket.api.reservation.dto.command.ReservationRegisterCommand;
+import com.picketlogia.picket.api.reservation.dto.command.ReserveDetailRegisterCommand;
+import com.picketlogia.picket.api.reservation.model.Reservation;
+import com.picketlogia.picket.api.reservation.model.ReserveDetail;
 import com.picketlogia.picket.api.reservation.repository.ReservationRepository;
 import com.picketlogia.picket.api.reservation.repository.ReserveDetailRepository;
 import com.picketlogia.picket.api.seat.model.Seat;
@@ -16,7 +15,6 @@ import com.picketlogia.picket.api.seat.model.SeatGrade;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
 import com.picketlogia.picket.api.user.model.entity.User;
 import com.picketlogia.picket.common.exception.BaseException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -91,7 +88,7 @@ class ReservationServiceTest {
 
         );
 
-        ReservationRegister register = ReservationRegister.builder()
+        ReservationRegisterCommand register = ReservationRegisterCommand.builder()
                 .userIdx(1L)
                 .productIdx(1L)
                 .paymentIdx("TEMPID0110330")
@@ -99,7 +96,7 @@ class ReservationServiceTest {
                 .paidAt(paidAt)
                 .build();
 
-        ReserveDetailRegister detailRegister = ReserveDetailRegister.builder()
+        ReserveDetailRegisterCommand detailRegister = ReserveDetailRegisterCommand.builder()
                 .roundTimeIdx(1L)
                 .reservationIdx(1L)
                 .seatIdes(List.of(1L))
@@ -196,7 +193,7 @@ class ReservationServiceTest {
             // given
 
 
-            ReservationCheck request = ReservationCheck.builder()
+            ReservationCheckRequest request = ReservationCheckRequest.builder()
                     .roundTimeIdx(roundTimeIdx)
                     .seatIdxes(List.of(1L, 10L, 20L, 12L))
                     .build();
@@ -212,7 +209,7 @@ class ReservationServiceTest {
         @DisplayName("모든 좌석 결제 가능")
         void hasNotReservedAlreadySeat() {
             // given
-            ReservationCheck request = ReservationCheck.builder()
+            ReservationCheckRequest request = ReservationCheckRequest.builder()
                     .roundTimeIdx(roundTimeIdx)
                     .seatIdxes(List.of(10L, 20L, 12L))
                     .build();
