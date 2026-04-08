@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.reservation.model.entity;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
 import com.picketlogia.picket.api.reservation.model.UpdateReservationReq;
 import com.picketlogia.picket.api.user.model.entity.User;

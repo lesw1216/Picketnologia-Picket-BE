@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.reservation.repository;
 
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.product.validator;
 
-import com.picketlogia.picket.api.product.dto.register.PerformanceRoundRegister.ManualRound;
-import com.picketlogia.picket.api.product.dto.register.ProductRegisterRequest;
+import com.picketlogia.picket.api.product.dto.request.PerformanceRoundRequest.ManualRound;
+import com.picketlogia.picket.api.product.dto.request.ProductRegisterRequest;
 import com.picketlogia.picket.common.exception.BaseException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

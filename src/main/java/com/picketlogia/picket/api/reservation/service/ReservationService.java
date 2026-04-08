@@ -1,8 +1,8 @@
 package com.picketlogia.picket.api.reservation.service;
 
 import com.picketlogia.picket.api.payments.dto.result.PaymentStatusResult;
-import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.product.model.Product;
+import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
 import com.picketlogia.picket.api.reservation.model.ReservationCheck;
 import com.picketlogia.picket.api.reservation.model.ReservationRegister;

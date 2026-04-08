@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.reservation.model;
 
 import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.reservation.model.entity.Reservation;
 import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
 import com.picketlogia.picket.api.seat.model.Seat;

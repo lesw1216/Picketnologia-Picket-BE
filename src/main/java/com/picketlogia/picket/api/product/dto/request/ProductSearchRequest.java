@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.model;
+package com.picketlogia.picket.api.product.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

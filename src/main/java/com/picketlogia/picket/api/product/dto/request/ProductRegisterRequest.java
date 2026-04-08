@@ -1,7 +1,7 @@
-package com.picketlogia.picket.api.product.dto.register;
+package com.picketlogia.picket.api.product.dto.request;
 
 import com.picketlogia.picket.api.genre.model.Genre;
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.seat.dto.request.SeatGradeRequest;
 import com.picketlogia.picket.api.seat.dto.request.SeatRequest;
 import com.picketlogia.picket.api.user.model.entity.User;
@@ -28,7 +28,7 @@ public class ProductRegisterRequest {
     private String description;    // 설명
     private String genre;           // 장르
     private LocalDateTime openDate;    // 오픈 예정일
-    private PerformanceRoundRegister roundOption;
+    private PerformanceRoundRequest roundOption;
     private List<List<SeatRequest>> seatMap;
     private List<SeatGradeRequest> seatGrade;
 

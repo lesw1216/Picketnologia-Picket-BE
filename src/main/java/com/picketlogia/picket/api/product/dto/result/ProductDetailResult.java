@@ -1,7 +1,7 @@
-package com.picketlogia.picket.api.product.model;
+package com.picketlogia.picket.api.product.dto.result;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.seat.dto.response.SeatGradeResponse;
 import com.picketlogia.picket.api.seat.dto.result.SeatGradeResult;
 import com.picketlogia.picket.utils.LocalDateTimeSerializer;

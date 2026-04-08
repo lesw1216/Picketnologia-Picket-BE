@@ -1,6 +1,6 @@
-package com.picketlogia.picket.api.product.model;
+package com.picketlogia.picket.api.product.dto.result;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import lombok.Builder;
 import lombok.Getter;
 

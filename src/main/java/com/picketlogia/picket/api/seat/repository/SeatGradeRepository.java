@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.seat.repository;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.seat.model.SeatGrade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

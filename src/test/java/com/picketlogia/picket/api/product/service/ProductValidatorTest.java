@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.product.service;
 
-import com.picketlogia.picket.api.product.dto.register.ProductRegisterRequest;
+import com.picketlogia.picket.api.product.dto.request.ProductRegisterRequest;
 import com.picketlogia.picket.api.product.validator.ProductValidator;
 import com.picketlogia.picket.common.exception.BaseException;
 import org.junit.jupiter.api.DisplayName;

@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.reservation.model;
 
 import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.reservation.model.entity.Reservation;
 import com.picketlogia.picket.api.user.model.entity.User;
 import lombok.Builder;

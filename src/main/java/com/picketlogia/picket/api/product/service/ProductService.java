@@ -2,10 +2,14 @@ package com.picketlogia.picket.api.product.service;
 
 import com.picketlogia.picket.api.genre.dto.result.GenreReadResponse;
 import com.picketlogia.picket.api.genre.service.GenreService;
-import com.picketlogia.picket.api.product.model.*;
-import com.picketlogia.picket.api.product.dto.ProductQueryRequest;
-import com.picketlogia.picket.api.product.dto.register.ProductRegisterRequest;
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.dto.request.ProductSearchRequest;
+import com.picketlogia.picket.api.product.dto.result.ProductDetailResult;
+import com.picketlogia.picket.api.product.dto.result.ProductsResult;
+import com.picketlogia.picket.api.product.dto.result.SalesProductResult;
+import com.picketlogia.picket.api.product.dto.result.UpcomingProductResult;
+import com.picketlogia.picket.api.product.dto.request.ProductQueryRequest;
+import com.picketlogia.picket.api.product.dto.request.ProductRegisterRequest;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.product.repository.ProductQueryRepository;
 import com.picketlogia.picket.api.product.repository.ProductRepository;
 import com.picketlogia.picket.api.product.validator.BaseProductValidator;

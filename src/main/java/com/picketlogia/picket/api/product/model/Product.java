@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.model.entity;
+package com.picketlogia.picket.api.product.model;
 
 import com.picketlogia.picket.api.genre.model.Genre;
 import com.picketlogia.picket.api.qna.model.Qna;

@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.dto.register;
+package com.picketlogia.picket.api.product.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PerformanceRoundRegister {
+public class PerformanceRoundRequest {
 
     private LocalDate startDate;
     private LocalDate endDate;

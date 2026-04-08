@@ -1,11 +1,11 @@
 package com.picketlogia.picket.api.product.controller;
 
-import com.picketlogia.picket.api.product.model.ProductsResult;
-import com.picketlogia.picket.api.product.model.ProductDetailResult;
-import com.picketlogia.picket.api.product.model.SalesProductResult;
-import com.picketlogia.picket.api.product.model.ProductSearchRequest;
-import com.picketlogia.picket.api.product.dto.ProductQueryRequest;
-import com.picketlogia.picket.api.product.dto.register.ProductRegisterRequest;
+import com.picketlogia.picket.api.product.dto.result.ProductsResult;
+import com.picketlogia.picket.api.product.dto.result.ProductDetailResult;
+import com.picketlogia.picket.api.product.dto.result.SalesProductResult;
+import com.picketlogia.picket.api.product.dto.request.ProductSearchRequest;
+import com.picketlogia.picket.api.product.dto.request.ProductQueryRequest;
+import com.picketlogia.picket.api.product.dto.request.ProductRegisterRequest;
 import com.picketlogia.picket.api.product.service.ProductService;
 import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
 import com.picketlogia.picket.common.model.BaseResponse;

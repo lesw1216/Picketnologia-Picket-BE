@@ -1,8 +1,8 @@
 package com.picketlogia.picket.api.contents.service;
 
 import com.picketlogia.picket.api.contents.dto.ContentsResponse;
-import com.picketlogia.picket.api.product.model.UpcomingProductResult;
-import com.picketlogia.picket.api.product.model.ProductsResult;
+import com.picketlogia.picket.api.product.dto.result.UpcomingProductResult;
+import com.picketlogia.picket.api.product.dto.result.ProductsResult;
 import com.picketlogia.picket.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.model.entity;
+package com.picketlogia.picket.api.product.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

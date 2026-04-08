@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.product.controller;
 
-import com.picketlogia.picket.api.product.dto.RoundDatesResult;
-import com.picketlogia.picket.api.product.dto.RoundTimesResult;
+import com.picketlogia.picket.api.product.dto.result.RoundDatesResult;
+import com.picketlogia.picket.api.product.dto.result.RoundTimesResult;
 import com.picketlogia.picket.api.product.service.RoundService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;

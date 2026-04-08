@@ -1,10 +1,8 @@
 package com.picketlogia.picket.api.product.service;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.product.model.entity.ProductImage;
+import com.picketlogia.picket.api.product.model.Product;
+import com.picketlogia.picket.api.product.model.ProductImage;
 import com.picketlogia.picket.api.product.repository.ProductImageRepository;
-import com.picketlogia.picket.api.product.repository.ProductRepository;
-import com.picketlogia.picket.common.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,10 +1,10 @@
 package com.picketlogia.picket.api.product.service;
 
-import com.picketlogia.picket.api.product.dto.RoundDatesResult;
-import com.picketlogia.picket.api.product.dto.RoundTimesResult;
-import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.product.model.entity.RoundDate;
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.product.dto.result.RoundDatesResult;
+import com.picketlogia.picket.api.product.dto.result.RoundTimesResult;
+import com.picketlogia.picket.api.product.model.Product;
+import com.picketlogia.picket.api.product.model.RoundDate;
+import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.product.repository.RoundDateRepository;
 import com.picketlogia.picket.api.product.repository.RoundTimeRepository;
 import com.picketlogia.picket.common.exception.BaseException;

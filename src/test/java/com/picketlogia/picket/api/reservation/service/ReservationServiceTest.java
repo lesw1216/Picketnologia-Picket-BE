@@ -1,10 +1,9 @@
 package com.picketlogia.picket.api.reservation.service;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
-import com.picketlogia.picket.api.product.model.entity.RoundDate;
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.product.model.Product;
+import com.picketlogia.picket.api.product.model.RoundDate;
+import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.reservation.model.ReservationCheck;
-import com.picketlogia.picket.api.reservation.model.ReservationReadForDetail;
 import com.picketlogia.picket.api.reservation.model.ReservationRegister;
 import com.picketlogia.picket.api.reservation.model.ReserveDetailRegister;
 import com.picketlogia.picket.api.reservation.model.entity.Reservation;
@@ -16,7 +15,6 @@ import com.picketlogia.picket.api.seat.model.SeatGrade;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
 import com.picketlogia.picket.api.user.model.entity.User;
 import com.picketlogia.picket.common.exception.BaseException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;

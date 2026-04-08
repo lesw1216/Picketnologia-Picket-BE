@@ -1,6 +1,7 @@
-package com.picketlogia.picket.api.product.dto;
+package com.picketlogia.picket.api.product.dto.result;
 
-import com.picketlogia.picket.api.product.model.entity.RoundDate;
+import com.picketlogia.picket.api.product.dto.RoundDateRead;
+import com.picketlogia.picket.api.product.model.RoundDate;
 import lombok.Builder;
 import lombok.Getter;
 

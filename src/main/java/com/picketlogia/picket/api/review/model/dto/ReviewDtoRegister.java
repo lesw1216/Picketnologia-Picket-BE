@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.review.model.dto;
 
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.review.model.entity.Review;
 import com.picketlogia.picket.api.user.model.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;

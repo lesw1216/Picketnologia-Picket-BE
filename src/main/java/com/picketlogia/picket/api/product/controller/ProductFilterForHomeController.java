@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.product.controller;
 
-import com.picketlogia.picket.api.product.model.SalesProductResult;
-import com.picketlogia.picket.api.product.model.UpcomingProductResult;
+import com.picketlogia.picket.api.product.dto.result.SalesProductResult;
+import com.picketlogia.picket.api.product.dto.result.UpcomingProductResult;
 import com.picketlogia.picket.api.product.service.ProductService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;

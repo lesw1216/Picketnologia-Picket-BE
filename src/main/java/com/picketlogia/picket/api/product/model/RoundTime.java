@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.model.entity;
+package com.picketlogia.picket.api.product.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,18 +6,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+import java.time.LocalTime;
+
 @Getter
+@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductImage {
+public class RoundTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
-    private String fileName;
+    private LocalTime time;
 
-    @OneToOne
-    @JoinColumn(name = "product_idx")
-    private Product product;
+    @ManyToOne
+    @JoinColumn(name = "round_date_idx")
+    private RoundDate roundDate;
 }

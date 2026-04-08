@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.reservation.model.entity;
 
-import com.picketlogia.picket.api.product.model.entity.RoundTime;
+import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.seat.model.Seat;
 import com.picketlogia.picket.common.model.BaseEntity;
 import jakarta.persistence.*;

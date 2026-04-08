@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.qna.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.picketlogia.picket.api.product.model.entity.Product;
+import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.user.model.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
