@@ -1,7 +1,7 @@
-package com.picketlogia.picket.api.product.service.validator;
+package com.picketlogia.picket.api.product.validator;
 
-import com.picketlogia.picket.api.product.model.dto.register.PerformanceRoundRegister.ManualRound;
-import com.picketlogia.picket.api.product.model.dto.register.ProductRegister;
+import com.picketlogia.picket.api.product.dto.register.PerformanceRoundRegister.ManualRound;
+import com.picketlogia.picket.api.product.dto.register.ProductRegisterRequest;
 import com.picketlogia.picket.common.exception.BaseException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -14,10 +14,11 @@ import static com.picketlogia.picket.common.model.BaseResponseStatus.PERIOD_OUT_
 
 @Order(2)
 @Component
-public class PerformRoundValidator implements BaseProductValidator<ProductRegister> {
+public class PerformRoundValidator implements BaseProductValidator<ProductRegisterRequest> {
 
     @Override
-    public void validate(ProductRegister target) {
+    public void validate(ProductRegisterRequest target) {
+
         validatePeriodWithPerformance(
                 target.getStartDate(),
                 target.getEndDate(),

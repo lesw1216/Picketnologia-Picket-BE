@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.model.dto;
+package com.picketlogia.picket.api.product.dto;
 
 import com.picketlogia.picket.api.product.model.entity.RoundDate;
 import lombok.Builder;

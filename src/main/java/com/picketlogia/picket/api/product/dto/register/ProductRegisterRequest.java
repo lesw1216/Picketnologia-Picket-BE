@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.model.dto.register;
+package com.picketlogia.picket.api.product.dto.register;
 
 import com.picketlogia.picket.api.genre.model.Genre;
 import com.picketlogia.picket.api.product.model.entity.Product;
@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRegister {
+public class ProductRegisterRequest {
 
     private String name;           // 상품이름
     private String rating;         // 관람등급
@@ -55,8 +55,8 @@ public class ProductRegister {
                 .build();
     }
 
-    public static ProductRegister fromEntity(Product product) {
-        return ProductRegister.builder()
+    public static ProductRegisterRequest fromEntity(Product product) {
+        return ProductRegisterRequest.builder()
                 .name(product.getName())
                 .rating(product.getRating())
                 .venueName(product.getVenueName())

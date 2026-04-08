@@ -9,7 +9,8 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class ProductReadForList {
+public class SalesProductResult {
+
     private Long idx;
     private String name; // 상품이름
     private String venueName; // 공연장명
@@ -23,8 +24,9 @@ public class ProductReadForList {
     private Double reviewRating;
     private Integer reviewCount;
 
-    public static ProductReadForList from(Product product) {
-        return ProductReadForList.builder()
+    public static SalesProductResult from(Product product) {
+
+        return SalesProductResult.builder()
                 .idx(product.getIdx())
                 .name(product.getName())
                 .venueName(product.getVenueName())

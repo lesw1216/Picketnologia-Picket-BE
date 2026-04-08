@@ -9,11 +9,11 @@ import java.util.List;
 @Getter
 @Builder
 public class ProductList {
-    private List<ProductReadForList> productList;
+    private List<SalesProductResult> productList;
 
     public static ProductList from(List<Product> products) {
         return ProductList.builder()
-                .productList(products.stream().map(ProductReadForList::from).toList())
+                .productList(products.stream().map(SalesProductResult::from).toList())
                 .build();
     }
 }

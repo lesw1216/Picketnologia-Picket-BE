@@ -1,19 +1,8 @@
 package com.picketlogia.picket.api.product.service;
 
-import com.picketlogia.picket.api.product.model.dto.register.PerformanceRoundRegister;
-import com.picketlogia.picket.api.product.model.entity.Product;
 import com.picketlogia.picket.api.product.repository.ProductRepository;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
 
 @SpringBootTest
 class PerformanceRoundServiceTest {

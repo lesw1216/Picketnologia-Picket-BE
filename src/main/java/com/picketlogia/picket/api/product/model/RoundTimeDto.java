@@ -11,10 +11,12 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoundTimeDto {
+
     private LocalTime times;
 
     // Entity -> DTO
     public static RoundTimeDto from(RoundTime entity) {
+
         return RoundTimeDto.builder()
                 .times(entity.getTime())
                 .build();

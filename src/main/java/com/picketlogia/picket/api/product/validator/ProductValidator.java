@@ -1,6 +1,6 @@
-package com.picketlogia.picket.api.product.service.validator;
+package com.picketlogia.picket.api.product.validator;
 
-import com.picketlogia.picket.api.product.model.dto.register.ProductRegister;
+import com.picketlogia.picket.api.product.dto.register.ProductRegisterRequest;
 import com.picketlogia.picket.common.exception.BaseException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -12,10 +12,10 @@ import static com.picketlogia.picket.common.model.BaseResponseStatus.OPEN_DATE_O
 
 @Order(1)
 @Component
-public class ProductValidator implements BaseProductValidator<ProductRegister> {
+public class ProductValidator implements BaseProductValidator<ProductRegisterRequest> {
 
     @Override
-    public void validate(ProductRegister target) {
+    public void validate(ProductRegisterRequest target) {
         validateOpenDate(target.getOpenDate(), target.getStartDate());
     }
 

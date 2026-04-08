@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.contents.dto;
 
-import com.picketlogia.picket.api.product.model.ProductReadForList;
-import com.picketlogia.picket.api.product.model.ProductReadForUpcoming;
+import com.picketlogia.picket.api.product.model.SalesProductResult;
+import com.picketlogia.picket.api.product.model.UpcomingProductResult;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,12 +13,12 @@ public class ContentsResponse {
 
     private Integer currentPage;
     private Integer totalPage;
-    private List<ProductReadForList> products;
-    private List<ProductReadForUpcoming> upcomingPerformances;
+    private List<SalesProductResult> products;
+    private List<UpcomingProductResult> upcomingPerformances;
 
-    public static ContentsResponse from(List<ProductReadForList> products,
+    public static ContentsResponse from(List<SalesProductResult> products,
                                         Integer currentPage,
-                                        Integer totalPage, List<ProductReadForUpcoming> upcomingPerformances) {
+                                        Integer totalPage, List<UpcomingProductResult> upcomingPerformances) {
 
         return ContentsResponse.builder()
                 .products(products)

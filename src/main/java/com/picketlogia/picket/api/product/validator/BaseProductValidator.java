@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.service.validator;
+package com.picketlogia.picket.api.product.validator;
 
 import com.picketlogia.picket.utils.BaseValidator;
 

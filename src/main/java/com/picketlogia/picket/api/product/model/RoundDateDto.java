@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoundDateDto {
+
     private LocalDate date;
     private List<RoundTimeDto> roundTimes;
 
     // Entity -> DTO
     public static RoundDateDto from(RoundDate entity) {
+
         return RoundDateDto.builder()
                 .date(entity.getDate())
                 .roundTimes(entity.getRoundTimes().stream().map(RoundTimeDto::from).collect(Collectors.toList()))
                 .build();
-
-
     }
 }

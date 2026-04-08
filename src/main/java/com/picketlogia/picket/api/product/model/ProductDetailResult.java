@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ProductReadForDetail {
+public class ProductDetailResult {
     private Long idx;
     private String name; // 상품이름
     private String rating; // 관람등급
@@ -33,8 +33,8 @@ public class ProductReadForDetail {
     private LocalDateTime openDate;
     private List<SeatGradeResponse> seatGrades;
 
-    public static ProductReadForDetail from(Product product) {
-        return ProductReadForDetail.builder()
+    public static ProductDetailResult from(Product product) {
+        return ProductDetailResult.builder()
                 .idx(product.getIdx())
                 .name(product.getName())
                 .rating(product.getRating())

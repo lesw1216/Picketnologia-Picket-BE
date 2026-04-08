@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.model.dto;
+package com.picketlogia.picket.api.product.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.picketlogia.picket.api.product.model.entity.RoundTime;

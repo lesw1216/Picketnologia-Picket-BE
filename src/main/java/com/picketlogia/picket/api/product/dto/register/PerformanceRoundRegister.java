@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.product.model.dto.register;
+package com.picketlogia.picket.api.product.dto.register;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
