@@ -1,9 +1,8 @@
-package com.picketlogia.picket.api.reservation.model.dto;
+package com.picketlogia.picket.api.reservation.dto.result;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.picketlogia.picket.api.reservation.model.entity.Reservation;
+import com.picketlogia.picket.api.reservation.model.Reservation;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
-import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +11,8 @@ import java.util.Date;
 
 @Getter
 @Builder
-public class ReservationListDto {
+public class ReservationResult {
+
     private Long idx;
     private Long price;
     private String paymentIdx;
@@ -27,9 +27,9 @@ public class ReservationListDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date createdAt;
 
-    public static ReservationListDto from(Reservation entity) {
+    public static ReservationResult from(Reservation entity) {
 
-        return ReservationListDto.builder()
+        return ReservationResult.builder()
                 .idx(entity.getIdx())
                 .price(entity.getPrice())
                 .paymentIdx(entity.getPaymentIdx())

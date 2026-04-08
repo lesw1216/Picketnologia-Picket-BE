@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.reservation.model;
+package com.picketlogia.picket.api.reservation.dto.request;
 
 import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
 import lombok.Builder;
@@ -8,13 +8,13 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ReservationCheck {
+public class ReservationCheckRequest {
     private Long roundTimeIdx;
     private Long productIdx;
     private List<Long> seatIdxes;
 
-    public static ReservationCheck from(PaymentCustomDataCommand customData) {
-        return ReservationCheck.builder()
+    public static ReservationCheckRequest from(PaymentCustomDataCommand customData) {
+        return ReservationCheckRequest.builder()
                 .roundTimeIdx(customData.getRoundTimeIdx())
                 .seatIdxes(customData.getSeatIdxes())
                 .build();

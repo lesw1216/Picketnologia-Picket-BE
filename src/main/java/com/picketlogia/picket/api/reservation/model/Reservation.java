@@ -1,8 +1,7 @@
-package com.picketlogia.picket.api.reservation.model.entity;
+package com.picketlogia.picket.api.reservation.model;
 
 import com.picketlogia.picket.api.product.model.Product;
-import com.picketlogia.picket.api.reservation.model.PaymentStatus;
-import com.picketlogia.picket.api.reservation.model.UpdateReservationReq;
+import com.picketlogia.picket.api.reservation.dto.request.UpdateReservationRequest;
 import com.picketlogia.picket.api.user.model.entity.User;
 import com.picketlogia.picket.common.model.BaseEntity;
 import jakarta.persistence.*;
@@ -51,7 +50,7 @@ public class Reservation extends BaseEntity {
     @JoinColumn(name = "product_idx")
     private Product product;
 
-    public void completeReservation(UpdateReservationReq update) {
+    public void completeReservation(UpdateReservationRequest update) {
         this.price = update.getPrice();
         this.paidAt = update.getPaidAt();
         this.paymentStatus = update.getPaymentStatus();

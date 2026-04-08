@@ -1,6 +1,6 @@
-package com.picketlogia.picket.api.reservation.model;
+package com.picketlogia.picket.api.reservation.dto.result;
 
-import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
+import com.picketlogia.picket.api.reservation.model.ReserveDetail;
 import com.picketlogia.picket.api.seat.dto.response.PriceResponse;
 import com.picketlogia.picket.api.seat.model.SeatGradeStatus;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 @Getter
 @Builder
-public class ReserveDetailRead {
+public class ReserveDetailResult {
     private Long idx;
     private SeatGradeStatus grade;
     private String seatName;
@@ -19,8 +19,8 @@ public class ReserveDetailRead {
     private LocalTime roundTime;
     private LocalDate roundDate;
 
-    public static ReserveDetailRead from(ReserveDetail entity) {
-        return ReserveDetailRead.builder()
+    public static ReserveDetailResult from(ReserveDetail entity) {
+        return ReserveDetailResult.builder()
                 .idx(entity.getIdx())
                 .grade(entity.getSeat().getSeatGrade().getGrade())
                 .price(

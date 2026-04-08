@@ -3,10 +3,10 @@ package com.picketlogia.picket.api.reservation.controller;
 import com.picketlogia.picket.api.payments.dto.response.PaymentPrepareResponse;
 import com.picketlogia.picket.api.payments.util.PaymentIdGenerator;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
-import com.picketlogia.picket.api.reservation.model.PurchaseCheckResp;
-import com.picketlogia.picket.api.reservation.model.ReservationCheck;
-import com.picketlogia.picket.api.reservation.model.ReservationRegister;
-import com.picketlogia.picket.api.reservation.model.dto.ReservationListDto;
+import com.picketlogia.picket.api.reservation.dto.response.PurchaseCheckResponse;
+import com.picketlogia.picket.api.reservation.dto.request.ReservationCheckRequest;
+import com.picketlogia.picket.api.reservation.dto.command.ReservationRegisterCommand;
+import com.picketlogia.picket.api.reservation.dto.result.ReservationResult;
 import com.picketlogia.picket.api.reservation.repository.ReservationRepository;
 import com.picketlogia.picket.api.reservation.service.ReservationService;
 import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
@@ -27,24 +27,20 @@ public class ReservationController {
     private final ReservationRepository reservationRepository;
 
     @GetMapping("/check")
-    public ResponseEntity<BaseResponse<PurchaseCheckResp>> hasPurchased(
-            @AuthenticationPrincipal UserAuthRequest loginUser,
-            @RequestParam Long productIdx) {
+    public ResponseEntity<BaseResponse<PurchaseCheckResponse>> hasPurchased(@AuthenticationPrincipal UserAuthRequest loginUser,
+                                                                            @RequestParam Long productIdx) {
 
         Long userIdx = loginUser.getIdx();
 
         Boolean hasPurchased = reservationService.hasPurchasedProduct(userIdx, productIdx);
 
-        PurchaseCheckResp resp = PurchaseCheckResp.builder()
-                .hasPurchase(hasPurchased)
-                .build();
-        return ResponseEntity.ok(BaseResponse.success(resp));
+        PurchaseCheckResponse purchaseCheckResponse = PurchaseCheckResponse.builder().hasPurchase(hasPurchased).build();
+        return ResponseEntity.ok(BaseResponse.success(purchaseCheckResponse));
     }
 
     @PostMapping("/validate-seats")
-    public ResponseEntity<BaseResponse<PaymentPrepareResponse>> checkReservedSeats(
-            @AuthenticationPrincipal UserAuthRequest userAuth,
-            @RequestBody ReservationCheck reservationCheck) {
+    public ResponseEntity<BaseResponse<PaymentPrepareResponse>> checkReservedSeats(@AuthenticationPrincipal UserAuthRequest userAuth,
+                                                                                   @RequestBody ReservationCheckRequest reservationCheck) {
 
         reservationService.checkReservedSeat(reservationCheck);
         reservationService.checkRockSeats(reservationCheck);
@@ -52,7 +48,7 @@ public class ReservationController {
         // 좌석 검증 성공, 결제 ID 생성 후 결제 ID와 유저 ID DB에 저장 후 결제 상태를 PENDING 설정
         String paymentIdx = PaymentIdGenerator.generatePaymentId();
         reservationService.register(
-                ReservationRegister.from(
+                ReservationRegisterCommand.from(
                         userAuth.getIdx(),
                         reservationCheck.getProductIdx(),
                         paymentIdx,
@@ -66,12 +62,11 @@ public class ReservationController {
 
 
     @GetMapping("/ReservationList")
-    public ResponseEntity<BaseResponse<List<ReservationListDto>>> getUserReviewsByDate(
-            @AuthenticationPrincipal UserAuthRequest userAuth,
-            @RequestParam("startDate") String startDate,
-            @RequestParam("endDate") String endDate
-    ) {
-        List<ReservationListDto> response = reservationService.listByUserAndDateRange(userAuth.getIdx(), startDate, endDate);
+    public ResponseEntity<BaseResponse<List<ReservationResult>>> getUserReviewsByDate(@AuthenticationPrincipal UserAuthRequest userAuth,
+                                                                                      @RequestParam("startDate") String startDate,
+                                                                                      @RequestParam("endDate") String endDate) {
+
+        List<ReservationResult> response = reservationService.listByUserAndDateRange(userAuth.getIdx(), startDate, endDate);
         return ResponseEntity.ok(BaseResponse.success(response));
     }
 }

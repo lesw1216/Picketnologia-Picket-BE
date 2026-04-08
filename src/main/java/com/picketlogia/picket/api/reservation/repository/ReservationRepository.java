@@ -2,7 +2,7 @@ package com.picketlogia.picket.api.reservation.repository;
 
 import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
-import com.picketlogia.picket.api.reservation.model.entity.Reservation;
+import com.picketlogia.picket.api.reservation.model.Reservation;
 import com.picketlogia.picket.api.user.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.reservation.model.entity;
+package com.picketlogia.picket.api.reservation.model;
 
 import com.picketlogia.picket.api.product.model.RoundTime;
 import com.picketlogia.picket.api.seat.model.Seat;

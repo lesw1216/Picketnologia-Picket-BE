@@ -1,8 +1,9 @@
-package com.picketlogia.picket.api.reservation.model;
+package com.picketlogia.picket.api.reservation.dto.command;
 
 import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
 import com.picketlogia.picket.api.product.model.Product;
-import com.picketlogia.picket.api.reservation.model.entity.Reservation;
+import com.picketlogia.picket.api.reservation.model.PaymentStatus;
+import com.picketlogia.picket.api.reservation.model.Reservation;
 import com.picketlogia.picket.api.user.model.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class ReservationRegister {
+public class ReservationRegisterCommand {
     private String paymentIdx;
     private Long userIdx;
     private Long productIdx;
@@ -19,13 +20,13 @@ public class ReservationRegister {
     private LocalDateTime paidAt;
     private PaymentStatus paymentStatus;
 
-    public static ReservationRegister from(Long userIdx,
-                                           String paymentIdx,
-                                           Long price,
-                                           LocalDateTime paidAt,
-                                           PaymentCustomDataCommand paymentData) {
+    public static ReservationRegisterCommand from(Long userIdx,
+                                                  String paymentIdx,
+                                                  Long price,
+                                                  LocalDateTime paidAt,
+                                                  PaymentCustomDataCommand paymentData) {
 
-        return ReservationRegister.builder()
+        return ReservationRegisterCommand.builder()
                 .paymentIdx(paymentIdx)
                 .price(price)
                 .userIdx(userIdx)
@@ -35,9 +36,9 @@ public class ReservationRegister {
 
     }
 
-    public static ReservationRegister from(Long userIdx, Long productIdx, String paymentIdx, PaymentStatus paymentStatus) {
+    public static ReservationRegisterCommand from(Long userIdx, Long productIdx, String paymentIdx, PaymentStatus paymentStatus) {
 
-        return ReservationRegister.builder()
+        return ReservationRegisterCommand.builder()
                 .userIdx(userIdx)
                 .paymentIdx(paymentIdx)
                 .paymentStatus(paymentStatus)

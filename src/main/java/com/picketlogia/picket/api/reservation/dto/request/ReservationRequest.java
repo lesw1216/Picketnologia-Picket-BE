@@ -1,7 +1,7 @@
-package com.picketlogia.picket.api.reservation.model;
+package com.picketlogia.picket.api.reservation.dto.request;
 
 import com.picketlogia.picket.api.product.model.Product;
-import com.picketlogia.picket.api.reservation.model.entity.Reservation;
+import com.picketlogia.picket.api.reservation.model.Reservation;
 import com.picketlogia.picket.api.user.model.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,15 +10,15 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ReserveReq {
+public class ReservationRequest {
     private Long price;
     private String paymentsIdx;
     private Long userIdx;
     private Long productIdx;
     private List<Long> seatIdxList;
 
-    public static ReserveReq from(Long userIdx, Long productIdx, List<Long> seatIdxList) {
-        return ReserveReq.builder()
+    public static ReservationRequest from(Long userIdx, Long productIdx, List<Long> seatIdxList) {
+        return ReservationRequest.builder()
                 .userIdx(userIdx)
                 .productIdx(productIdx)
                 .seatIdxList(seatIdxList)

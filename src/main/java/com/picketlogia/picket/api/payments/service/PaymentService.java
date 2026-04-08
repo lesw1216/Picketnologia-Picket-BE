@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
 import com.picketlogia.picket.api.payments.dto.command.PaymentCommand;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
-import com.picketlogia.picket.api.reservation.model.ReserveDetailRegister;
-import com.picketlogia.picket.api.reservation.model.UpdateReservationReq;
+import com.picketlogia.picket.api.reservation.dto.command.ReserveDetailRegisterCommand;
+import com.picketlogia.picket.api.reservation.dto.request.UpdateReservationRequest;
 import com.picketlogia.picket.api.reservation.service.ReservationService;
 import com.picketlogia.picket.api.reservation.service.ReserveDetailService;
 import com.picketlogia.picket.api.seat.model.Seat;
@@ -107,7 +107,7 @@ public class PaymentService {
      * @param customData 사용자 지정 데이터
      */
     private void requestReservation(String paymentId, PaidPayment paidPayment, PaymentCustomDataCommand customData) {
-        UpdateReservationReq update = UpdateReservationReq.from(
+        UpdateReservationRequest update = UpdateReservationRequest.from(
                 paidPayment.getAmount().getTotal(),
                 getPaidAt(paidPayment),
                 customData.getProductIdx(),
@@ -116,7 +116,7 @@ public class PaymentService {
         Long reservationId = reservationService.updateReservation(update, paymentId);
 
         reserveDetailService.register(
-                ReserveDetailRegister.from(customData, reservationId)
+                ReserveDetailRegisterCommand.from(customData, reservationId)
         );
     }
 
