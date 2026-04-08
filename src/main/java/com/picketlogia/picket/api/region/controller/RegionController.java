@@ -1,6 +1,6 @@
-package com.picketlogia.picket.api.region.RegionController;
+package com.picketlogia.picket.api.region.controller;
 
-import com.picketlogia.picket.api.region.model.RegionList;
+import com.picketlogia.picket.api.region.dto.result.RegionResults;
 import com.picketlogia.picket.api.region.service.RegionService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,9 +24,9 @@ public class RegionController {
             description = "등록된 모든 지역 정보 조회한다."
     )
     @GetMapping()
-    public ResponseEntity<BaseResponse<RegionList>> getRegions() {
-        RegionList regions = regionService.findAll();
+    public ResponseEntity<BaseResponse<RegionResults>> getRegions() {
 
+        RegionResults regions = regionService.findAll();
         return ResponseEntity.ok(BaseResponse.success(regions));
     }
 }

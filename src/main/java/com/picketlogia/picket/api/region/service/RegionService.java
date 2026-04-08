@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.region.service;
 
 import com.picketlogia.picket.api.region.model.Region;
-import com.picketlogia.picket.api.region.model.RegionList;
+import com.picketlogia.picket.api.region.dto.result.RegionResults;
 import com.picketlogia.picket.api.region.repository.RegionRepository;
 import com.picketlogia.picket.common.exception.BaseException;
 import com.picketlogia.picket.common.model.BaseResponseStatus;
@@ -21,10 +21,10 @@ public class RegionService {
      * 전체 지역 목록을 조회한다.
      * @return <code>RegionList</code> 전체 지역 목록 읽기 전용 DTO
      */
-    public RegionList findAll() {
-        List<Region> regions = regionRepository.findAll();
+    public RegionResults findAll() {
 
-        return RegionList.of(regions);
+        List<Region> regions = regionRepository.findAll();
+        return RegionResults.of(regions);
     }
 
     /**
@@ -34,6 +34,7 @@ public class RegionService {
      * @throws BaseException 지역 코드가 존재하지 않는 경우 예외 발생
      */
     public Integer findIdxByCode(String code) {
+
         Optional<Region> result = regionRepository.findByCode(code);
 
         Region region = result.orElseThrow(() -> BaseException.from(BaseResponseStatus.INVALID_REGION_CODE));
