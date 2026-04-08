@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.payments.model;
+package com.picketlogia.picket.api.payments.dto.result;
 
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
 import lombok.Builder;
@@ -6,12 +6,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PaymentStatusResponse {
+public class PaymentStatusResult {
 
     private PaymentStatus status;
 
-    public static PaymentStatusResponse from(PaymentStatus status) {
-        return PaymentStatusResponse.builder()
+    public static PaymentStatusResult from(PaymentStatus status) {
+        return PaymentStatusResult.builder()
                 .status(status)
                 .build();
     }

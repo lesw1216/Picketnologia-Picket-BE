@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.reservation.model;
 
-import com.picketlogia.picket.api.payments.model.PaymentCustomData;
+import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
 import com.picketlogia.picket.api.product.model.entity.Product;
 import com.picketlogia.picket.api.reservation.model.entity.Reservation;
 import com.picketlogia.picket.api.user.model.entity.User;
@@ -23,7 +23,7 @@ public class ReservationRegister {
                                            String paymentIdx,
                                            Long price,
                                            LocalDateTime paidAt,
-                                           PaymentCustomData paymentData) {
+                                           PaymentCustomDataCommand paymentData) {
 
         return ReservationRegister.builder()
                 .paymentIdx(paymentIdx)

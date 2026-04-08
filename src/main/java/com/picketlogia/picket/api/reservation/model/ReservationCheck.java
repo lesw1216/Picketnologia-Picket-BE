@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.reservation.model;
 
-import com.picketlogia.picket.api.payments.model.PaymentCustomData;
+import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +13,7 @@ public class ReservationCheck {
     private Long productIdx;
     private List<Long> seatIdxes;
 
-    public static ReservationCheck from(PaymentCustomData customData) {
+    public static ReservationCheck from(PaymentCustomDataCommand customData) {
         return ReservationCheck.builder()
                 .roundTimeIdx(customData.getRoundTimeIdx())
                 .seatIdxes(customData.getSeatIdxes())

@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.reservation.model;
 
-import com.picketlogia.picket.api.payments.model.PaymentCustomData;
+import com.picketlogia.picket.api.payments.dto.command.PaymentCustomDataCommand;
 import com.picketlogia.picket.api.product.model.entity.RoundTime;
 import com.picketlogia.picket.api.reservation.model.entity.Reservation;
 import com.picketlogia.picket.api.reservation.model.entity.ReserveDetail;
@@ -17,7 +17,7 @@ public class ReserveDetailRegister {
     private Long roundTimeIdx;
     private List<Long> seatIdes;
 
-    public static ReserveDetailRegister from(PaymentCustomData paymentData, Long reservationIdx) {
+    public static ReserveDetailRegister from(PaymentCustomDataCommand paymentData, Long reservationIdx) {
         return ReserveDetailRegister.builder()
                 .reservationIdx(reservationIdx)
                 .roundTimeIdx(paymentData.getRoundTimeIdx())

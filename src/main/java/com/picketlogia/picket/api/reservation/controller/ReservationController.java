@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.reservation.controller;
 
-import com.picketlogia.picket.api.payments.model.PaymentPrepareResp;
-import com.picketlogia.picket.api.payments.service.PaymentIdGenerator;
+import com.picketlogia.picket.api.payments.dto.response.PaymentPrepareResponse;
+import com.picketlogia.picket.api.payments.util.PaymentIdGenerator;
 import com.picketlogia.picket.api.reservation.model.PaymentStatus;
 import com.picketlogia.picket.api.reservation.model.PurchaseCheckResp;
 import com.picketlogia.picket.api.reservation.model.ReservationCheck;
@@ -42,7 +42,7 @@ public class ReservationController {
     }
 
     @PostMapping("/validate-seats")
-    public ResponseEntity<BaseResponse<PaymentPrepareResp>> checkReservedSeats(
+    public ResponseEntity<BaseResponse<PaymentPrepareResponse>> checkReservedSeats(
             @AuthenticationPrincipal UserAuthRequest userAuth,
             @RequestBody ReservationCheck reservationCheck) {
 
@@ -60,7 +60,7 @@ public class ReservationController {
         );
 
         return ResponseEntity.ok(BaseResponse.success(
-                PaymentPrepareResp.builder().paymentIdx(paymentIdx).build())
+                PaymentPrepareResponse.builder().paymentIdx(paymentIdx).build())
         );
     }
 

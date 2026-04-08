@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.payments.service;
+package com.picketlogia.picket.api.payments.util;
 
 import java.util.UUID;
 

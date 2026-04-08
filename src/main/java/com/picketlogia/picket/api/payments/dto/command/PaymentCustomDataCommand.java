@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.payments.model;
+package com.picketlogia.picket.api.payments.dto.command;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,17 +13,17 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class PaymentCustomData {
+public class PaymentCustomDataCommand {
     private Long productIdx;
     private Long roundTimeIdx;
     private List<Long> seatIdxes;
 
-    public static PaymentCustomData from(String customData) {
+    public static PaymentCustomDataCommand from(String customData) {
 
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            return mapper.readValue(customData, PaymentCustomData.class);
+            return mapper.readValue(customData, PaymentCustomDataCommand.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
