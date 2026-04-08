@@ -2,7 +2,7 @@ package com.picketlogia.picket.api.product.repository;
 
 import com.picketlogia.picket.api.product.dto.request.ProductSearchRequest;
 import com.picketlogia.picket.api.product.model.Product;
-import com.picketlogia.picket.api.product.model.entity.QProduct;
+import com.picketlogia.picket.api.product.model.QProduct;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
