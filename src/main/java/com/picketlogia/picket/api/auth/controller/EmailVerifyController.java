@@ -1,10 +1,8 @@
 package com.picketlogia.picket.api.auth.controller;
 
-import com.picketlogia.picket.api.auth.model.AuthCodeMail;
-import com.picketlogia.picket.api.auth.model.ResetPasswordDto;
+import com.picketlogia.picket.api.auth.dto.request.AuthCodeMailRequest;
 import com.picketlogia.picket.api.auth.service.AuthService;
 import com.picketlogia.picket.api.auth.service.mail.AuthCodeMailService;
-import com.picketlogia.picket.api.auth.service.mail.PasswordResetMailService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import com.picketlogia.picket.common.model.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +45,7 @@ public class EmailVerifyController {
             description = "발신한 이메일코드를 입력한 인증코드랑 비교한다."
     )
     @PostMapping("/email/verify-code")
-    public ResponseEntity<BaseResponse<Object>> verifyCode(@RequestBody AuthCodeMail authCodeMail) {
+    public ResponseEntity<BaseResponse<Object>> verifyCode(@RequestBody AuthCodeMailRequest authCodeMail) {
 
         try {
             authService.verifyAuthCode(authCodeMail);

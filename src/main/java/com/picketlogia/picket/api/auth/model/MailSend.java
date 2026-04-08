@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.auth.service.mail;
+package com.picketlogia.picket.api.auth.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

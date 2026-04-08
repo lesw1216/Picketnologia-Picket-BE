@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.auth.model;
+package com.picketlogia.picket.api.auth.dto.response;
 
 import com.picketlogia.picket.api.user.model.entity.User;
 import lombok.Builder;
@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class FindEmailResp {
+public class FindEmailResponse {
     private String email;
 
-    public static FindEmailResp from(User user) {
-        return FindEmailResp.builder().
+    public static FindEmailResponse from(User user) {
+        return FindEmailResponse.builder().
                 email(user.getEmail())
                 .build();
     }

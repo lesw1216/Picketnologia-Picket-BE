@@ -1,5 +1,6 @@
 package com.picketlogia.picket.api.auth.service.mail;
 
+import com.picketlogia.picket.api.auth.model.MailSend;
 import com.picketlogia.picket.api.auth.service.AuthCodeCreator;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;

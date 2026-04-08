@@ -1,5 +1,6 @@
 package com.picketlogia.picket.api.auth.service.mail;
 
+import com.picketlogia.picket.api.auth.model.MailSend;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;

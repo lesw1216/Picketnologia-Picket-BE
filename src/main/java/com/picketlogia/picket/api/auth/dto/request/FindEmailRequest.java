@@ -1,11 +1,11 @@
-package com.picketlogia.picket.api.auth.model;
+package com.picketlogia.picket.api.auth.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class FindEmailDto {
+public class FindEmailRequest {
     private String name;
     private String phoneNumber;
 }
