@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.user.model.dto;
+package com.picketlogia.picket.api.user.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class UserAuth implements UserDetails {
+public class UserAuthRequest implements UserDetails {
 
     private Long idx;
     private String email;

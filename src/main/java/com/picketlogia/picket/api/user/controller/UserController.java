@@ -1,10 +1,9 @@
 package com.picketlogia.picket.api.user.controller;
 
-import com.picketlogia.picket.api.token.model.AccessToken;
 import com.picketlogia.picket.api.token.model.TokenCookieNames;
 import com.picketlogia.picket.api.token.model.TokenCookiePaths;
-import com.picketlogia.picket.api.user.model.dto.signup.SignupResp;
-import com.picketlogia.picket.api.user.model.dto.signup.UserRegister;
+import com.picketlogia.picket.api.user.dto.response.SignupResponse;
+import com.picketlogia.picket.api.user.dto.request.UserRegisterRequest;
 import com.picketlogia.picket.api.user.service.LogoutService;
 import com.picketlogia.picket.api.user.service.SignupService;
 import com.picketlogia.picket.common.model.BaseResponse;
@@ -28,7 +27,7 @@ public class UserController {
             description = "유저 정보 입력받고 저장한다."
     )
     @PostMapping("/user/signup")
-    public ResponseEntity<BaseResponse<Object>> userForm(@RequestBody UserRegister register) {
+    public ResponseEntity<BaseResponse<Object>> userForm(@RequestBody UserRegisterRequest register) {
         signupService.signup(register);
 
         return ResponseEntity.ok(BaseResponse.success("회원 가입 성공"));
@@ -40,7 +39,7 @@ public class UserController {
     )
     @GetMapping("/user/signup")
     public ResponseEntity<BaseResponse<Object>> signup() {
-        return ResponseEntity.ok(BaseResponse.success(SignupResp.from()));
+        return ResponseEntity.ok(BaseResponse.success(SignupResponse.from()));
     }
 
     @Operation(

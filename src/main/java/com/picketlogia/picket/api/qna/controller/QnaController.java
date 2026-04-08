@@ -3,10 +3,7 @@ package com.picketlogia.picket.api.qna.controller;
 import com.picketlogia.picket.api.qna.model.QnaDto;
 import com.picketlogia.picket.api.qna.model.QnaList;
 import com.picketlogia.picket.api.qna.service.QnaService;
-import com.picketlogia.picket.api.review.model.dto.ReviewDtoList;
-import com.picketlogia.picket.api.review.model.dto.ReviewDtoRegister;
-import com.picketlogia.picket.api.review.model.dto.ReviewList;
-import com.picketlogia.picket.api.user.model.dto.UserAuth;
+import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +29,7 @@ public class QnaController {
             description = "질문 내용 등록하는 기능"
     )
     @PostMapping("/qna_create_post")
-    public ResponseEntity createQna(@RequestBody QnaDto.CreateRequest dto, @AuthenticationPrincipal UserAuth userAuth) {
+    public ResponseEntity createQna(@RequestBody QnaDto.CreateRequest dto, @AuthenticationPrincipal UserAuthRequest userAuth) {
 
         qnaService.save(dto ,userAuth.getIdx());
         return ResponseEntity.status(200).body("리뷰저장성공");
@@ -122,7 +119,7 @@ public class QnaController {
 
     @GetMapping("/userQnaList")
     public ResponseEntity<BaseResponse<List<QnaDto.Response>>> getUserReviewsByDate(
-            @AuthenticationPrincipal UserAuth userAuth,
+            @AuthenticationPrincipal UserAuthRequest userAuth,
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ) {

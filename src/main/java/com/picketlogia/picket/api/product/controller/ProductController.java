@@ -7,7 +7,7 @@ import com.picketlogia.picket.api.product.model.ProductSearchDto;
 import com.picketlogia.picket.api.product.model.dto.ProductQuery;
 import com.picketlogia.picket.api.product.model.dto.register.ProductRegister;
 import com.picketlogia.picket.api.product.service.ProductService;
-import com.picketlogia.picket.api.user.model.dto.UserAuth;
+import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
 import com.picketlogia.picket.common.model.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,7 @@ public class ProductController {
     )
     @PostMapping
     public ResponseEntity<BaseResponse<String>> register(
-            @AuthenticationPrincipal UserAuth userAuth,
+            @AuthenticationPrincipal UserAuthRequest userAuth,
             @RequestPart ProductRegister product,
             @RequestPart List<MultipartFile> files) {
 

@@ -6,8 +6,8 @@ import com.picketlogia.picket.api.token.model.RefreshToken;
 import com.picketlogia.picket.api.token.model.TokenCookieNames;
 import com.picketlogia.picket.api.token.model.TokenCookiePaths;
 import com.picketlogia.picket.api.token.service.TokenService;
-import com.picketlogia.picket.api.user.model.dto.UserAuth;
-import com.picketlogia.picket.api.user.model.dto.login.UserLoginResp;
+import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
+import com.picketlogia.picket.api.user.dto.response.UserLoginResponse;
 import com.picketlogia.picket.common.model.BaseResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -32,7 +32,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        UserAuth authUser = (UserAuth) authentication.getPrincipal();
+        UserAuthRequest authUser = (UserAuthRequest) authentication.getPrincipal();
 
         String accessToken = AccessToken.issue(
                 authUser.getEmail(),
@@ -64,7 +64,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             response.setContentType("application/json; charset=UTF-8");
             response.getWriter().write(
                     objectMapper.writeValueAsString(
-                            BaseResponse.success(UserLoginResp.from(authUser))
+                            BaseResponse.success(UserLoginResponse.from(authUser))
                     )
             );
         }

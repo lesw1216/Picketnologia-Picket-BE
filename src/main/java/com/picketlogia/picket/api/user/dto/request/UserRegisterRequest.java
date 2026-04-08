@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.user.model.dto.signup;
+package com.picketlogia.picket.api.user.dto.request;
 
 import com.picketlogia.picket.api.user.model.entity.Seller;
 import com.picketlogia.picket.api.user.model.entity.User;
@@ -10,7 +10,7 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 
 @Getter
-public class UserRegister {
+public class UserRegisterRequest {
 
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String email;

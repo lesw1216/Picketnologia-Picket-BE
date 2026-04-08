@@ -9,7 +9,7 @@ import com.picketlogia.picket.api.reservation.model.ReservationRegister;
 import com.picketlogia.picket.api.reservation.model.dto.ReservationListDto;
 import com.picketlogia.picket.api.reservation.repository.ReservationRepository;
 import com.picketlogia.picket.api.reservation.service.ReservationService;
-import com.picketlogia.picket.api.user.model.dto.UserAuth;
+import com.picketlogia.picket.api.user.dto.request.UserAuthRequest;
 import com.picketlogia.picket.common.model.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class ReservationController {
 
     @GetMapping("/check")
     public ResponseEntity<BaseResponse<PurchaseCheckResp>> hasPurchased(
-            @AuthenticationPrincipal UserAuth loginUser,
+            @AuthenticationPrincipal UserAuthRequest loginUser,
             @RequestParam Long productIdx) {
 
         Long userIdx = loginUser.getIdx();
@@ -43,7 +43,7 @@ public class ReservationController {
 
     @PostMapping("/validate-seats")
     public ResponseEntity<BaseResponse<PaymentPrepareResp>> checkReservedSeats(
-            @AuthenticationPrincipal UserAuth userAuth,
+            @AuthenticationPrincipal UserAuthRequest userAuth,
             @RequestBody ReservationCheck reservationCheck) {
 
         reservationService.checkReservedSeat(reservationCheck);
@@ -67,7 +67,7 @@ public class ReservationController {
 
     @GetMapping("/ReservationList")
     public ResponseEntity<BaseResponse<List<ReservationListDto>>> getUserReviewsByDate(
-            @AuthenticationPrincipal UserAuth userAuth,
+            @AuthenticationPrincipal UserAuthRequest userAuth,
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ) {
