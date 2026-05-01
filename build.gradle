@@ -67,6 +67,10 @@ dependencies {
 
 	// port one
 	implementation 'io.portone:server-sdk:0.19.2'
+
+    // actuator, prometheus
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

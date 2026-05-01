@@ -89,3 +89,12 @@ portone:
     api-secret: ${PORT_ONE_API_SECRET}
     store-id: ${STORE_ID}
     webhook: ${WEB_HOOK_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
