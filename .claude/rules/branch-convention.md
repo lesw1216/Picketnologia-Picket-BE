@@ -3,15 +3,16 @@
 ## 브랜치 전략
 
 ```
-main
- └── dev          ← 기본 개발 브랜치, 모든 작업 브랜치는 여기서 분기
+dev (배포)
+ └── staging      ← 통합 테스트 브랜치, 모든 작업 브랜치는 여기로 PR
        ├── feat/#12-{브랜치명}
        ├── fix/#15-{브랜치명}
        └── ...
 ```
 
-- **dev**: 기본 개발 브랜치. 모든 작업 브랜치는 dev에서 생성하고 dev로 PR
-- **main**: 배포 전용. dev → main merge 시 GitHub Actions로 자동 배포. 직접 커밋 금지
+- **작업 브랜치**: `dev` 기준으로 생성, 완료 후 `staging` 으로 PR
+- **staging**: 통합 테스트 전용. 작업 브랜치들을 머지해 기능 검증
+- **dev**: 배포 전용. `staging → dev` PR 완료 시 자동 배포. 직접 커밋 금지
 
 ## 브랜치 네이밍
 
@@ -48,4 +49,11 @@ test/#25-reservation-service-test
 git checkout dev
 git pull origin dev
 git checkout -b feat/#12-product-registration
+```
+
+## PR 방향
+
+```
+작업 브랜치 → staging   (기능 완료 후)
+staging     → dev       (테스트 완료 후, 배포)
 ```
