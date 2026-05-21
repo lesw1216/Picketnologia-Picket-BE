@@ -1,0 +1,1323 @@
+openapi: 3.0.3
+info:
+  title: Picket API 명세서
+  description: 공연 예매 플랫폼 Picket 백엔드 API 명세
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: 로컬 개발 서버
+  - url: https://api.picket.o-r.kr
+    description: 운영 서버
+
+tags:
+  - name: 인증
+    description: 이메일 인증 / 비밀번호 찾기
+  - name: 토큰
+    description: Access · Refresh 토큰 재발급
+  - name: 유저
+    description: 회원가입 · 로그아웃 · 권한 확인
+  - name: 판매자
+    description: 판매자 권한 확인
+  - name: 공연
+    description: 공연 상품 등록 · 조회 · 검색
+  - name: 회차
+    description: 공연 회차일 · 회차시간 조회
+  - name: 좌석
+    description: 좌석 정보 조회 · 임시 점유 관리
+  - name: 예매
+    description: 예매 등록 · 좌석 검증 · 내역 조회
+  - name: 결제
+    description: 결제 웹훅 · 결제 상태 조회
+  - name: 리뷰
+    description: 공연 리뷰 등록 · 조회
+  - name: 문의
+    description: 공연 Q&A 등록 · 답변
+  - name: 장르
+    description: 장르 코드 조회
+  - name: 지역
+    description: 지역 코드 조회
+  - name: 정렬옵션
+    description: 정렬 옵션 목록 조회
+  - name: 컨텐츠
+    description: 장르별 컨텐츠 조회
+
+paths:
+  # ---------------- 인증 ----------------
+  /auth/email/verify-code:
+    get:
+      summary: 이메일 인증번호 발송
+      description: 회원가입 시 이메일로 인증번호를 전송한다.
+      tags: [인증]
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema: { type: string, format: email }
+      responses:
+        '200':
+          description: 발송 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponseString' }
+    post:
+      summary: 이메일 인증번호 검증
+      description: 발송된 인증번호와 사용자가 입력한 코드를 비교한다.
+      tags: [인증]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthCodeMailRequest' }
+      responses:
+        '200':
+          description: 검증 성공 또는 실패 (실패 시 isSuccess=false)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponseString' }
+
+  /auth/find-email:
+    post:
+      summary: 아이디(이메일) 찾기
+      description: 이름과 전화번호로 가입된 이메일을 조회한다.
+      tags: [인증]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FindEmailRequest' }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/FindEmailResponse' }
+
+  /auth/find-password/link:
+    post:
+      summary: 비밀번호 재설정 링크 전송
+      description: 입력한 이메일로 비밀번호 재설정 링크를 발송한다.
+      tags: [인증]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ResetPasswordRequest' }
+      responses:
+        '200':
+          description: 발송 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponseString' }
+
+  /auth/reset-password:
+    post:
+      summary: 비밀번호 재설정
+      description: 이메일 링크로 전달된 token과 새 비밀번호를 받아 비밀번호를 변경한다.
+      tags: [인증]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ResetPasswordRequest' }
+      responses:
+        '200':
+          description: 재설정 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponseString' }
+
+  # ---------------- 토큰 ----------------
+  /token/reissue:
+    post:
+      summary: 토큰 재발급
+      description: 쿠키의 Access · Refresh 토큰을 검증해 새 토큰 쌍을 발급한다.
+      tags: [토큰]
+      parameters:
+        - in: cookie
+          name: ACCESS
+          required: true
+          schema: { type: string }
+        - in: cookie
+          name: REFRESH
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 재발급 성공 (Set-Cookie 헤더에 새 토큰 포함)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponseString' }
+        '400':
+          description: 토큰 검증 실패
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+
+  # ---------------- 유저 ----------------
+  /user/signup:
+    post:
+      summary: 회원가입
+      description: 일반 유저 또는 판매자 유저로 회원가입한다.
+      tags: [유저]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserRegisterRequest' }
+      responses:
+        '200':
+          description: 회원가입 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponseString' }
+        '400':
+          description: 입력값 검증 실패
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+    get:
+      summary: 회원가입 페이지 진입 정보 조회
+      description: 회원가입 화면에 필요한 정적 정보를 반환한다.
+      tags: [유저]
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/SignupResponse' }
+
+  /logout:
+    post:
+      summary: 로그아웃
+      description: Access / Refresh 쿠키를 만료 처리하고 토큰을 폐기한다.
+      tags: [유저]
+      parameters:
+        - in: cookie
+          name: ACCESS
+          required: true
+          schema: { type: string }
+        - in: cookie
+          name: REFRESH
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 로그아웃 성공 (Set-Cookie 로 쿠키 만료)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponse' }
+
+  # ---------------- 판매자 ----------------
+  /seller/test:
+    get:
+      summary: 판매자 권한 확인
+      description: SELLER 권한이 있는지 확인한다.
+      tags: [판매자]
+      responses:
+        '200':
+          description: 권한 확인 성공
+          content:
+            text/plain:
+              schema: { type: string, example: "seller 권한입니다." }
+        '401':
+          description: 권한 없음
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+
+  # ---------------- 공연 ----------------
+  /products:
+    post:
+      summary: 공연 상품 등록
+      description: 판매자가 공연 상품 정보와 이미지 파일을 등록한다.
+      tags: [공연]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                product: { $ref: '#/components/schemas/ProductRegisterRequest' }
+                files:
+                  type: array
+                  items: { type: string, format: binary }
+              required: [product, files]
+      responses:
+        '200':
+          description: 등록 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponseString' }
+        '400':
+          description: 입력값 검증 실패
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+    get:
+      summary: 공연 목록 조회 (페이징)
+      description: 장르 · 정렬 · 페이지 조건으로 공연 목록을 조회한다.
+      tags: [공연]
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0 }
+        - in: query
+          name: genre
+          schema: { type: string }
+        - in: query
+          name: sort
+          schema: { type: string }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/ProductsResult' }
+
+  /products/{productId}:
+    get:
+      summary: 공연 상세 조회
+      description: productId에 해당하는 공연의 상세 정보를 조회한다.
+      tags: [공연]
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/ProductDetailResult' }
+        '404':
+          description: 공연 없음
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+
+  /products/searchAndSort:
+    get:
+      summary: 공연 검색 및 정렬
+      description: 공연명 키워드로 검색하고 리뷰 평균 또는 리뷰 개수로 정렬한다.
+      tags: [공연]
+      parameters:
+        - in: query
+          name: name
+          schema: { type: string }
+        - in: query
+          name: genre
+          schema: { type: string }
+        - in: query
+          name: sort
+          schema: { type: string, description: "리뷰 평균/개수 등 정렬 키" }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items: { $ref: '#/components/schemas/SalesProductResult' }
+
+  /home/products/best-sellers:
+    get:
+      summary: 베스트셀러 공연 조회
+      description: 장르별 판매순 Top 5 공연을 조회한다.
+      tags: [공연]
+      parameters:
+        - in: query
+          name: genre
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items: { $ref: '#/components/schemas/SalesProductResult' }
+
+  /home/products/upcoming:
+    get:
+      summary: 오픈 예정 공연 조회
+      description: 오픈 예정일이 빠른 순으로 5개 공연을 조회한다.
+      tags: [공연]
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items: { $ref: '#/components/schemas/UpcomingProductResult' }
+
+  # ---------------- 회차 ----------------
+  /round/date:
+    get:
+      summary: 회차일 조회
+      description: 특정 공연의 회차일을 조회한다 (오늘 이전 회차일 제외).
+      tags: [회차]
+      parameters:
+        - in: query
+          name: product
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/RoundDatesResult' }
+
+  /round/time:
+    get:
+      summary: 회차 시간 조회
+      description: 선택한 회차일의 회차 시간을 조회한다 (오늘이면 현재 이후 시간만).
+      tags: [회차]
+      parameters:
+        - in: query
+          name: date
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/RoundTimesResult' }
+
+  # ---------------- 좌석 ----------------
+  /seat-info:
+    get:
+      summary: 좌석 정보 조회
+      description: 공연·회차시간에 해당하는 좌석 정보를 조회한다.
+      tags: [좌석]
+      parameters:
+        - in: query
+          name: product
+          required: true
+          schema: { type: integer, format: int64 }
+        - in: query
+          name: roundTime
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/SeatInfoResponse' }
+
+  /rounds/{roundTimeId}/seats:
+    get:
+      summary: 선점된 좌석 목록 조회
+      description: 특정 회차에서 결제 전 임시 점유 중인 좌석 목록을 Redis 캐시에서 조회한다.
+      tags: [좌석]
+      parameters:
+        - in: path
+          name: roundTimeId
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results:
+                        type: object
+                        additionalProperties: true
+    delete:
+      summary: 임시 점유 좌석 일괄 해제
+      description: 사용자가 좌석 선택 화면에서 이전 단계로 돌아갈 때 임시 점유를 해제한다.
+      tags: [좌석]
+      parameters:
+        - in: path
+          name: roundTimeId
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LockedSeatsRequest' }
+      responses:
+        '200':
+          description: 해제 성공 (응답 본문 없음)
+
+  # ---------------- 예매 ----------------
+  /order/check:
+    get:
+      summary: 공연 구매 이력 확인
+      description: 로그인 유저가 특정 공연을 이미 구매했는지 여부를 반환한다.
+      tags: [예매]
+      parameters:
+        - in: query
+          name: productIdx
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/PurchaseCheckResponse' }
+
+  /order/validate-seats:
+    post:
+      summary: 좌석 점유 검증 및 결제 준비
+      description: 선택한 좌석들의 점유 유효성을 검증하고, 결제 ID를 발급해 PENDING 상태로 예매를 등록한다.
+      tags: [예매]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReservationCheckRequest' }
+      responses:
+        '200':
+          description: 검증 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/PaymentPrepareResponse' }
+        '400':
+          description: 좌석 점유 검증 실패
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+
+  /order/ReservationList:
+    get:
+      summary: 내 예매 목록 조회 (기간별)
+      description: 로그인 유저의 예매 내역을 기간 범위로 조회한다.
+      tags: [예매]
+      parameters:
+        - in: query
+          name: startDate
+          required: true
+          schema: { type: string, example: "2026-05-01" }
+        - in: query
+          name: endDate
+          required: true
+          schema: { type: string, example: "2026-05-31" }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items: { $ref: '#/components/schemas/ReservationResult' }
+
+  # ---------------- 결제 ----------------
+  /payment/webhook:
+    post:
+      summary: 결제 웹훅 수신
+      description: PortOne 결제 웹훅을 받아 결제 상태를 갱신한다.
+      tags: [결제]
+      parameters:
+        - in: header
+          name: webhook-id
+          required: true
+          schema: { type: string }
+        - in: header
+          name: webhook-timestamp
+          required: true
+          schema: { type: string }
+        - in: header
+          name: webhook-signature
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              description: 원본 페이로드 (서명 검증을 위해 raw string)
+      responses:
+        '200':
+          description: 처리 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BaseResponse' }
+
+  /payment/{paymentId}/status:
+    get:
+      summary: 결제 상태 조회
+      description: paymentId에 해당하는 결제 상태를 조회한다.
+      tags: [결제]
+      parameters:
+        - in: path
+          name: paymentId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/PaymentStatusResult' }
+
+  # ---------------- 리뷰 ----------------
+  /reviews/register:
+    post:
+      summary: 리뷰 등록
+      description: 공연 상품에 대한 리뷰를 등록한다.
+      tags: [리뷰]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReviewDtoRegister' }
+      responses:
+        '200':
+          description: 등록 성공
+          content:
+            text/plain:
+              schema: { type: string, example: "리뷰저장성공" }
+        '400':
+          description: 입력값 검증 실패
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+
+  /reviews/list:
+    get:
+      summary: 리뷰 전체 조회
+      description: 등록된 모든 리뷰를 조회한다.
+      tags: [리뷰]
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items: { $ref: '#/components/schemas/ReviewDtoList' }
+
+  /reviews/userReviewList:
+    get:
+      summary: 내가 쓴 리뷰 조회 (기간별)
+      description: 로그인 유저가 특정 기간에 작성한 리뷰를 조회한다.
+      tags: [리뷰]
+      parameters:
+        - in: query
+          name: startDate
+          required: true
+          schema: { type: string }
+        - in: query
+          name: endDate
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items: { $ref: '#/components/schemas/ReviewDtoList' }
+
+  /reviews/listPaging:
+    get:
+      summary: 리뷰 목록 페이징 조회
+      description: 특정 상품의 리뷰를 페이지·사이즈로 조회한다.
+      tags: [리뷰]
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema: { type: integer, minimum: 0, description: "0부터 시작" }
+        - in: query
+          name: size
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: productId
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/ReviewList' }
+
+  # ---------------- 문의 (QnA) ----------------
+  /qna/qna_create_post:
+    post:
+      summary: 문의글 등록
+      description: 공연에 대한 문의글을 등록한다.
+      tags: [문의]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/QnaCreateRequest' }
+      responses:
+        '200':
+          description: 등록 성공
+          content:
+            text/plain:
+              schema: { type: string, example: "리뷰저장성공" }
+
+  /qna/qna_get_all_posts:
+    get:
+      summary: 문의글 전체 조회
+      description: 등록된 모든 문의글을 조회한다.
+      tags: [문의]
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/QnaResponse' }
+
+  /qna/{qnaIdx}:
+    get:
+      summary: 문의글 단건 조회
+      description: qnaIdx에 해당하는 문의글을 조회한다.
+      tags: [문의]
+      parameters:
+        - in: path
+          name: qnaIdx
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/QnaResponse' }
+    put:
+      summary: 문의글 수정
+      description: qnaIdx에 해당하는 문의글을 수정한다 (비밀번호 검증).
+      tags: [문의]
+      parameters:
+        - in: path
+          name: qnaIdx
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/QnaUpdateRequest' }
+      responses:
+        '200':
+          description: 수정 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/QnaResponse' }
+    delete:
+      summary: 문의글 삭제
+      description: qnaIdx에 해당하는 문의글을 삭제한다 (soft delete).
+      tags: [문의]
+      parameters:
+        - in: path
+          name: qnaIdx
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204':
+          description: 삭제 성공
+
+  /qna/{qnaIdx}/answers:
+    post:
+      summary: 문의글 답변 등록
+      description: 특정 문의글에 답변을 등록한다.
+      tags: [문의]
+      parameters:
+        - in: path
+          name: qnaIdx
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/QnaCreateAnswerRequest' }
+      responses:
+        '201':
+          description: 답변 등록 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/QnaAnswerResponse' }
+
+  /qna/{qnaIdx}/answers/{answerIdx}:
+    put:
+      summary: 문의글 답변 수정
+      description: 답변 내용을 수정한다.
+      tags: [문의]
+      parameters:
+        - in: path
+          name: qnaIdx
+          required: true
+          schema: { type: integer, format: int64 }
+        - in: path
+          name: answerIdx
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/QnaUpdateAnswerRequest' }
+      responses:
+        '200':
+          description: 수정 성공
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/QnaAnswerResponse' }
+    delete:
+      summary: 문의글 답변 삭제
+      description: 답변을 삭제한다 (soft delete).
+      tags: [문의]
+      parameters:
+        - in: path
+          name: qnaIdx
+          required: true
+          schema: { type: integer, format: int64 }
+        - in: path
+          name: answerIdx
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204':
+          description: 삭제 성공
+
+  /qna/userQnaList:
+    get:
+      summary: 내가 쓴 문의글 조회 (기간별)
+      description: 로그인 유저가 특정 기간에 작성한 문의글을 조회한다.
+      tags: [문의]
+      parameters:
+        - in: query
+          name: startDate
+          required: true
+          schema: { type: string }
+        - in: query
+          name: endDate
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items: { $ref: '#/components/schemas/QnaResponse' }
+
+  /qna/qnaPaging:
+    get:
+      summary: 상품별 문의글 페이징 조회
+      description: 특정 상품의 문의글을 페이지·사이즈로 조회한다.
+      tags: [문의]
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema: { type: integer, minimum: 0 }
+        - in: query
+          name: size
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: productId
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/QnaList' }
+
+  # ---------------- 장르 ----------------
+  /genres:
+    get:
+      summary: 공연 장르 전체 조회
+      description: 등록된 공연 장르 목록을 조회한다.
+      tags: [장르]
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/GenreListResponse' }
+
+  # ---------------- 지역 ----------------
+  /regions:
+    get:
+      summary: 지역 전체 조회
+      description: 등록된 지역 목록을 조회한다.
+      tags: [지역]
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/RegionResults' }
+
+  # ---------------- 정렬옵션 ----------------
+  /sort-options:
+    get:
+      summary: 정렬 옵션 목록 조회
+      description: 클라이언트가 사용할 수 있는 정렬 옵션 목록을 조회한다.
+      tags: [정렬옵션]
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/SortOptionList' }
+
+  # ---------------- 컨텐츠 ----------------
+  /contents/{genre}:
+    get:
+      summary: 장르별 컨텐츠 조회
+      description: 지정한 장르의 공연 컨텐츠를 조회한다.
+      tags: [컨텐츠]
+      parameters:
+        - in: path
+          name: genre
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      results: { $ref: '#/components/schemas/ContentsResponse' }
+
+components:
+  schemas:
+    # ---------------- 공통 ----------------
+    BaseResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        code: { type: integer, example: 20000 }
+        message: { type: string, example: "요청에 성공하였습니다." }
+        results:
+          description: 응답 결과. 엔드포인트별 스키마 참조.
+          nullable: true
+
+    BaseResponseString:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            results: { type: string }
+
+    ErrorResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: false }
+        code: { type: integer, example: 40000 }
+        message: { type: string, example: "잘못된 입력입니다." }
+        results: { nullable: true }
+
+    # ---------------- 인증 ----------------
+    AuthCodeMailRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        code: { type: string, description: "사용자가 입력한 인증번호" }
+      required: [email, code]
+
+    FindEmailRequest:
+      type: object
+      properties:
+        name: { type: string }
+        phoneNumber: { type: string, example: "010-1234-5678" }
+      required: [name, phoneNumber]
+
+    FindEmailResponse:
+      type: object
+      properties:
+        email: { type: string, format: email }
+
+    ResetPasswordRequest:
+      type: object
+      properties:
+        token: { type: string, description: "재설정 링크의 토큰" }
+        email: { type: string, format: email }
+        password: { type: string, description: "새 비밀번호" }
+
+    # ---------------- 유저 ----------------
+    UserRegisterRequest:
+      type: object
+      required: [email, password, nickname, name, birth, phoneNumber, userType, gender]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+        nickname: { type: string, maxLength: 15 }
+        name: { type: string, description: "한글 또는 영문 2~30자" }
+        birth: { type: string, example: "1995-03-21", description: "YYYY-MM-DD" }
+        phoneNumber: { type: string, example: "010-1234-5678" }
+        userType:
+          type: string
+          enum: [USER, SELLER]
+        gender:
+          type: string
+          enum: [MALE, FEMALE]
+        representativeName:
+          type: string
+          description: 판매자 대표자 이름 (SELLER 일 때)
+        businessNumber:
+          type: string
+          description: 사업자등록번호 (SELLER 일 때)
+          example: "123-45-67890"
+        businessAddress:
+          type: string
+          description: 회사 주소 (SELLER 일 때)
+
+    SignupResponse:
+      type: object
+      description: 회원가입 화면에 필요한 정적 메타 정보
+
+    # ---------------- 공연 ----------------
+    ProductRegisterRequest:
+      type: object
+      properties:
+        name: { type: string, description: 상품(공연) 이름 }
+        rating: { type: string, description: 관람 등급 }
+        venueName: { type: string }
+        venueAddress: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        runningTime: { type: integer, description: 분 단위 }
+        description: { type: string }
+        genre: { type: string }
+        openDate: { type: string, format: date-time }
+        roundOption: { $ref: '#/components/schemas/PerformanceRoundRequest' }
+        seatMap:
+          type: array
+          description: "행 단위로 묶인 좌석 2차원 배열"
+          items:
+            type: array
+            items: { $ref: '#/components/schemas/SeatRequest' }
+        seatGrade:
+          type: array
+          items: { $ref: '#/components/schemas/SeatGradeRequest' }
+
+    PerformanceRoundRequest:
+      type: object
+      properties:
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        selectedDays:
+          type: array
+          items:
+            type: object
+            properties:
+              code: { type: string, example: "MON" }
+              times:
+                type: array
+                items: { type: string, example: "19:30" }
+        sameTimes:
+          type: array
+          items: { type: string, example: "19:30" }
+        manualRounds:
+          type: array
+          items:
+            type: object
+            properties:
+              date: { type: string, format: date }
+              time: { type: string, example: "19:30" }
+
+    SeatRequest:
+      type: object
+      properties:
+        name: { type: string, example: "A-1" }
+        grade:
+          type: string
+          enum: [VIP, R, S, A, B]
+
+    SeatGradeRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          enum: [VIP, R, S, A, B]
+        price: { type: integer, format: int64 }
+
+    ProductsResult:
+      type: object
+      description: 페이징된 공연 목록 결과
+
+    ProductDetailResult:
+      type: object
+      description: 공연 상세 정보 (좌석등급·회차·이미지 등 포함)
+
+    SalesProductResult:
+      type: object
+      description: 판매 통계 기반 공연 요약
+
+    UpcomingProductResult:
+      type: object
+      description: 오픈 예정 공연 요약
+
+    # ---------------- 회차 ----------------
+    RoundDatesResult:
+      type: object
+      description: 공연 회차일 목록
+
+    RoundTimesResult:
+      type: object
+      description: 특정 회차일의 회차 시간 목록
+
+    # ---------------- 좌석 ----------------
+    LockedSeatsRequest:
+      type: object
+      properties:
+        seatIds:
+          type: array
+          items: { type: integer, format: int64 }
+
+    SeatInfoResponse:
+      type: object
+      description: 좌석 배치 · 가격 · 점유 상태 정보
+
+    # ---------------- 예매 ----------------
+    ReservationCheckRequest:
+      type: object
+      properties:
+        roundTimeIdx: { type: integer, format: int64 }
+        productIdx: { type: integer, format: int64 }
+        seatIdxes:
+          type: array
+          items: { type: integer, format: int64 }
+
+    PaymentPrepareResponse:
+      type: object
+      properties:
+        paymentIdx: { type: string, description: "결제 식별자" }
+
+    PurchaseCheckResponse:
+      type: object
+      properties:
+        hasPurchase: { type: boolean }
+
+    ReservationResult:
+      type: object
+      description: 예매 단건 정보
+
+    # ---------------- 결제 ----------------
+    PaymentStatusResult:
+      type: object
+      description: 결제 상태 정보 (status, paidAmount 등)
+
+    # ---------------- 리뷰 ----------------
+    ReviewDtoRegister:
+      type: object
+      required: [rating, comment, productId]
+      properties:
+        rating: { type: integer, minimum: 1, maximum: 5, example: 3 }
+        comment: { type: string, example: "정말 좋은 공연이었습니다." }
+        productId: { type: integer, format: int64, example: 1 }
+
+    ReviewDtoList:
+      type: object
+      description: 리뷰 단건 정보
+
+    ReviewList:
+      type: object
+      description: 페이징된 리뷰 목록
+
+    # ---------------- 문의 ----------------
+    QnaCreateRequest:
+      type: object
+      properties:
+        title: { type: string }
+        contents: { type: string }
+        isPrivate: { type: boolean }
+        password: { type: string, description: "비밀글일 때 사용" }
+        productId: { type: integer, format: int64 }
+
+    QnaUpdateRequest:
+      type: object
+      properties:
+        title: { type: string }
+        contents: { type: string }
+        isPrivate: { type: boolean }
+        password: { type: string, description: "수정 시 비밀번호 검증용" }
+
+    QnaCreateAnswerRequest:
+      type: object
+      properties:
+        contents: { type: string }
+
+    QnaUpdateAnswerRequest:
+      type: object
+      properties:
+        contents: { type: string }
+
+    QnaResponse:
+      type: object
+      properties:
+        idx: { type: integer, format: int64 }
+        title: { type: string }
+        contents: { type: string }
+        isPrivate: { type: boolean }
+        answers:
+          type: array
+          items: { $ref: '#/components/schemas/QnaAnswerResponse' }
+        createdAt: { type: string, example: "05.21(목) 14:30" }
+        prodcutName: { type: string, description: "[sic] productName 의 오타" }
+        userNickName: { type: string }
+
+    QnaAnswerResponse:
+      type: object
+      properties:
+        idx: { type: integer, format: int64 }
+        contents: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    QnaList:
+      type: object
+      description: 페이징된 문의 목록
+
+    # ---------------- 장르 / 지역 / 정렬 ----------------
+    GenreListResponse:
+      type: object
+      description: 장르 전체 목록
+
+    RegionResults:
+      type: object
+      description: 지역 전체 목록
+
+    SortOptionList:
+      type: object
+      description: 정렬 옵션 enum 목록
+
+    # ---------------- 컨텐츠 ----------------
+    ContentsResponse:
+      type: object
+      description: 장르별 컨텐츠 응답

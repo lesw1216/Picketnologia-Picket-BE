@@ -10,7 +10,7 @@ dev (배포)
        └── ...
 ```
 
-- **작업 브랜치**: `dev` 기준으로 생성, 완료 후 `staging` 으로 PR
+- **작업 브랜치**: `staging` 기준으로 생성, 완료 후 `staging` 으로 PR
 - **staging**: 통합 테스트 전용. 작업 브랜치들을 머지해 기능 검증
 - **dev**: 배포 전용. `staging → dev` PR 완료 시 자동 배포. 직접 커밋 금지
 
@@ -45,9 +45,9 @@ test/#25-reservation-service-test
 ## 브랜치 생성 명령
 
 ```bash
-# dev 기준으로 브랜치 생성
-git checkout dev
-git pull origin dev
+# staging 기준으로 브랜치 생성
+git checkout staging
+git pull origin staging
 git checkout -b feat/#12-product-registration
 ```
 
