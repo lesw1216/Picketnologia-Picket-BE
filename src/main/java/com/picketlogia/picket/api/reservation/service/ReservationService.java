@@ -90,7 +90,7 @@ public class ReservationService {
      * @param reservationCheck 좌석·회차 정보가 담긴 검증 요청
      * @throws BaseException 이미 예약된 좌석이 포함되었을 때
      */
-    public void checkReservedSeat(ReservationCheckRequest reservationCheck) {
+    public void validateSeatsNotReserved(ReservationCheckRequest reservationCheck) {
 
         List<ReserveDetail> allByRoundTime = reserveDetailRepository.findAllByRoundTime(
                 RoundTime.builder().idx(reservationCheck.getRoundTimeIdx()).build()
@@ -115,7 +115,7 @@ public class ReservationService {
      * @param endDateStr   종료일 (yyyy-MM-dd)
      * @return 예매 결과 목록
      */
-    public List<ReservationResult> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
+    public List<ReservationResult> findAllByUserIdxAndCreatedAtBetween(Long userIdx, String startDateStr, String endDateStr) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime startDateTime = LocalDate.parse(startDateStr, formatter).atStartOfDay();
@@ -132,9 +132,9 @@ public class ReservationService {
      * @param reservationCheck 회차·좌석 정보가 담긴 요청
      * @throws BaseException 좌석 잠금이 만료되었을 때
      */
-    public void checkRockSeats(ReservationCheckRequest reservationCheck) {
+    public void validateLockedSeats(ReservationCheckRequest reservationCheck) {
 
-        seatHoldService.validateRockSeats(
+        seatHoldService.validateLockedSeats(
                 reservationCheck.getRoundTimeIdx(),
                 reservationCheck.getSeatIdxes().stream().map(String::valueOf).toList()
         );

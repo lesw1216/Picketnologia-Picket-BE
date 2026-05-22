@@ -87,7 +87,7 @@ public class SeatHoldService {
      * @param seatIdxes    검증할 좌석 ID 목록
      * @throws com.picketlogia.picket.common.exception.BaseException 좌석 잠금이 만료되었을 때
      */
-    public void validateRockSeats(Long roundTimeIdx, List<String> seatIdxes) {
+    public void validateLockedSeats(Long roundTimeIdx, List<String> seatIdxes) {
 
         String key = createKey(roundTimeIdx);
         seatStatusRepository.allFieldsExist(key, seatIdxes);

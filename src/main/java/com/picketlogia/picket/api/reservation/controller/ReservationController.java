@@ -54,11 +54,11 @@ public class ReservationController {
      * @return 발급된 결제 ID를 담은 표준 응답
      */
     @PostMapping("/validate-seats")
-    public ResponseEntity<BaseResponse<PaymentPrepareResponse>> checkReservedSeats(@AuthenticationPrincipal UserAuthRequest userAuth,
-                                                                                   @RequestBody ReservationCheckRequest reservationCheck) {
+    public ResponseEntity<BaseResponse<PaymentPrepareResponse>> validateReservation(@AuthenticationPrincipal UserAuthRequest userAuth,
+                                                                                    @RequestBody ReservationCheckRequest reservationCheck) {
 
-        reservationService.checkReservedSeat(reservationCheck);
-        reservationService.checkRockSeats(reservationCheck);
+        reservationService.validateSeatsNotReserved(reservationCheck);
+        reservationService.validateLockedSeats(reservationCheck);
 
         String paymentIdx = PaymentIdGenerator.generatePaymentId();
         reservationService.register(
@@ -88,7 +88,7 @@ public class ReservationController {
                                                                                       @RequestParam("startDate") String startDate,
                                                                                       @RequestParam("endDate") String endDate) {
 
-        List<ReservationResult> response = reservationService.listByUserAndDateRange(userAuth.getIdx(), startDate, endDate);
+        List<ReservationResult> response = reservationService.findAllByUserIdxAndCreatedAtBetween(userAuth.getIdx(), startDate, endDate);
 
         return ResponseEntity.ok(BaseResponse.success(response));
     }
