@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,23 +35,32 @@ public class ReservationService {
     private final SeatHoldService seatHoldService;
 
     /**
-     * 예매 정보를 저장한다.
-     * @param reservationRegister 예매 정보
+     * 예매를 신규 저장한다.
+     *
+     * @param reservationRegister 예매 등록 명령
+     * @return 저장된 예매 ID
      */
     public Long register(ReservationRegisterCommand reservationRegister) {
 
-        // 예매 저장
         Reservation savedReservation = reservationRepository.save(reservationRegister.toEntity());
 
         return savedReservation.getIdx();
     }
 
+    /**
+     * 결제 ID로 예매를 찾아 완료 처리하고 상품 판매 수를 증가시킨다.
+     *
+     * @param update     완료 처리에 필요한 추가 정보
+     * @param paymentIdx 결제 ID
+     * @return 완료 처리된 예매 ID
+     * @throws BaseException 결제 ID에 매칭되는 예매가 없을 때
+     */
     @Transactional
     public Long updateReservation(UpdateReservationRequest update, String paymentIdx) {
-        Optional<Reservation> result = reservationRepository.findByPaymentIdx(paymentIdx);
 
+        Reservation findReserve = reservationRepository.findByPaymentIdx(paymentIdx)
+                .orElseThrow(() -> BaseException.from(BaseResponseStatus.NOT_FOUND_DATA));
 
-        Reservation findReserve = result.orElseThrow(() -> BaseException.from(BaseResponseStatus.NOT_FOUND_DATA));
         findReserve.completeReservation(update);
         findReserve.getProduct().incrementSalesCount();
 
@@ -60,12 +68,14 @@ public class ReservationService {
     }
 
     /**
-     * 해당 상품을 구매한 적이 있는지 검증한다.
-     * @param userIdx 검증할 유저의 IDX
-     * @param productIdx 검증할 상품의 IDX
-     * @return 구매한 내역이 있다면 <code>true</code>, 없다면 <code>false</code>
+     * 사용자가 특정 상품을 구매한 적이 있는지 확인한다.
+     *
+     * @param userIdx    검증할 사용자 ID
+     * @param productIdx 검증할 상품 ID
+     * @return 구매 내역이 있으면 {@code true}
      */
     public Boolean hasPurchasedProduct(Long userIdx, Long productIdx) {
+
         Long countByUser = reservationRepository.countByUserAndProduct(
                 User.builder().idx(userIdx).build(),
                 Product.builder().idx(productIdx).build()
@@ -75,29 +85,20 @@ public class ReservationService {
     }
 
     /**
-     * 구매하려는 좌석이 이미 예약되어 있는 좌석인지 검증한다.
-     * @param reservationCheck 예약 요청 정보
-     * @throws BaseException 이미 구매된 좌석이 포함되었다면 예외 발생
+     * 회차에 이미 예약된 좌석과 요청 좌석의 중복 여부를 검증한다.
+     *
+     * @param reservationCheck 좌석·회차 정보가 담긴 검증 요청
+     * @throws BaseException 이미 예약된 좌석이 포함되었을 때
      */
     public void checkReservedSeat(ReservationCheckRequest reservationCheck) {
-        /*
-        * 이전에 구매한 예약 좌석 검증은 다음과 같은 idx가 필요하다.
-        * 1. roundTimeIdx - 회차
-        * 2. seatIdx
-        * */
 
-        // 회차 IDX를 사용해 해당 회차의 예약 상세 목록을 조회한다.
         List<ReserveDetail> allByRoundTime = reserveDetailRepository.findAllByRoundTime(
                 RoundTime.builder().idx(reservationCheck.getRoundTimeIdx()).build()
         );
 
-        /*
-         * 1. 조회한 상세 목록에서 좌석 IDX만 추출한다.
-         * 2. 예약 요청의 좌석 IDX가 포함되는지 검증한다.
-         */
-        List<Long> reservedSeats = allByRoundTime.stream().map(
-                reserveDetail -> reserveDetail.getSeat().getIdx()
-        ).toList();
+        List<Long> reservedSeats = allByRoundTime.stream()
+                .map(reserveDetail -> reserveDetail.getSeat().getIdx())
+                .toList();
 
         boolean hasAlreadySeats = reservationCheck.getSeatIdxes().stream().anyMatch(reservedSeats::contains);
 
@@ -106,6 +107,14 @@ public class ReservationService {
         }
     }
 
+    /**
+     * 사용자의 지정 기간 내 예매 내역을 조회한다.
+     *
+     * @param userIdx      조회 대상 사용자 ID
+     * @param startDateStr 시작일 (yyyy-MM-dd)
+     * @param endDateStr   종료일 (yyyy-MM-dd)
+     * @return 예매 결과 목록
+     */
     public List<ReservationResult> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -117,6 +126,12 @@ public class ReservationService {
         return reservations.stream().map(ReservationResult::from).toList();
     }
 
+    /**
+     * 좌석 잠금이 결제 시점에도 유효한지 SeatHold 단을 통해 검증한다.
+     *
+     * @param reservationCheck 회차·좌석 정보가 담긴 요청
+     * @throws BaseException 좌석 잠금이 만료되었을 때
+     */
     public void checkRockSeats(ReservationCheckRequest reservationCheck) {
 
         seatHoldService.validateRockSeats(
@@ -125,6 +140,14 @@ public class ReservationService {
         );
     }
 
+    /**
+     * 결제 ID와 사용자 ID로 예매의 현재 결제 상태를 조회한다.
+     *
+     * @param paymentId 결제 ID
+     * @param userIdx   사용자 ID
+     * @return 결제 상태 결과
+     * @throws BaseException 매칭되는 예매가 없을 때
+     */
     public PaymentStatusResult findPaymentStatusOfReservation(String paymentId, Long userIdx) {
 
         PaymentStatus findPaymentStatus = reservationRepository.findStatusByPaymentIdxAndUserId(paymentId, userIdx)
