@@ -645,7 +645,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/ReviewDtoRegister' }
+            schema: { $ref: '#/components/schemas/ReviewRegisterRequest' }
       responses:
         '200':
           description: 등록 성공
@@ -675,7 +675,7 @@ paths:
                     properties:
                       results:
                         type: array
-                        items: { $ref: '#/components/schemas/ReviewDtoList' }
+                        items: { $ref: '#/components/schemas/ReviewListResult' }
 
   /reviews/userReviewList:
     get:
@@ -703,7 +703,7 @@ paths:
                     properties:
                       results:
                         type: array
-                        items: { $ref: '#/components/schemas/ReviewDtoList' }
+                        items: { $ref: '#/components/schemas/ReviewListResult' }
 
   /reviews/listPaging:
     get:
@@ -733,7 +733,7 @@ paths:
                   - $ref: '#/components/schemas/BaseResponse'
                   - type: object
                     properties:
-                      results: { $ref: '#/components/schemas/ReviewList' }
+                      results: { $ref: '#/components/schemas/ReviewPageResult' }
 
   # ---------------- 문의 (QnA) ----------------
   /qna/qna_create_post:
@@ -830,7 +830,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/QnaCreateAnswerRequest' }
+            schema: { $ref: '#/components/schemas/QnaAnswerCreateRequest' }
       responses:
         '201':
           description: 답변 등록 성공
@@ -856,7 +856,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/QnaUpdateAnswerRequest' }
+            schema: { $ref: '#/components/schemas/QnaAnswerUpdateRequest' }
       responses:
         '200':
           description: 수정 성공
@@ -936,7 +936,7 @@ paths:
                   - $ref: '#/components/schemas/BaseResponse'
                   - type: object
                     properties:
-                      results: { $ref: '#/components/schemas/QnaList' }
+                      results: { $ref: '#/components/schemas/QnaPageResult' }
 
   # ---------------- 장르 ----------------
   /genres:
@@ -990,7 +990,7 @@ paths:
                   - $ref: '#/components/schemas/BaseResponse'
                   - type: object
                     properties:
-                      results: { $ref: '#/components/schemas/SortOptionList' }
+                      results: { $ref: '#/components/schemas/SortOptionListResult' }
 
   # ---------------- 컨텐츠 ----------------
   /contents/{genre}:
@@ -1235,7 +1235,7 @@ components:
       description: 결제 상태 정보 (status, paidAmount 등)
 
     # ---------------- 리뷰 ----------------
-    ReviewDtoRegister:
+    ReviewRegisterRequest:
       type: object
       required: [rating, comment, productId]
       properties:
@@ -1243,11 +1243,11 @@ components:
         comment: { type: string, example: "정말 좋은 공연이었습니다." }
         productId: { type: integer, format: int64, example: 1 }
 
-    ReviewDtoList:
+    ReviewListResult:
       type: object
       description: 리뷰 단건 정보
 
-    ReviewList:
+    ReviewPageResult:
       type: object
       description: 페이징된 리뷰 목록
 
@@ -1269,12 +1269,12 @@ components:
         isPrivate: { type: boolean }
         password: { type: string, description: "수정 시 비밀번호 검증용" }
 
-    QnaCreateAnswerRequest:
+    QnaAnswerCreateRequest:
       type: object
       properties:
         contents: { type: string }
 
-    QnaUpdateAnswerRequest:
+    QnaAnswerUpdateRequest:
       type: object
       properties:
         contents: { type: string }
@@ -1300,7 +1300,7 @@ components:
         contents: { type: string }
         createdAt: { type: string, format: date-time }
 
-    QnaList:
+    QnaPageResult:
       type: object
       description: 페이징된 문의 목록
 
@@ -1313,7 +1313,7 @@ components:
       type: object
       description: 지역 전체 목록
 
-    SortOptionList:
+    SortOptionListResult:
       type: object
       description: 정렬 옵션 enum 목록
 

@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.genre.controller;
 
-import com.picketlogia.picket.api.genre.dto.result.GenreListResponse;
+import com.picketlogia.picket.api.genre.dto.response.GenreListResponse;
 import com.picketlogia.picket.api.genre.service.GenreService;
 import com.picketlogia.picket.common.model.BaseResponse;
 import lombok.RequiredArgsConstructor;

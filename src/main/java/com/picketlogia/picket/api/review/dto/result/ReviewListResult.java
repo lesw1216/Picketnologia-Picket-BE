@@ -1,10 +1,7 @@
-package com.picketlogia.picket.api.review.model.dto;
-
+package com.picketlogia.picket.api.review.dto.result;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.picketlogia.picket.api.review.model.entity.Review;
-import com.picketlogia.picket.utils.CustomDateSerializer;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +9,8 @@ import java.util.Date;
 
 @Getter
 @Builder
-public class  ReviewDtoList {
+public class ReviewListResult {
+
     private Integer rating;
 
     private String comment;
@@ -27,9 +25,9 @@ public class  ReviewDtoList {
 
     private String userNickName;
 
-    public static ReviewDtoList from(Review entity){
+    public static ReviewListResult from(Review entity) {
 
-        ReviewDtoList dto = ReviewDtoList.builder()
+        return ReviewListResult.builder()
                 .prodcutName(entity.getProduct().getName())
                 .rating(entity.getRating())
                 .comment(entity.getComment())
@@ -37,6 +35,5 @@ public class  ReviewDtoList {
                 .updatedAt(entity.getUpdatedAt())
                 .userNickName(entity.getUser().getName())
                 .build();
-        return dto;
     }
 }

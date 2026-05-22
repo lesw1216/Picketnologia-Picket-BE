@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.product.service;
 
-import com.picketlogia.picket.api.genre.dto.result.GenreReadResponse;
+import com.picketlogia.picket.api.genre.dto.result.GenreResult;
 import com.picketlogia.picket.api.genre.service.GenreService;
 import com.picketlogia.picket.api.product.dto.request.ProductSearchRequest;
 import com.picketlogia.picket.api.product.dto.result.ProductDetailResult;
@@ -55,7 +55,7 @@ public class ProductService {
             // 상품 등록에 필요한 Validator 실행
             productValidators.forEach(validator -> validator.validate(productRegisterRequest));
 
-            GenreReadResponse findGenre = genreService.findByCode(productRegisterRequest.getGenre());
+            GenreResult findGenre = genreService.findByCode(productRegisterRequest.getGenre());
 
             // 상품 DB 저장
             Product product = productRepository.save(

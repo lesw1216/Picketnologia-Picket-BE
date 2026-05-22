@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.token.controller;
 
-import com.picketlogia.picket.api.token.dto.ReissueTokens;
+import com.picketlogia.picket.api.token.dto.response.ReissueTokensResponse;
 import com.picketlogia.picket.api.token.model.RefreshToken;
 import com.picketlogia.picket.api.token.model.TokenCookieNames;
 import com.picketlogia.picket.api.token.model.TokenCookiePaths;
@@ -26,7 +26,7 @@ public class TokenReissueController {
                                                                  @CookieValue(value = TokenCookieNames.REFRESH) String refreshToken) {
 
         // 토큰 재발급 요청
-        ReissueTokens reissueTokens = tokenService.reissueToken(accessToken, refreshToken);
+        ReissueTokensResponse reissueTokens = tokenService.reissueToken(accessToken, refreshToken);
 
         // 토큰 재발급 실패
         if (reissueTokens == null) {

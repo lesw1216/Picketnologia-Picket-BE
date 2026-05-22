@@ -6,13 +6,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GenreReadResponse {
+public class GenreResult {
     private int idx;
     private String code;
     private String name;
 
-    public static GenreReadResponse from(Genre entity) {
-        return GenreReadResponse.builder()
+    public static GenreResult from(Genre entity) {
+        return GenreResult.builder()
                 .idx(entity.getIdx())
                 .code(entity.getCode())
                 .name(entity.getName())

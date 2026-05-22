@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.user.dto.response;
 
-import com.picketlogia.picket.api.user.dto.result.GenderRead;
-import com.picketlogia.picket.api.user.dto.result.UserTypeRead;
+import com.picketlogia.picket.api.user.dto.result.GenderResult;
+import com.picketlogia.picket.api.user.dto.result.UserTypeResult;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,13 +11,13 @@ import java.util.List;
 @Builder
 public class SignupResponse {
 
-    private List<GenderRead> genders;
-    private List<UserTypeRead> userTypes;
+    private List<GenderResult> genders;
+    private List<UserTypeResult> userTypes;
 
     public static SignupResponse from() {
         return SignupResponse.builder()
-                .genders(GenderRead.fromList())
-                .userTypes(UserTypeRead.fromList())
+                .genders(GenderResult.fromList())
+                .userTypes(UserTypeResult.fromList())
                 .build();
     }
 }

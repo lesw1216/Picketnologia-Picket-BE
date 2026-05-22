@@ -1,26 +1,17 @@
 package com.picketlogia.picket.api.qna.service;
 
 
+import com.picketlogia.picket.api.qna.dto.request.QnaAnswerCreateRequest;
+import com.picketlogia.picket.api.qna.dto.request.QnaAnswerUpdateRequest;
+import com.picketlogia.picket.api.qna.dto.request.QnaCreateRequest;
+import com.picketlogia.picket.api.qna.dto.request.QnaUpdateRequest;
+import com.picketlogia.picket.api.qna.dto.response.QnaAnswerResponse;
+import com.picketlogia.picket.api.qna.dto.response.QnaResponse;
+import com.picketlogia.picket.api.qna.dto.result.QnaPageResult;
 import com.picketlogia.picket.api.qna.model.Answer;
-import com.picketlogia.picket.api.qna.model.QnaDto;
 import com.picketlogia.picket.api.qna.model.Qna;
-import com.picketlogia.picket.api.qna.model.QnaList;
 import com.picketlogia.picket.api.qna.repository.AnswerRepository;
 import com.picketlogia.picket.api.qna.repository.QnaRepository;
-import com.picketlogia.picket.api.review.model.dto.ReviewDtoList;
-import com.picketlogia.picket.api.review.model.dto.ReviewDtoRegister;
-
-import com.picketlogia.picket.api.review.model.dto.ReviewList;
-
-
-import com.picketlogia.picket.api.review.model.dto.ReviewList;
-
-
-import com.picketlogia.picket.api.review.model.dto.ReviewList;
-
-
-
-import com.picketlogia.picket.api.review.model.entity.Review;
 import com.picketlogia.picket.common.exception.BaseException;
 import com.picketlogia.picket.common.model.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -43,29 +34,22 @@ public class QnaService {
     private final QnaRepository qnaRepository;
     private final AnswerRepository answerRepository;
 
-//    @Transactional
-//    public QnaDto.Response createQna(QnaDto.CreateRequest request) {
-//        Qna newQna = request.toEntity();
-//        Qna savedQna = qnaRepository.save(newQna);
-//        return new QnaDto.Response(savedQna);
-//    }
-
     @Transactional(readOnly = true)
-    public List<QnaDto.Response> findAllQna() {
+    public List<QnaResponse> findAllQna() {
         return qnaRepository.findAllByIsDeletedIsFalse().stream()
-                .map(QnaDto.Response::new)
+                .map(QnaResponse::new)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public QnaDto.Response findQnaByIdx(Long qnaIdx) {
+    public QnaResponse findQnaByIdx(Long qnaIdx) {
         Qna qna = qnaRepository.findByIdxAndIsDeletedIsFalse(qnaIdx)
                 .orElseThrow(() -> new IllegalArgumentException("해당 문의글을 찾을 수 없습니다. id=" + qnaIdx));
-        return new QnaDto.Response(qna);
+        return new QnaResponse(qna);
     }
 
     @Transactional
-    public QnaDto.Response updateQna(Long qnaIdx, QnaDto.UpdateRequest request) {
+    public QnaResponse updateQna(Long qnaIdx, QnaUpdateRequest request) {
         Qna qna = qnaRepository.findByIdxAndIsDeletedIsFalse(qnaIdx)
                 .orElseThrow(() -> new IllegalArgumentException("해당 문의글을 찾을 수 없습니다. id=" + qnaIdx));
 
@@ -74,7 +58,7 @@ public class QnaService {
         }
 
         qna.update(request.getTitle(), request.getContents(), request.getIsPrivate());
-        return new QnaDto.Response(qna);
+        return new QnaResponse(qna);
     }
 
     @Transactional
@@ -85,73 +69,64 @@ public class QnaService {
     }
 
     @Transactional
-    public QnaDto.AnswerResponse createAnswer(Long qnaIdx, QnaDto.CreateAnswerRequest request) {
+    public QnaAnswerResponse createAnswer(Long qnaIdx, QnaAnswerCreateRequest request) {
         Qna qna = qnaRepository.findByIdxAndIsDeletedIsFalse(qnaIdx)
                 .orElseThrow(() -> new IllegalArgumentException("해당 문의글을 찾을 수 없습니다. id=" + qnaIdx));
 
         Answer newAnswer = request.toEntity(qna);
         Answer savedAnswer = answerRepository.save(newAnswer);
 
-        return new QnaDto.AnswerResponse(savedAnswer);
+        return new QnaAnswerResponse(savedAnswer);
     }
 
     @Transactional
-    public QnaDto.AnswerResponse updateAnswer(Long qnaIdx, Long answerIdx, QnaDto.UpdateAnswerRequest request) {
-        // 1. 문의글이 존재하는지 확인
+    public QnaAnswerResponse updateAnswer(Long qnaIdx, Long answerIdx, QnaAnswerUpdateRequest request) {
         qnaRepository.findByIdxAndIsDeletedIsFalse(qnaIdx)
                 .orElseThrow(() -> new IllegalArgumentException("해당 문의글을 찾을 수 없습니다. id=" + qnaIdx));
 
-        // 2. 답변이 존재하는지 확인
         Answer answer = answerRepository.findByIdxAndIsDeletedIsFalse(answerIdx)
                 .orElseThrow(() -> new IllegalArgumentException("해당 답변을 찾을 수 없습니다. id=" + answerIdx));
 
-        // 3. 답변이 해당 문의글에 속해 있는지 검증
         if (!answer.getQna().getIdx().equals(qnaIdx)) {
             throw new IllegalArgumentException("해당 문의글에 속한 답변이 아닙니다.");
         }
 
         answer.update(request.getContents());
-        return new QnaDto.AnswerResponse(answer);
+        return new QnaAnswerResponse(answer);
     }
 
     @Transactional
     public void deleteAnswer(Long qnaIdx, Long answerIdx) {
-        // 1. 문의글이 존재하는지 확인
         qnaRepository.findByIdxAndIsDeletedIsFalse(qnaIdx)
                 .orElseThrow(() -> new IllegalArgumentException("해당 문의글을 찾을 수 없습니다. id=" + qnaIdx));
 
-        // 2. 답변이 존재하는지 확인
         Answer answer = answerRepository.findByIdxAndIsDeletedIsFalse(answerIdx)
                 .orElseThrow(() -> new IllegalArgumentException("해당 답변을 찾을 수 없습니다. id=" + answerIdx));
 
-        // 3. 답변이 해당 문의글에 속해 있는지 검증
         if (!answer.getQna().getIdx().equals(qnaIdx)) {
             throw new IllegalArgumentException("해당 문의글에 속한 답변이 아닙니다.");
         }
         answer.delete();
     }
 
-    public List<QnaDto.Response> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
+    public List<QnaResponse> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime startDateTime = LocalDate.parse(startDateStr, formatter).atStartOfDay();
         LocalDateTime endDateTime = LocalDate.parse(endDateStr, formatter).atTime(LocalTime.MAX);
 
         List<Qna> result = qnaRepository.findByUserIdxAndCreatedAtBetween(userIdx, startDateTime, endDateTime);
 
-        return result.stream().map(QnaDto.Response::new).toList();
+        return result.stream().map(QnaResponse::new).toList();
     }
 
-    public void save(QnaDto.CreateRequest dto, Long userIdx) {
+    public void save(QnaCreateRequest dto, Long userIdx) {
         qnaRepository.save(dto.toEntity(userIdx));
-
     }
 
-    public QnaList pnaPaging(Integer page, Integer size , Long productId) {
+    public QnaPageResult pnaPaging(Integer page, Integer size, Long productId) {
 
-        Page<Qna> result = qnaRepository.findByProductIdx(productId, PageRequest.of(page,size)); // 페이지네이션이 필요하면 사용
+        Page<Qna> result = qnaRepository.findByProductIdx(productId, PageRequest.of(page, size));
 
-        return QnaList.from(result);
+        return QnaPageResult.from(result);
     }
-
-
 }

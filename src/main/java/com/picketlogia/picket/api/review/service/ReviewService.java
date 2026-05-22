@@ -3,9 +3,9 @@ package com.picketlogia.picket.api.review.service;
 import com.picketlogia.picket.api.product.model.Product;
 import com.picketlogia.picket.api.product.repository.ProductRepository;
 import com.picketlogia.picket.api.reservation.service.ReservationService;
-import com.picketlogia.picket.api.review.model.dto.ReviewDtoList;
-import com.picketlogia.picket.api.review.model.dto.ReviewDtoRegister;
-import com.picketlogia.picket.api.review.model.dto.ReviewList;
+import com.picketlogia.picket.api.review.dto.request.ReviewRegisterRequest;
+import com.picketlogia.picket.api.review.dto.result.ReviewListResult;
+import com.picketlogia.picket.api.review.dto.result.ReviewPageResult;
 import com.picketlogia.picket.api.review.model.entity.Review;
 import com.picketlogia.picket.api.review.repository.ReviewRepository;
 import com.picketlogia.picket.common.exception.BaseException;
@@ -31,7 +31,7 @@ public class ReviewService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public void save(ReviewDtoRegister dto, Long userIdx) {
+    public void save(ReviewRegisterRequest dto, Long userIdx) {
         if (!reservationService.hasPurchasedProduct(userIdx, dto.getProductId())) {
             throw new BaseException("예매자만 리뷰작성이 가능합니다.", BaseResponseStatus.ORDERS_NOT_ORDERED);
         }
@@ -53,40 +53,35 @@ public class ReviewService {
     }
 
 
-
-    public List<ReviewDtoList> listByUser(Long userIdx) {
-         List<Review> result = reviewRepository.findByUserIdx(userIdx);
-       return result.stream().map(ReviewDtoList::from).toList();
-  }
-
-
-    public List<ReviewDtoList> list() {
-
-    List<Review> result = reviewRepository.findAllWithAllDetails();
-
-//    List<Review> result = reviewRepository.findAllWithUserAndProduct();
-
-
-    return result.stream().map(ReviewDtoList::from).toList();
-}
-
-    public ReviewList listpaging(Integer page, Integer size ,Long productId) {
-
-        Page<Review> result = reviewRepository.findByProductIdx(productId,PageRequest.of(page,size)); // 페이지네이션이 필요하면 사용
-//        Slice<Board> result = boardRepository.findAll(PageRequest.of(page,size)); // 페이지네이션이 필요없으면 사용
-        Double averageRating = reviewRepository.findAverageRating();
-
-        return ReviewList.from(result, averageRating);
+    public List<ReviewListResult> listByUser(Long userIdx) {
+        List<Review> result = reviewRepository.findByUserIdx(userIdx);
+        return result.stream().map(ReviewListResult::from).toList();
     }
 
-    public List<ReviewDtoList> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
+
+    public List<ReviewListResult> list() {
+
+        List<Review> result = reviewRepository.findAllWithAllDetails();
+
+        return result.stream().map(ReviewListResult::from).toList();
+    }
+
+    public ReviewPageResult listpaging(Integer page, Integer size, Long productId) {
+
+        Page<Review> result = reviewRepository.findByProductIdx(productId, PageRequest.of(page, size));
+        Double averageRating = reviewRepository.findAverageRating();
+
+        return ReviewPageResult.from(result, averageRating);
+    }
+
+    public List<ReviewListResult> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime startDateTime = LocalDate.parse(startDateStr, formatter).atStartOfDay();
         LocalDateTime endDateTime = LocalDate.parse(endDateStr, formatter).atTime(LocalTime.MAX);
 
         List<Review> result = reviewRepository.findByUserIdxAndCreatedAtBetween(userIdx, startDateTime, endDateTime);
 
-        return result.stream().map(ReviewDtoList::from).toList();
+        return result.stream().map(ReviewListResult::from).toList();
     }
 
 }

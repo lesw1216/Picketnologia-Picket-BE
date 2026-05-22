@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.token.service;
 
-import com.picketlogia.picket.api.token.dto.ReissueTokens;
-import com.picketlogia.picket.api.token.dto.Tokens;
+import com.picketlogia.picket.api.token.dto.response.ReissueTokensResponse;
+import com.picketlogia.picket.api.token.dto.response.TokensResponse;
 import com.picketlogia.picket.api.token.model.AccessToken;
 import com.picketlogia.picket.api.token.model.RefreshToken;
 import com.picketlogia.picket.api.token.repository.TokenRepository;
@@ -18,9 +18,9 @@ public class TokenService {
      * Token을 재발급 합니다.
      * @param requestAccessToken 요청으로 받은 Access Token
      * @param refreshToken 요청으로 받은 Refresh Token
-     * @return <code>ReissueTokens</code>
+     * @return <code>ReissueTokensResponse</code>
      */
-    public ReissueTokens reissueToken(String requestAccessToken, String refreshToken) {
+    public ReissueTokensResponse reissueToken(String requestAccessToken, String refreshToken) {
         /*
          * Legacy flow before Lua script:
          * 1. find access token by refresh token
@@ -47,7 +47,7 @@ public class TokenService {
         );
 
         if (reissueResult == 1L) {
-            return ReissueTokens.from(reIssuedAccessToken, reIssuedRefreshToken);
+            return ReissueTokensResponse.from(reIssuedAccessToken, reIssuedRefreshToken);
         }
 
         return null;
@@ -59,7 +59,7 @@ public class TokenService {
 
     public void saveRefreshTokenAndAccessToken(RefreshToken refreshToken, String accessToken) {
 
-        Tokens tokens = Tokens.from(refreshToken, accessToken);
+        TokensResponse tokens = TokensResponse.from(refreshToken, accessToken);
         tokenRepository.save(tokens);
     }
 }

@@ -9,22 +9,22 @@ import java.util.List;
 
 @Getter
 @Builder
-public class UserTypeRead {
+public class UserTypeResult {
 
     private String code;
     private String name;
 
-    private static UserTypeRead from(UserType userType) {
-        return UserTypeRead.builder()
+    private static UserTypeResult from(UserType userType) {
+        return UserTypeResult.builder()
                 .code(userType.name())
                 .name(userType.getName())
                 .build();
     }
 
-    public static List<UserTypeRead> fromList() {
+    public static List<UserTypeResult> fromList() {
 
         List<UserType> userTypes = Arrays.stream(UserType.values()).toList();
 
-        return userTypes.stream().map(UserTypeRead::from).toList();
+        return userTypes.stream().map(UserTypeResult::from).toList();
     }
 }
