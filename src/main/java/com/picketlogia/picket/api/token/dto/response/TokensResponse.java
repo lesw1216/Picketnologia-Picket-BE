@@ -1,4 +1,4 @@
-package com.picketlogia.picket.api.token.dto;
+package com.picketlogia.picket.api.token.dto.response;
 
 import com.picketlogia.picket.api.token.model.RefreshToken;
 import lombok.Builder;
@@ -6,14 +6,14 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class Tokens {
+public class TokensResponse {
 
     private RefreshToken refreshToken;
     private String accessToken;
 
-    public static Tokens from(RefreshToken refreshToken, String accessToken) {
+    public static TokensResponse from(RefreshToken refreshToken, String accessToken) {
 
-        return Tokens.builder()
+        return TokensResponse.builder()
                 .refreshToken(refreshToken)
                 .accessToken(accessToken)
                 .build();

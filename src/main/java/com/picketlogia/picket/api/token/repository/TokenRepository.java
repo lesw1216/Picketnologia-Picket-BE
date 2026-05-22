@@ -1,6 +1,6 @@
 package com.picketlogia.picket.api.token.repository;
 
-import com.picketlogia.picket.api.token.dto.Tokens;
+import com.picketlogia.picket.api.token.dto.response.TokensResponse;
 import com.picketlogia.picket.api.token.model.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
@@ -23,9 +23,9 @@ public class TokenRepository {
      * refresh Token과 Access Token을 저장합니다. <br>
      * Key 값은 refresh token이 저장됩니다. <br>
      * Value 값은 access token이 저장됩니다. <br>
-     * @param tokens 저장할 refresh Token과 Access Token을 담은 <code>Tokens</code> 객체
+     * @param tokens 저장할 refresh Token과 Access Token을 담은 <code>TokensResponse</code> 객체
      */
-    public void save(Tokens tokens) {
+    public void save(TokensResponse tokens) {
 
         // find refresh token.
         RefreshToken refreshToken = tokens.getRefreshToken();
