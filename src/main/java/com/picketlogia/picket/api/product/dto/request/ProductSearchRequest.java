@@ -1,10 +1,10 @@
 package com.picketlogia.picket.api.product.dto.request;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class ProductSearchRequest {
     private String name;
     private String genre;
