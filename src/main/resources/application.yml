@@ -89,3 +89,8 @@ portone:
     api-secret: ${PORT_ONE_API_SECRET}
     store-id: ${STORE_ID}
     webhook: ${WEB_HOOK_SECRET}
+
+springdoc:
+  swagger-ui:
+    url: /openapi.yaml
+    disable-swagger-default-url: true
