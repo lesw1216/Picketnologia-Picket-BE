@@ -1,7 +1,5 @@
 package com.picketlogia.picket.api.qna.model;
 
-import com.picketlogia.picket.api.review.model.dto.ReviewDtoList;
-import com.picketlogia.picket.api.review.model.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
