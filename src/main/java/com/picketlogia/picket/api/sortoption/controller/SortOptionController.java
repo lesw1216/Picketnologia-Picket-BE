@@ -14,8 +14,14 @@ import java.util.Arrays;
 @RequestMapping("/sort-options")
 public class SortOptionController {
 
+    /**
+     * 사용 가능한 정렬 옵션 enum 값들을 코드·이름 쌍으로 반환한다.
+     *
+     * @return 정렬 옵션 목록을 담은 표준 응답
+     */
     @GetMapping()
     public ResponseEntity<BaseResponse<SortOptionListResult>> getSortOptions() {
+
         return ResponseEntity.ok(
                 BaseResponse.success(
                         SortOptionListResult.from(
