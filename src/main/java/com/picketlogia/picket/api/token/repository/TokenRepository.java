@@ -20,41 +20,41 @@ public class TokenRepository {
     private final RedisScript<Long> reissueTokensScript = createReissueTokensScript();
 
     /**
-     * refresh Token과 Access Token을 저장합니다. <br>
-     * Key 값은 refresh token이 저장됩니다. <br>
-     * Value 값은 access token이 저장됩니다. <br>
-     * @param tokens 저장할 refresh Token과 Access Token을 담은 <code>TokensResponse</code> 객체
+     * refresh token을 key, access token을 value로 Redis에 저장한다.
+     *
+     * @param tokens 저장할 refresh·access token 쌍
      */
     public void save(TokensResponse tokens) {
 
-        // find refresh token.
         RefreshToken refreshToken = tokens.getRefreshToken();
         String refreshTokenValue = refreshToken.getValue();
         Long refreshTokenExpire = refreshToken.getExpireMillis();
 
-        // find access token.
         String accessToken = tokens.getAccessToken();
 
         redisTemplate.opsForValue().set(refreshTokenValue, accessToken, Duration.ofMillis(refreshTokenExpire));
     }
 
     /**
-     * refresh Token을 조회합니다.
-     * @param refreshToken 조회할 refresh Token
-     * @return <code>String</code> 타입의 Access Token, refresh Token이 존재하지 않으면 <code>null</code>을 반환합니다.
+     * refresh token에 매핑된 access token을 조회한다.
+     *
+     * @param refreshToken 조회 키로 사용할 refresh token
+     * @return 매핑된 access token 문자열, 존재하지 않으면 {@code null}
      */
     public String findAccessToken(String refreshToken) {
+
         return redisTemplate.opsForValue().get(refreshToken);
     }
 
     /**
-     * refresh token rotation을 Lua script로 원자적으로 수행합니다.
-     * @param previousRefreshToken 기존 refresh Token
-     * @param requestAccessToken 요청으로 받은 Access Token
-     * @param reissuedRefreshToken 새로 발급한 refresh Token
-     * @param reissuedAccessToken 새로 발급한 Access Token
-     * @param refreshTokenExpireMillis 새 refresh Token 만료 시간(ms)
-     * @return <code>1</code> - 재발급 성공, <code>0</code> - refresh Token 없음, <code>-1</code> - access Token 불일치
+     * Lua script로 refresh token rotation을 원자적으로 수행한다.
+     *
+     * @param previousRefreshToken     기존 refresh token
+     * @param requestAccessToken       요청으로 받은 access token
+     * @param reissuedRefreshToken     새로 발급한 refresh token
+     * @param reissuedAccessToken      새로 발급한 access token
+     * @param refreshTokenExpireMillis 새 refresh token 만료 시간(ms)
+     * @return 1: 재발급 성공, 0: refresh token 없음, -1: access token 불일치
      */
     public long reissueTokensAtomically(String previousRefreshToken,
                                         String requestAccessToken,
@@ -72,11 +72,13 @@ public class TokenRepository {
     }
 
     /**
-     * refresh Token을 삭제합니다.
-     * @param refreshToken 삭제할 refresh Token
-     * @return <code>true</code> - 성공, <code>false</code> - 실패
+     * Redis에서 refresh token 키를 제거한다.
+     *
+     * @param refreshToken 삭제할 refresh token
+     * @return 키가 실제로 삭제됐으면 {@code true}, 없었으면 {@code false}
      */
     public boolean delete(String refreshToken) {
+
         return redisTemplate.delete(refreshToken);
     }
 

@@ -15,29 +15,17 @@ public class TokenService {
     private final TokenRepository tokenRepository;
 
     /**
-     * Token을 재발급 합니다.
-     * @param requestAccessToken 요청으로 받은 Access Token
-     * @param refreshToken 요청으로 받은 Refresh Token
-     * @return <code>ReissueTokensResponse</code>
+     * Lua script로 access·refresh 토큰 쌍을 원자적으로 회전(rotate)시킨다.
+     *
+     * @param requestAccessToken 요청으로 받은 기존 access token
+     * @param refreshToken       요청으로 받은 기존 refresh token
+     * @return 재발급된 토큰 쌍, 회전 실패(미일치·만료) 시 {@code null}
      */
     public ReissueTokensResponse reissueToken(String requestAccessToken, String refreshToken) {
-        /*
-         * Legacy flow before Lua script:
-         * 1. find access token by refresh token
-         * 2. compare request access token with stored access token
-         * 3. issue new tokens
-         * 4. save new refresh token -> access token
-         * 5. delete previous refresh token
-         *
-         * This flow had a race condition because Redis read/compare/delete/save
-         * happened across multiple commands.
-         */
 
         String reIssuedAccessToken = AccessToken.reIssue(requestAccessToken);
         RefreshToken reIssuedRefreshToken = RefreshToken.issue();
 
-        // Changed: token rotation is now executed atomically inside Redis via Lua script.
-        // Lua script를 사용하여 토큰 재발급 로직을 하나의 작업으로 처리할 수 있다.
         long reissueResult = tokenRepository.reissueTokensAtomically(
                 refreshToken,
                 requestAccessToken,
@@ -53,10 +41,22 @@ public class TokenService {
         return null;
     }
 
+    /**
+     * 새 refresh token을 발급해 반환한다.
+     *
+     * @return 신규 발급된 refresh token
+     */
     public RefreshToken issueRefreshToken() {
+
         return RefreshToken.issue();
     }
 
+    /**
+     * refresh token을 key, access token을 value로 Redis에 저장한다.
+     *
+     * @param refreshToken 저장할 refresh token
+     * @param accessToken  저장할 access token 문자열
+     */
     public void saveRefreshTokenAndAccessToken(RefreshToken refreshToken, String accessToken) {
 
         TokensResponse tokens = TokensResponse.from(refreshToken, accessToken);
