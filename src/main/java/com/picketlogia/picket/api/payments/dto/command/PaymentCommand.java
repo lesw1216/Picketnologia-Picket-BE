@@ -1,12 +1,10 @@
 package com.picketlogia.picket.api.payments.dto.command;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@Builder
 public class PaymentCommand {
     private String paymentId;
-//    private String paymentToken;
-//    private String txId;
 }
