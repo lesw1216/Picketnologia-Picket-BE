@@ -14,4 +14,4 @@
 - [x] Task 6. genre 도메인 - Read·Response 네이밍 통일
 - [x] Task 7. sortoption 도메인 - model → dto 이동 및 네이밍 정리
 - [x] Task 8. 빌드 확인 (./gradlew build) - 컴파일 통과 (테스트 2건 실패는 pre-existing 이슈)
-- [ ] Task 9. PR 생성 ~~진행중~~
+- [x] Task 9. PR 생성 - https://github.com/lesw1216/Picketnologia-Picket-BE/pull/12
