@@ -93,5 +93,4 @@ portone:
 springdoc:
   swagger-ui:
     url: /openapi.yaml
-  api-docs:
-    enabled: false
+    disable-swagger-default-url: true
