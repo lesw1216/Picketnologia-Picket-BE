@@ -1,7 +1,7 @@
 package com.picketlogia.picket.api.sortoption.controller;
 
+import com.picketlogia.picket.api.sortoption.dto.result.SortOptionListResult;
 import com.picketlogia.picket.api.sortoption.model.SortOption;
-import com.picketlogia.picket.api.sortoption.model.SortOptionList;
 import com.picketlogia.picket.common.model.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +15,10 @@ import java.util.Arrays;
 public class SortOptionController {
 
     @GetMapping()
-    public ResponseEntity<BaseResponse<SortOptionList>> getSortOptions() {
+    public ResponseEntity<BaseResponse<SortOptionListResult>> getSortOptions() {
         return ResponseEntity.ok(
                 BaseResponse.success(
-                        SortOptionList.from(
+                        SortOptionListResult.from(
                                 Arrays.stream(SortOption.values()).toList()
                         )
                 )

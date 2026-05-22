@@ -12,6 +12,6 @@
 - [x] Task 4. review 도메인 - model/dto → dto/ 이동 및 네이밍 정리
 - [x] Task 5. qna 도메인 - QnaDto inner 클래스 분리 및 패키지 정리
 - [x] Task 6. genre 도메인 - Read·Response 네이밍 통일
-- [ ] Task 7. sortoption 도메인 - model → dto 이동 및 네이밍 정리 ~~진행중~~
-- [ ] Task 8. 빌드 확인 (./gradlew build)
+- [x] Task 7. sortoption 도메인 - model → dto 이동 및 네이밍 정리
+- [ ] Task 8. 빌드 확인 (./gradlew build) ~~진행중~~
 - [ ] Task 9. PR 생성
