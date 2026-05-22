@@ -9,22 +9,22 @@ import java.util.List;
 
 @Getter
 @Builder
-public class GenderRead {
+public class GenderResult {
 
     private String code;
     private String name;
 
-    private static GenderRead from(Gender gender) {
-        return GenderRead.builder()
+    private static GenderResult from(Gender gender) {
+        return GenderResult.builder()
                 .code(gender.name())
                 .name(gender.getName())
                 .build();
     }
 
-    public static List<GenderRead> fromList() {
+    public static List<GenderResult> fromList() {
 
         List<Gender> genders = Arrays.stream(Gender.values()).toList();
 
-        return genders.stream().map(GenderRead::from).toList();
+        return genders.stream().map(GenderResult::from).toList();
     }
 }

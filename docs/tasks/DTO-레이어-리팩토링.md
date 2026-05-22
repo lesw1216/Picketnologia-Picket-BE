@@ -5,9 +5,9 @@
 
 ## Tasks
 
-- [ ] Task 0. 규칙 문서 보강 (dto-layer.md, dto-create.md) ~~진행중~~
-- [ ] Task 1. user 도메인 - Read → Result 리네임
-- [ ] Task 2. token 도메인 - 응답 DTO 네이밍·위치 정리
+- [x] Task 0. 규칙 문서 보강 (dto-layer.md, dto-create.md)
+- [x] Task 1. user 도메인 - Read → Result 리네임
+- [ ] Task 2. token 도메인 - 응답 DTO 네이밍·위치 정리 ~~진행중~~
 - [ ] Task 3. product 도메인 - Read → Result 리네임 및 위치 정리
 - [ ] Task 4. review 도메인 - model/dto → dto/ 이동 및 네이밍 정리
 - [ ] Task 5. qna 도메인 - QnaDto inner 클래스 분리 및 패키지 정리
