@@ -252,11 +252,18 @@ public class Product extends BaseEntity {
 
 ## 패키지 구조 예시
 
+DTO는 접미어별 서브패키지로 분리한다. 자세한 규칙은 `@rules/dto-layer.md` 참조.
+
 ```
 api/product/dto/
-├── ProductCreateRequest.java
-├── ProductCreateCommand.java
-├── ProductSearchQuery.java
-├── ProductResult.java
-└── ProductResponse.java
+├── request/
+│   └── ProductCreateRequest.java
+├── command/
+│   └── ProductCreateCommand.java
+├── query/
+│   └── ProductSearchQuery.java
+├── result/
+│   └── ProductResult.java
+└── response/
+    └── ProductResponse.java
 ```
