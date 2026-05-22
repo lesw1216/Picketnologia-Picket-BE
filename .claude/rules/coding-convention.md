@@ -35,7 +35,12 @@ Product product = productRepository.findById(id)
 
 ## CORS
 
-`http://localhost:5173` 에만 허용한다.
+운영 환경의 두 origin만 허용한다.
+
+- `http://localhost:5173` — 로컬 프론트엔드 개발 환경
+- `https://www.picket.o-r.kr` — 프로덕션 도메인
+
+새 origin 추가가 필요하면 반드시 협의 후 `SecurityConfig.corsConfigurationSource()`에 명시한다.
 
 ---
 

@@ -46,6 +46,13 @@ public enum BaseResponseStatus {
     NOT_ROCKED_SEAT(false, 31003, "좌석 선택 유효기간이 지났습니다."),
 
     NOT_FOUND_DATA(false, 32000, "해당 데이터를 찾을 수 없습니다."),
+    PRODUCT_NOT_FOUND(false, 32001, "존재하지 않는 공연입니다."),
+    GENRE_NOT_FOUND(false, 32002, "존재하지 않는 장르입니다."),
+    QNA_NOT_FOUND(false, 32003, "존재하지 않는 문의글입니다."),
+    QNA_ANSWER_NOT_FOUND(false, 32004, "존재하지 않는 답변입니다."),
+    QNA_PASSWORD_MISMATCH(false, 32005, "문의글 비밀번호가 일치하지 않습니다."),
+    QNA_ANSWER_MISMATCH(false, 32006, "해당 문의글에 속한 답변이 아닙니다."),
+    PAYMENT_DATA_INVALID(false, 32007, "결제 데이터 처리 중 오류가 발생했습니다."),
     /**
      * 40000 : Response 오류
      */
