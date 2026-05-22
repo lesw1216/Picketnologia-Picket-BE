@@ -131,7 +131,7 @@ gh pr create --base staging --title "..." --body "..."</code></pre>
 <b>BaseException 시그니처:</b> 기존 <code>BaseException(message, status)</code> 2-arg 생성자도 존재하지만 본 작업에서는 통일성을 위해 <code>BaseException.from(status)</code> 정적 팩토리만 사용. 메시지는 <code>BaseResponseStatus</code> enum의 message가 그대로 사용된다.
 </div>
 
-<h2>7. 커밋 목록 (14개)</h2>
+<h2>7. 커밋 목록</h2>
 <pre><code>chore: BaseResponseStatus 보강 및 CORS 규칙 문서 갱신
 refactor: auth 도메인 컨벤션 정리
 refactor: user 도메인 컨벤션 정리
@@ -145,7 +145,51 @@ refactor: review 도메인 컨벤션 정리
 refactor: payments 도메인 컨벤션 정리
 refactor: genre 도메인 컨벤션 정리
 refactor: region/sortoption/contents 도메인 컨벤션 정리
-docs: 코딩 컨벤션 리팩토링 task 진행 상태 갱신</code></pre>
+docs: 코딩 컨벤션 리팩토링 task 진행 상태 갱신
+docs: 코딩 컨벤션에 메서드 명명·엔티티 행위 규칙 추가
+refactor: qna·review 도메인 명명 규칙 적용
+refactor: reservation·seat 도메인 명명 규칙 적용 (Rock → Lock)
+test: ReservationServiceTest 메서드 호출 rename 동기</code></pre>
+
+<h2>8. Addendum — 메서드 명명·엔티티 행위 규칙 (2차 추가)</h2>
+
+<p>PR #13 진행 중 추가 요구사항으로 <b>메서드 명명 규칙(A~E) + 엔티티 행위 메서드 규칙(F)</b> 을 같은 브랜치에서 진행했다.</p>
+
+<h3>8.1 규칙 추가 (Phase 1)</h3>
+<ul>
+  <li>대상 파일: <code>.claude/rules/coding-convention.md</code></li>
+  <li>"메서드 작성 규칙" 섹션 안에 "### 명명 규칙" 하위 섹션 추가</li>
+  <li>6개 항목 A~F (CRUD 동사 표준화 / Boolean prefix / 검증·변환 prefix / Repository Spring Data 명명 / 일반 스타일 / 엔티티 상태 변경)</li>
+</ul>
+
+<h3>8.2 코드 정리 (Phase 2)</h3>
+
+<table>
+  <thead><tr><th>이전</th><th>이후</th><th>해당 규칙</th><th>위치</th></tr></thead>
+  <tbody>
+    <tr><td><code>pnaPaging</code></td><td><code>findAllPagedByProductIdx</code></td><td>E (오타) + A</td><td>QnaService, QnaController</td></tr>
+    <tr><td><code>listpaging</code></td><td><code>findAllPagedByProductIdx</code></td><td>E (camelCase) + A</td><td>ReviewService, ReviewController</td></tr>
+    <tr><td><code>list()</code></td><td><code>findAll()</code></td><td>A</td><td>ReviewService</td></tr>
+    <tr><td><code>listByUser</code></td><td><code>findAllByUserIdx</code></td><td>A</td><td>ReviewService</td></tr>
+    <tr><td><code>listByUserAndDateRange</code></td><td><code>findAllByUserIdxAndCreatedAtBetween</code></td><td>A</td><td>ReviewService, QnaService, ReservationService</td></tr>
+    <tr><td><code>checkReservedSeat</code></td><td><code>validateSeatsNotReserved</code></td><td>C</td><td>ReservationService</td></tr>
+    <tr><td><code>checkRockSeats</code></td><td><code>validateLockedSeats</code></td><td>C + E (Rock 오타)</td><td>ReservationService</td></tr>
+    <tr><td><code>validateRockSeats</code></td><td><code>validateLockedSeats</code></td><td>E (Rock 오타)</td><td>SeatHoldService</td></tr>
+    <tr><td><code>checkReservedSeats</code></td><td><code>validateReservation</code></td><td>C (controller method)</td><td>ReservationController</td></tr>
+  </tbody>
+</table>
+
+<h3>8.3 엔티티 행위 메서드 (F) 적용 결과</h3>
+
+<p>Service 코드를 grep한 결과, 도메인 엔티티에 대한 <code>.set*</code> 직접 호출은 발견되지 않았다. 기존 코드가 이미 <code>user.updatePassword</code>, <code>product.incrementSalesCount</code>, <code>qna.update</code>, <code>reservation.completeReservation</code> 등 행위 메서드를 사용 중. 본 규칙은 <b>현재 코드의 패턴을 명문화</b>한 것이며, 신규 코드에 기준선으로 작동한다.</p>
+
+<h3>8.4 검증</h3>
+
+<pre><code># 잔재 메서드명 확인 — 결과 0건
+grep -rn "pnaPaging\|listpaging\|checkRockSeats\|validateRockSeats\|checkReservedSeat" src/main/java/
+
+# 컴파일·테스트 — 사전 실패 2건 외 정상
+./gradlew build</code></pre>
 
 </body>
 </html>
