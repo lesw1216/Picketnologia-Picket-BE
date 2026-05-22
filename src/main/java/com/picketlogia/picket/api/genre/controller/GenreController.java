@@ -16,8 +16,14 @@ public class GenreController {
 
     private final GenreService genreService;
 
+    /**
+     * 등록된 장르 전체를 조회한다.
+     *
+     * @return 장르 목록을 담은 표준 응답
+     */
     @GetMapping()
     public ResponseEntity<BaseResponse<Object>> getList() {
+
         GenreListResponse genres = genreService.findAll();
 
         return ResponseEntity.ok(BaseResponse.success(genres));
