@@ -25,16 +25,22 @@ public abstract class BaseMailService {
         this.subject = subject;
     }
 
+    /**
+     * 지정된 이메일 주소로 본 서비스의 기본 메일을 발송한다.
+     *
+     * @param email 수신자 이메일 주소
+     */
     public void sendToEmail(String email) {
+
         MimeMessage mimeMessage = createMimeMessage(email);
         mailSender.send(mimeMessage);
     }
 
     /**
-     * MimeMessage 생성
+     * 수신자와 본문 HTML이 채워진 MimeMessage를 생성해 반환한다.
      *
-     * @param email 전송할 이메일
-     * @return MimeMessage
+     * @param email 수신자 이메일 주소
+     * @return 전송 준비가 완료된 MimeMessage
      */
     protected MimeMessage createMimeMessage(String email) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();

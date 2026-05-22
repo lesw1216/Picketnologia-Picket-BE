@@ -6,11 +6,11 @@ import com.picketlogia.picket.api.auth.dto.request.ResetPasswordRequest;
 import com.picketlogia.picket.api.user.model.entity.User;
 import com.picketlogia.picket.api.user.repository.UserRepository;
 import com.picketlogia.picket.api.user.service.PasswordService;
+import com.picketlogia.picket.common.exception.BaseException;
+import com.picketlogia.picket.common.model.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,34 +20,38 @@ public class UserFindService {
     private final AuthService authService;
     private final PasswordService passwordService;
 
+    /**
+     * 이름과 전화번호로 가입된 회원을 찾아 이메일 정보를 반환한다.
+     *
+     * @param findEmail 이름과 전화번호가 담긴 조회 요청
+     * @return 해당 회원의 이메일 응답
+     * @throws BaseException 일치하는 회원이 존재하지 않을 때
+     */
     public FindEmailResponse findEmailByNameAndPhoneNumber(FindEmailRequest findEmail) {
 
-        Optional<User> result = userRepository.findByNameAndPhoneNumber(findEmail.getName(), findEmail.getPhoneNumber());
+        User findUser = userRepository.findByNameAndPhoneNumber(findEmail.getName(), findEmail.getPhoneNumber())
+                .orElseThrow(() -> BaseException.from(BaseResponseStatus.INVALID_USER_INFO));
 
-        if (result.isPresent()) {
-            User findUser = result.get();
-            return FindEmailResponse.from(findUser);
-        }
-
-        return null;
+        return FindEmailResponse.from(findUser);
     }
 
+    /**
+     * 일회용 토큰을 검증한 뒤 해당 회원의 비밀번호를 새 값으로 변경한다.
+     *
+     * @param resetPassword 토큰과 새 비밀번호가 담긴 요청
+     * @throws BaseException 토큰이 무효하거나 회원이 존재하지 않을 때
+     */
     @Transactional
     public void resetPassword(ResetPasswordRequest resetPassword) {
 
         String newPassword = resetPassword.getPassword();
-
         String token = resetPassword.getToken();
 
         ResetPasswordRequest findEmailDto = authService.verifyUserPasswordReset(token);
 
-        Optional<User> result = userRepository.findByEmail(findEmailDto.getEmail());
+        User findUser = userRepository.findByEmail(findEmailDto.getEmail())
+                .orElseThrow(() -> BaseException.from(BaseResponseStatus.INVALID_USER_EMAIL));
 
-        if (result.isEmpty()) {
-            throw new IllegalArgumentException("유효하지 않은 이메일");
-        }
-
-        User findUser = result.get();
         passwordService.changePassword(findUser, newPassword);
     }
 }

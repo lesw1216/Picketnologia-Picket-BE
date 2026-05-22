@@ -24,8 +24,14 @@ public class PasswordResetMailService extends BaseMailService {
         this.redisTemplate = redisTemplate;
     }
 
+    /**
+     * 일회용 UUID를 발급해 비밀번호 재설정 링크 메일을 발송하고, 토큰-이메일 매핑을 Redis에 5분간 보관한다.
+     *
+     * @param email 재설정 링크를 받을 이메일 주소
+     */
     @Override
     public void sendToEmail(String email) {
+
         uuid = createUuid();
         MimeMessage mimeMessage = createMimeMessage(email);
 
