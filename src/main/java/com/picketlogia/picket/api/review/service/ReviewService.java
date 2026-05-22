@@ -69,7 +69,7 @@ public class ReviewService {
      * @param userIdx 사용자 ID
      * @return 작성된 리뷰 목록
      */
-    public List<ReviewListResult> listByUser(Long userIdx) {
+    public List<ReviewListResult> findAllByUserIdx(Long userIdx) {
 
         List<Review> result = reviewRepository.findByUserIdx(userIdx);
 
@@ -81,7 +81,7 @@ public class ReviewService {
      *
      * @return 리뷰 목록
      */
-    public List<ReviewListResult> list() {
+    public List<ReviewListResult> findAll() {
 
         List<Review> result = reviewRepository.findAllWithAllDetails();
 
@@ -96,7 +96,7 @@ public class ReviewService {
      * @param productId 조회 대상 상품 ID
      * @return 페이지 결과
      */
-    public ReviewPageResult listpaging(Integer page, Integer size, Long productId) {
+    public ReviewPageResult findAllPagedByProductIdx(Integer page, Integer size, Long productId) {
 
         Page<Review> result = reviewRepository.findByProductIdx(productId, PageRequest.of(page, size));
         Double averageRating = reviewRepository.findAverageRating();
@@ -112,7 +112,7 @@ public class ReviewService {
      * @param endDateStr   종료일 (yyyy-MM-dd)
      * @return 기간 내 리뷰 목록
      */
-    public List<ReviewListResult> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
+    public List<ReviewListResult> findAllByUserIdxAndCreatedAtBetween(Long userIdx, String startDateStr, String endDateStr) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime startDateTime = LocalDate.parse(startDateStr, formatter).atStartOfDay();

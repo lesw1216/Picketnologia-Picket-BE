@@ -44,7 +44,7 @@ public class ReviewController {
     @GetMapping("/list")
     public ResponseEntity<BaseResponse<List<ReviewListResult>>> list() {
 
-        List<ReviewListResult> response = reviewService.list();
+        List<ReviewListResult> response = reviewService.findAll();
 
         return ResponseEntity.ok(BaseResponse.success(response));
     }
@@ -62,7 +62,7 @@ public class ReviewController {
                                                                                      @RequestParam("startDate") String startDate,
                                                                                      @RequestParam("endDate") String endDate) {
 
-        List<ReviewListResult> response = reviewService.listByUserAndDateRange(userAuth.getIdx(), startDate, endDate);
+        List<ReviewListResult> response = reviewService.findAllByUserIdxAndCreatedAtBetween(userAuth.getIdx(), startDate, endDate);
 
         return ResponseEntity.ok(BaseResponse.success(response));
     }
@@ -80,7 +80,7 @@ public class ReviewController {
                                                                      @RequestParam Integer size,
                                                                      @RequestParam Long productId) {
 
-        ReviewPageResult response = reviewService.listpaging(page, size, productId);
+        ReviewPageResult response = reviewService.findAllPagedByProductIdx(page, size, productId);
 
         return ResponseEntity.ok(BaseResponse.success(response));
     }

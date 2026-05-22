@@ -163,7 +163,7 @@ public class QnaService {
      * @param endDateStr   종료일 (yyyy-MM-dd)
      * @return 기간 내 문의글 응답 목록
      */
-    public List<QnaResponse> listByUserAndDateRange(Long userIdx, String startDateStr, String endDateStr) {
+    public List<QnaResponse> findAllByUserIdxAndCreatedAtBetween(Long userIdx, String startDateStr, String endDateStr) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime startDateTime = LocalDate.parse(startDateStr, formatter).atStartOfDay();
@@ -193,7 +193,7 @@ public class QnaService {
      * @param productId 조회 대상 상품 ID
      * @return 페이징 결과
      */
-    public QnaPageResult pnaPaging(Integer page, Integer size, Long productId) {
+    public QnaPageResult findAllPagedByProductIdx(Integer page, Integer size, Long productId) {
 
         Page<Qna> result = qnaRepository.findByProductIdx(productId, PageRequest.of(page, size));
 

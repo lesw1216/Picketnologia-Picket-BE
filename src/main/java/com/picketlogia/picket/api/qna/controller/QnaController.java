@@ -152,7 +152,7 @@ public class QnaController {
                                                                                 @RequestParam("startDate") String startDate,
                                                                                 @RequestParam("endDate") String endDate) {
 
-        List<QnaResponse> response = qnaService.listByUserAndDateRange(userAuth.getIdx(), startDate, endDate);
+        List<QnaResponse> response = qnaService.findAllByUserIdxAndCreatedAtBetween(userAuth.getIdx(), startDate, endDate);
 
         return ResponseEntity.ok(BaseResponse.success(response));
     }
@@ -170,7 +170,7 @@ public class QnaController {
                                                                   @RequestParam Integer size,
                                                                   @RequestParam Long productId) {
 
-        QnaPageResult response = qnaService.pnaPaging(page, size, productId);
+        QnaPageResult response = qnaService.findAllPagedByProductIdx(page, size, productId);
 
         return ResponseEntity.ok(BaseResponse.success(response));
     }
