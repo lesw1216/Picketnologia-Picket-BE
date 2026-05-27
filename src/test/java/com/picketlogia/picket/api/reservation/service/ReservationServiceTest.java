@@ -202,7 +202,7 @@ class ReservationServiceTest {
 
             // when
             // then
-            assertThrows(BaseException.class, () -> reservationService.checkReservedSeat(request));
+            assertThrows(BaseException.class, () -> reservationService.validateSeatsNotReserved(request));
         }
 
         @Test
@@ -218,7 +218,7 @@ class ReservationServiceTest {
 
             // when
             // then
-            assertDoesNotThrow(() -> reservationService.checkReservedSeat(request));
+            assertDoesNotThrow(() -> reservationService.validateSeatsNotReserved(request));
         }
     }
 

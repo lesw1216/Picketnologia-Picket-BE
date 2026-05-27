@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>코딩 컨벤션 위반사항 전면 리팩토링 보고서</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; line-height: 1.6; max-width: 980px; margin: 2rem auto; padding: 0 1.25rem; color: #1f2328; }
+  h1 { border-bottom: 2px solid #d0d7de; padding-bottom: 0.4rem; font-size: 1.6rem; }
+  h2 { margin-top: 2rem; border-bottom: 1px solid #d0d7de; padding-bottom: 0.3rem; font-size: 1.25rem; }
+  h3 { margin-top: 1.5rem; font-size: 1.05rem; }
+  code { background: #f6f8fa; padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.92em; }
+  pre { background: #f6f8fa; padding: 0.9rem 1rem; border-radius: 6px; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 0.6rem 0 1rem; }
+  th, td { border: 1px solid #d0d7de; padding: 0.45rem 0.7rem; text-align: left; vertical-align: top; }
+  th { background: #f6f8fa; }
+  .meta { color: #57606a; font-size: 0.9rem; }
+  ul { margin: 0.3rem 0 0.8rem 1.4rem; }
+  .tag { display: inline-block; padding: 0.05rem 0.45rem; border-radius: 4px; font-size: 0.8em; background: #ddf4ff; color: #0969da; }
+  .warn { background: #fff8c5; border-left: 3px solid #d4a72c; padding: 0.6rem 0.9rem; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<h1>코딩 컨벤션 위반사항 전면 리팩토링</h1>
+<p class="meta">생성: 2026-05-22 18:20 KST · 브랜치: <code>refactor/coding-convention</code> · PR: <a href="https://github.com/lesw1216/Picketnologia-Picket-BE/pull/13">#13</a></p>
+
+<h2>1. 작업 요청 요약</h2>
+<p>프로젝트의 <code>.claude/rules/coding-convention.md</code>, <code>error-handling.md</code>, <code>dto-create.md</code>, <code>dto-layer.md</code>에 정의된 코딩 컨벤션을 기준으로 모든 도메인을 전수 조사하여 위반 사항을 정리. 도메인별 커밋 + 단일 PR로 진행, 마지막에 HTML 보고서 작성.</p>
+
+<h2>2. 사전 계획</h2>
+
+<h3>위반 카테고리</h3>
+<table>
+  <thead><tr><th>카테고리</th><th>건수</th><th>핵심 도메인</th></tr></thead>
+  <tbody>
+    <tr><td>1. 예외 처리 (BaseException 미사용)</td><td>23+</td><td>qna, auth, payments, review, genre, product</td></tr>
+    <tr><td>2. Controller 응답 BaseResponse 미래핑</td><td>8</td><td>qna, review, seller, seat</td></tr>
+    <tr><td>3. DTO <code>@Setter</code> 금지 위반</td><td>5</td><td>product, payments</td></tr>
+    <tr><td>4. 메서드 Javadoc 누락</td><td>125+</td><td>전 도메인</td></tr>
+    <tr><td>5. 메서드 &gt;10줄 추출 필요</td><td>3+</td><td>product, payments</td></tr>
+  </tbody>
+</table>
+
+<h3>정책 결정</h3>
+<ul>
+  <li>범위: <b>전체</b> (5개 카테고리 모두)</li>
+  <li>CORS: 운영 도메인 유지, 규칙 문서를 운영 정책에 맞춰 갱신</li>
+  <li>커밋 단위: <b>도메인별 커밋, 단일 PR</b></li>
+</ul>
+
+<h2>3. 변경 파일 목록</h2>
+
+<h3>3.1 사전 작업</h3>
+<table>
+  <thead><tr><th>파일</th><th>변경 요약</th></tr></thead>
+  <tbody>
+    <tr><td><code>src/main/java/.../common/model/BaseResponseStatus.java</code></td><td>QNA/GENRE/PRODUCT/PAYMENT 관련 status 7개 추가</td></tr>
+    <tr><td><code>.claude/rules/coding-convention.md</code></td><td>CORS 섹션을 운영 정책(localhost + 프로덕션) 반영</td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 도메인별 변경</h3>
+<table>
+  <thead><tr><th>도메인</th><th>주요 변경</th></tr></thead>
+  <tbody>
+    <tr><td>auth</td><td>AuthService/UserFindService: IllegalArgumentException → BaseException, Optional unwrap 정리. EmailVerifyController try-catch 제거. mail 서비스 Javadoc 보강</td></tr>
+    <tr><td>user</td><td>controller·service 공개 메서드 Javadoc. CustomUserDetailsService.loadUserByUsername의 UsernameNotFoundException은 Spring Security 계약상 유지 (Javadoc 명시)</td></tr>
+    <tr><td>seller</td><td>SellerController.test() String 직접 반환 → ResponseEntity&lt;BaseResponse&lt;String&gt;&gt;</td></tr>
+    <tr><td>token</td><td>TokenReissueController: 쿠키 생성 헬퍼 추출. 모든 메서드 Javadoc 정비</td></tr>
+    <tr><td>seat</td><td>SeatHoldController.releaseSeats(): void → ResponseEntity&lt;BaseResponse&lt;Void&gt;&gt;. SeatHoldService/Repository 다수 Javadoc</td></tr>
+    <tr><td>product</td><td>ProductSearchRequest/QueryRequest/RegisterRequest: @Setter 제거. ProductService.register() 31줄 → 헬퍼 2개로 분해. .get() → orElseThrow(BaseException)</td></tr>
+    <tr><td>qna</td><td>QnaService: 12개 IllegalArgumentException → BaseException. findQnaOrThrow/findAnswerOrThrow/validateAnswerBelongsToQna 헬퍼 추출. QnaController 모든 응답 BaseResponse 래핑</td></tr>
+    <tr><td>reservation</td><td>Optional 패턴 정리, controller·service Javadoc 추가. checkReservedSeat 본문 주석 제거</td></tr>
+    <tr><td>review</td><td>save(): 2-arg BaseException → BaseException.from(status). updateProductReviewStats: orElseThrow no-arg → BaseException(PRODUCT_NOT_FOUND). ReviewController.register() raw String → BaseResponse 래핑</td></tr>
+    <tr><td>payments</td><td>PaymentCommand/CustomDataCommand: @Setter 제거. RuntimeException 2건 → BaseException(PAYMENT_DATA_INVALID). completePayment() 32줄 → 헬퍼 분해. manualApprove HTTP 호출도 분리</td></tr>
+    <tr><td>genre</td><td>findByCode(): NoSuchElementException → BaseException(GENRE_NOT_FOUND). controller·service Javadoc</td></tr>
+    <tr><td>region/sortoption/contents</td><td>controller·service 공개 메서드 Javadoc</td></tr>
+  </tbody>
+</table>
+
+<h2>4. 실행 명령어</h2>
+<pre><code>git checkout staging &amp;&amp; git pull origin staging
+git checkout -b refactor/coding-convention
+
+# 도메인별 변경 후 매번
+./gradlew compileJava
+
+# 전체 검증
+./gradlew build
+
+# 푸시 및 PR
+git push -u origin refactor/coding-convention
+gh pr create --base staging --title "..." --body "..."</code></pre>
+
+<h2>5. 검증 결과</h2>
+<table>
+  <thead><tr><th>항목</th><th>결과</th></tr></thead>
+  <tbody>
+    <tr><td><code>./gradlew compileJava</code> (각 도메인 작업 직후 + 최종)</td><td>모두 BUILD SUCCESSFUL</td></tr>
+    <tr><td><code>./gradlew build</code> (테스트 포함)</td><td>컴파일 성공. 테스트 2건 실패 — 사전 이슈로 본 PR 범위 외</td></tr>
+    <tr><td>옛 예외 잔재 (IllegalArgumentException 등) Service 전수 검색</td><td>0건 (CustomUserDetailsService 제외)</td></tr>
+    <tr><td>Controller 응답 raw String 검색</td><td>0건</td></tr>
+    <tr><td>DTO <code>@Setter</code> 검색</td><td>0건</td></tr>
+  </tbody>
+</table>
+
+<h2>6. 알려진 제약 · 주의사항 · Follow-up</h2>
+
+<div class="warn">
+<b>UsernameNotFoundException 유지:</b> <code>CustomUserDetailsService.loadUserByUsername</code>은 Spring Security의 <code>UserDetailsService</code> 계약이 해당 예외 타입을 던지도록 요구하므로 BaseException 규칙에서 의도적으로 제외. Javadoc에 사유 명시.
+</div>
+
+<div class="warn" style="margin-top:0.8rem;">
+<b>Spring 쿼리 바인딩 동작 확인:</b> Product 계열 Request DTO 3종에서 <code>@Setter</code>를 제거했다. 컴파일은 통과하나, 컨트롤러가 query parameter를 POJO로 바인딩(<code>(ProductQueryRequest q)</code>)할 때 Spring DataBinder가 setter를 사용하는 경향이 있으므로 staging 머지 후 swagger UI로 실제 query 바인딩이 정상 동작하는지 검증이 필요. 문제가 있을 경우 후속 조치 옵션: (a) <code>@Setter</code> 복원 + 규칙 문서에 예외 명시, (b) Controller에서 <code>@RequestParam</code>으로 개별 수신 후 빌더로 변환.
+</div>
+
+<div class="warn" style="margin-top:0.8rem;">
+<b>BaseResponse 래핑 신규 적용 엔드포인트:</b> <code>POST /reviews/register</code>, <code>GET /seller/test</code>, <code>POST /qna/qna_create_post</code>, <code>DELETE /qna/{id}</code>, <code>DELETE /rounds/{id}/seats</code> 등은 응답 JSON 구조가 변경됨 (이전에는 raw string 또는 단일 객체). 프론트엔드에서 <code>response.result</code> / <code>response.isSuccess</code> 패턴으로 처리되는지 확인 필요.
+</div>
+
+<div class="warn" style="margin-top:0.8rem;">
+<b>사전 테스트 실패 2건:</b>
+<ul>
+  <li><code>PicketApplicationTests.contextLoads()</code> — DB 연결 (DriverDataSource) 실패. test profile 구성 부재가 원인. 본 PR 범위 외.</li>
+  <li><code>ReservationServiceTest.register()</code> — Mockito <code>UnnecessaryStubbingException</code>. test 코드 정리 필요. 본 PR 범위 외.</li>
+</ul>
+이들 실패는 staging branch에서도 동일하게 발생함을 확인.
+</div>
+
+<div class="warn" style="margin-top:0.8rem;">
+<b>BaseException 시그니처:</b> 기존 <code>BaseException(message, status)</code> 2-arg 생성자도 존재하지만 본 작업에서는 통일성을 위해 <code>BaseException.from(status)</code> 정적 팩토리만 사용. 메시지는 <code>BaseResponseStatus</code> enum의 message가 그대로 사용된다.
+</div>
+
+<h2>7. 커밋 목록</h2>
+<pre><code>chore: BaseResponseStatus 보강 및 CORS 규칙 문서 갱신
+refactor: auth 도메인 컨벤션 정리
+refactor: user 도메인 컨벤션 정리
+refactor: seller 도메인 컨벤션 정리
+refactor: token 도메인 컨벤션 정리
+refactor: seat 도메인 컨벤션 정리
+refactor: product 도메인 컨벤션 정리
+refactor: qna 도메인 컨벤션 정리
+refactor: reservation 도메인 컨벤션 정리
+refactor: review 도메인 컨벤션 정리
+refactor: payments 도메인 컨벤션 정리
+refactor: genre 도메인 컨벤션 정리
+refactor: region/sortoption/contents 도메인 컨벤션 정리
+docs: 코딩 컨벤션 리팩토링 task 진행 상태 갱신
+docs: 코딩 컨벤션에 메서드 명명·엔티티 행위 규칙 추가
+refactor: qna·review 도메인 명명 규칙 적용
+refactor: reservation·seat 도메인 명명 규칙 적용 (Rock → Lock)
+test: ReservationServiceTest 메서드 호출 rename 동기</code></pre>
+
+<h2>8. Addendum — 메서드 명명·엔티티 행위 규칙 (2차 추가)</h2>
+
+<p>PR #13 진행 중 추가 요구사항으로 <b>메서드 명명 규칙(A~E) + 엔티티 행위 메서드 규칙(F)</b> 을 같은 브랜치에서 진행했다.</p>
+
+<h3>8.1 규칙 추가 (Phase 1)</h3>
+<ul>
+  <li>대상 파일: <code>.claude/rules/coding-convention.md</code></li>
+  <li>"메서드 작성 규칙" 섹션 안에 "### 명명 규칙" 하위 섹션 추가</li>
+  <li>6개 항목 A~F (CRUD 동사 표준화 / Boolean prefix / 검증·변환 prefix / Repository Spring Data 명명 / 일반 스타일 / 엔티티 상태 변경)</li>
+</ul>
+
+<h3>8.2 코드 정리 (Phase 2)</h3>
+
+<table>
+  <thead><tr><th>이전</th><th>이후</th><th>해당 규칙</th><th>위치</th></tr></thead>
+  <tbody>
+    <tr><td><code>pnaPaging</code></td><td><code>findAllPagedByProductIdx</code></td><td>E (오타) + A</td><td>QnaService, QnaController</td></tr>
+    <tr><td><code>listpaging</code></td><td><code>findAllPagedByProductIdx</code></td><td>E (camelCase) + A</td><td>ReviewService, ReviewController</td></tr>
+    <tr><td><code>list()</code></td><td><code>findAll()</code></td><td>A</td><td>ReviewService</td></tr>
+    <tr><td><code>listByUser</code></td><td><code>findAllByUserIdx</code></td><td>A</td><td>ReviewService</td></tr>
+    <tr><td><code>listByUserAndDateRange</code></td><td><code>findAllByUserIdxAndCreatedAtBetween</code></td><td>A</td><td>ReviewService, QnaService, ReservationService</td></tr>
+    <tr><td><code>checkReservedSeat</code></td><td><code>validateSeatsNotReserved</code></td><td>C</td><td>ReservationService</td></tr>
+    <tr><td><code>checkRockSeats</code></td><td><code>validateLockedSeats</code></td><td>C + E (Rock 오타)</td><td>ReservationService</td></tr>
+    <tr><td><code>validateRockSeats</code></td><td><code>validateLockedSeats</code></td><td>E (Rock 오타)</td><td>SeatHoldService</td></tr>
+    <tr><td><code>checkReservedSeats</code></td><td><code>validateReservation</code></td><td>C (controller method)</td><td>ReservationController</td></tr>
+  </tbody>
+</table>
+
+<h3>8.3 엔티티 행위 메서드 (F) 적용 결과</h3>
+
+<p>Service 코드를 grep한 결과, 도메인 엔티티에 대한 <code>.set*</code> 직접 호출은 발견되지 않았다. 기존 코드가 이미 <code>user.updatePassword</code>, <code>product.incrementSalesCount</code>, <code>qna.update</code>, <code>reservation.completeReservation</code> 등 행위 메서드를 사용 중. 본 규칙은 <b>현재 코드의 패턴을 명문화</b>한 것이며, 신규 코드에 기준선으로 작동한다.</p>
+
+<h3>8.4 검증</h3>
+
+<pre><code># 잔재 메서드명 확인 — 결과 0건
+grep -rn "pnaPaging\|listpaging\|checkRockSeats\|validateRockSeats\|checkReservedSeat" src/main/java/
+
+# 컴파일·테스트 — 사전 실패 2건 외 정상
+./gradlew build</code></pre>
+
+</body>
+</html>

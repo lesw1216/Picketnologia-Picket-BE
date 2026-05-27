@@ -13,7 +13,13 @@ public class SignupService {
     private final UserService userService;
     private final SellerService sellerService;
 
+    /**
+     * 회원 가입을 처리하고 판매자 유형이면 판매자 정보를 추가로 저장한다.
+     *
+     * @param register 회원 가입 요청 정보
+     */
     public void signup(UserRegisterRequest register) {
+
         User savedUser = userService.signup(register);
 
         if (UserType.SELLER.equals(register.getUserType())) {

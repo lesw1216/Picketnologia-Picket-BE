@@ -17,8 +17,17 @@ public class SeatService {
 
     private final SeatRepository seatRepository;
 
-    // 저장
-    public void saveAll(Long productIdx, List<List<SeatSaveCommand>> seatCommands, Map<SeatGradeStatus, Long> seatGradeMap) {
+    /**
+     * 좌석 명령 목록을 등급 매핑에 맞춰 Seat 엔티티로 변환해 일괄 저장한다.
+     *
+     * @param productIdx    좌석이 속할 공연 상품 ID
+     * @param seatCommands  행 단위로 묶인 좌석 저장 명령 목록
+     * @param seatGradeMap  등급별 ID 매핑 (저장된 SeatGrade 결과)
+     */
+    public void saveAll(Long productIdx,
+                        List<List<SeatSaveCommand>> seatCommands,
+                        Map<SeatGradeStatus, Long> seatGradeMap) {
+
         List<Seat> seats = seatCommands.stream()
                 .flatMap(Collection::stream)
                 .map(command -> {

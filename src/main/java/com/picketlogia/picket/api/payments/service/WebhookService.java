@@ -23,11 +23,13 @@ public class WebhookService {
     }
 
     /**
-     * 포트원에서 요청한 웹훅을 처리한다.
-     * @param body 웹훅 요청 <code>body</code>
-     * @param webhookId 웹훅 ID
+     * PortOne 웹훅 요청을 서명 검증한 뒤 결제 완료 처리를 위임한다.
+     *
+     * @param body             웹훅 요청 본문
+     * @param webhookId        웹훅 ID
      * @param webhookTimestamp 웹훅 타임스탬프
-     * @param webhookSignature 웹훅 검증을 위한 시그니처
+     * @param webhookSignature 검증용 서명
+     * @throws BaseException 서명 검증에 실패했을 때
      */
     public void handleWebhook(String body, String webhookId, String webhookTimestamp, String webhookSignature) {
 

@@ -15,10 +15,17 @@ public class ContentsController {
 
     private final ContentsService contentsService;
 
+    /**
+     * 지정된 장르의 콘텐츠(공연 목록 + 오픈 예정 공연)를 조회한다.
+     *
+     * @param genre 장르 코드
+     * @return 콘텐츠 응답을 담은 표준 응답
+     */
     @GetMapping("/contents/{genre}")
     public ResponseEntity<BaseResponse<ContentsResponse>> getContents(@PathVariable String genre) {
 
         ContentsResponse contents = contentsService.findContents(genre);
+
         return ResponseEntity.ok(BaseResponse.success(contents));
     }
 }

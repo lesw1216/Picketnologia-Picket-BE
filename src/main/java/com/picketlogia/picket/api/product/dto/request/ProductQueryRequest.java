@@ -1,12 +1,13 @@
 package com.picketlogia.picket.api.product.dto.request;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class ProductQueryRequest {
     private Integer page;
     private String genre;
     private String sort;
 }
+

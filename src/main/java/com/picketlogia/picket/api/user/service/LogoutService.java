@@ -14,11 +14,12 @@ public class LogoutService {
     private final TokenRepository tokenRepository;
 
     /**
-     * 로그아웃을 수행합니다.
-     * @param removeRefreshToken 삭제할 refresh Token
+     * Redis에 저장된 refresh token을 제거하고 결과를 로깅한다.
+     *
+     * @param removeRefreshToken 삭제할 refresh token 값
+     * @param removeAccessToken  사용자 식별자 추출용 access token 값
      */
     public void logout(String removeRefreshToken, String removeAccessToken) {
-
 
         String userIdx = AccessToken.getValue(AccessToken.getClaims(removeAccessToken), AccessToken.IDX_NAME);
 

@@ -19,7 +19,13 @@ public class SeatGradeService {
 
     private final SeatGradeRepository seatGradeRepository;
 
-    // 전체 한번에 저장 후 Map 반환
+    /**
+     * 좌석 등급 명령 목록을 일괄 저장하고 등급별 ID 매핑을 반환한다.
+     *
+     * @param productIdx 좌석 등급이 속할 공연 상품 ID
+     * @param commands   저장할 좌석 등급 명령 목록
+     * @return 좌석 등급 상태(Enum) → 저장된 SeatGrade ID 매핑
+     */
     public Map<SeatGradeStatus, Long> saveAll(Long productIdx, List<SeatGradeSaveCommand> commands) {
 
         List<SeatGrade> savedGrades = seatGradeRepository.saveAll(
@@ -31,7 +37,12 @@ public class SeatGradeService {
         );
     }
 
-    // 전체 조회
+    /**
+     * 특정 공연에 등록된 좌석 등급 목록을 조회한다.
+     *
+     * @param productIdx 조회 대상 공연 상품 ID
+     * @return 좌석 등급 결과 목록
+     */
     public List<SeatGradeResult> findAllByProduct(Long productIdx) {
 
         List<SeatGrade> findSeatGrades = seatGradeRepository.findAllByProduct(

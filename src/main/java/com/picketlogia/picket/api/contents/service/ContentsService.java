@@ -15,6 +15,12 @@ public class ContentsService {
 
     private final ProductService productService;
 
+    /**
+     * 장르 코드를 받아 해당 장르의 공연 목록과 오픈 예정 공연을 조합해 반환한다.
+     *
+     * @param genre 장르 코드
+     * @return 콘텐츠 응답
+     */
     public ContentsResponse findContents(String genre) {
 
         ProductsResult findProducts = productService.findAllByGenre(genre);
@@ -29,5 +35,4 @@ public class ContentsService {
                 upcomingProducts
         );
     }
-
 }

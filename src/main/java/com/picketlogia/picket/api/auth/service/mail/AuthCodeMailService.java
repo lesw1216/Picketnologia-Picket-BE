@@ -26,8 +26,14 @@ public class AuthCodeMailService extends BaseMailService {
         this.redisTemplate = redisTemplate;
     }
 
+    /**
+     * 새 인증 번호를 발급해 메일로 발송하고, 동일 코드를 Redis에 5분간 보관한다.
+     *
+     * @param email 인증 번호를 받을 이메일 주소
+     */
     @Override
     public void sendToEmail(String email) {
+
         authCode = authCodeCreator.generateAuthCode();
 
         MimeMessage mimeMessage = createMimeMessage(email);

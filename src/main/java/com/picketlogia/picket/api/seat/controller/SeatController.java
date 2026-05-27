@@ -18,6 +18,13 @@ public class SeatController {
 
     private final SeatInfoService seatInfoService;
 
+    /**
+     * 상품과 회차 기준 좌석 등급·좌석 배치·예약 상태를 한 번에 조회한다.
+     *
+     * @param productIdx   조회할 공연 상품 ID
+     * @param roundTimeIdx 조회할 회차 시간 ID
+     * @return 좌석 정보가 담긴 표준 응답
+     */
     @GetMapping
     public ResponseEntity<BaseResponse<SeatInfoResponse>> getSeatInfo(@RequestParam("product") Long productIdx,
                                                                       @RequestParam("roundTime") Long roundTimeIdx) {
@@ -25,6 +32,5 @@ public class SeatController {
         SeatInfoResult seatInfoResult = seatInfoService.findSeatInfo(productIdx, roundTimeIdx);
 
         return ResponseEntity.ok(BaseResponse.success(SeatInfoResponse.from(seatInfoResult)));
-
     }
 }
