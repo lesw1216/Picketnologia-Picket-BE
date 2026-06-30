@@ -72,8 +72,8 @@ jobs:
             
             echo "Success SSH connection"
             
-            echo "move to /home/picket"
-            cd /home/picket
+            echo "move to /home/ubuntu/workspace/picket"
+            cd /home/ubuntu/workspace/picket
             
             echo "Pulling Docker Image from DockerHub, Only Backend"
             sudo docker compose pull backend
